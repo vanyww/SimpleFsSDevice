@@ -84,6 +84,9 @@ static FlashFileSystemSDeviceState ClearMemoryState(__SDEVICE_HANDLE(FlashFileSy
 
 FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_HANDLE(FlashFileSystem) *handle)
 {
+   SDeviceAssert(handle != NULL);
+   SDeviceAssert(handle->IsInitialized == true);
+
    SectorInitialState sectorsState[__FLASH_FILE_SYSTEM_SDEVICE_SECTORS_COUNT];
 
    /* read and partially preprocess sectors initial states */
@@ -135,7 +138,7 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_
                return ClearMemoryState(handle);
 
             default:
-               SDeviceAssert(true);
+               SDeviceAssert(false);
                return FLASH_FILE_SYSTEM_SDEVICE_STATE_IO_MEMORY_ERROR;
          }
          break;
@@ -158,7 +161,7 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_
                return ClearMemoryState(handle);
 
             default:
-               SDeviceAssert(true);
+               SDeviceAssert(false);
                return FLASH_FILE_SYSTEM_SDEVICE_STATE_IO_MEMORY_ERROR;
          }
          break;
@@ -181,7 +184,7 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_
                return ClearMemoryState(handle);
 
             default:
-               SDeviceAssert(true);
+               SDeviceAssert(false);
                return FLASH_FILE_SYSTEM_SDEVICE_STATE_IO_MEMORY_ERROR;
          }
          break;
@@ -205,24 +208,28 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_
                return ClearMemoryState(handle);
 
             default:
-               SDeviceAssert(true);
+               SDeviceAssert(false);
                return FLASH_FILE_SYSTEM_SDEVICE_STATE_IO_MEMORY_ERROR;
          }
          break;
 
       default:
-         SDeviceAssert(true);
+         SDeviceAssert(false);
          return FLASH_FILE_SYSTEM_SDEVICE_STATE_IO_MEMORY_ERROR;
    }
 
    return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
 }
 
-
 FlashFileSystemSDeviceState FlashFileSystemSDeviceGetVariableSize(__SDEVICE_HANDLE(FlashFileSystem) *handle,
                                                                   FlashFileSystemSDeviceAddress address,
                                                                   size_t *size)
 {
+   SDeviceAssert(handle != NULL);
+   SDeviceAssert(handle->IsInitialized == true);
+   SDeviceAssert(address <= __FLASH_FILE_SYSTEM_SDEVICE_MAX_ADDRESS);
+   SDeviceAssert(size != NULL);
+
    __RETURN_ERROR_IF_ANY(MoveVariableDataToCache(handle, address));
 
    if(handle->Dynamic.VariableDataCache.IsDeleted == true)
@@ -238,6 +245,11 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceRead(__SDEVICE_HANDLE(FlashFil
                                                        size_t size,
                                                        void *data)
 {
+   SDeviceAssert(handle != NULL);
+   SDeviceAssert(handle->IsInitialized == true);
+   SDeviceAssert(address <= __FLASH_FILE_SYSTEM_SDEVICE_MAX_ADDRESS);
+   SDeviceAssert(data != NULL);
+
    FileSystemBlock block;
 
    __RETURN_ERROR_IF_ANY(MoveVariableDataToCache(handle, address));
@@ -269,11 +281,20 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceWrite(__SDEVICE_HANDLE(FlashFi
                                                         size_t size,
                                                         const void *data)
 {
+   SDeviceAssert(handle != NULL);
+   SDeviceAssert(handle->IsInitialized == true);
+   SDeviceAssert(address <= __FLASH_FILE_SYSTEM_SDEVICE_MAX_ADDRESS);
+   SDeviceAssert(data != NULL);
+
    return WriteVariable(handle, address, data, size, false);
 }
 
 FlashFileSystemSDeviceState FlashFileSystemSDeviceDelete(__SDEVICE_HANDLE(FlashFileSystem) *handle,
                                                          FlashFileSystemSDeviceAddress address)
 {
+   SDeviceAssert(handle != NULL);
+   SDeviceAssert(handle->IsInitialized == true);
+   SDeviceAssert(address <= __FLASH_FILE_SYSTEM_SDEVICE_MAX_ADDRESS);
+
    return WriteVariable(handle, address, NULL, 0, true);
 }
