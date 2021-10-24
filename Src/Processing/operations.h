@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../Inc/FlashFileSystemSDevice/core.h"
-#include "Primitives/sector.h"
+#include "Base/block.h"
 
 #define __RETURN_ERROR_IF_ANY(expression)                                                                              \
 ({                                                                                                                     \
@@ -12,30 +12,28 @@
 
 typedef struct
 {
-   intptr_t FirstEmptyBlockAddress;
    BlockHeaderState HeaderState;
-   bool HasValidState;
+   bool HasValidHeaderState;
    bool IsEmpty;
 } SectorInitialState;
 
-FlashFileSystemSDeviceState ReadBlockToBuffer(__SDEVICE_HANDLE(FlashFileSystem) *, intptr_t);
+FlashFileSystemSDeviceState SetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *,
+                                                 FlashFileSystemSDeviceIterator *,
+                                                 BlockHeaderState);
 
-FlashFileSystemSDeviceState WriteBlockFromBuffer(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                                 FlashFileSystemSDeviceSectorDynamicData *);
-
-FlashFileSystemSDeviceState GetSectorState(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                           const FlashFileSystemSDeviceSector *,
-                                           SectorInitialState *);
+FlashFileSystemSDeviceState GetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *,
+                                                 FlashFileSystemSDeviceIterator *,
+                                                 BlockHeaderState *);
 
 FlashFileSystemSDeviceState FormatSectorToState(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                                FlashFileSystemSDeviceSectorDynamicData *,
+                                                FlashFileSystemSDeviceIterator *,
                                                 BlockHeaderState);
 
-FlashFileSystemSDeviceState SetSectorState(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                           FlashFileSystemSDeviceSectorDynamicData *,
-                                           BlockHeaderState);
+FlashFileSystemSDeviceState GetSectorInitialState(__SDEVICE_HANDLE(FlashFileSystem) *,
+                                                  FlashFileSystemSDeviceIterator *,
+                                                  SectorInitialState *);
 
-FlashFileSystemSDeviceState CachePreambleBlockDataWithAddress(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                                              FlashFileSystemSDeviceAddress);
+FlashFileSystemSDeviceState MoveVariableDataToCache(__SDEVICE_HANDLE(FlashFileSystem) *,
+                                                    FlashFileSystemSDeviceAddress);
 
 FlashFileSystemSDeviceState TransferSectors(__SDEVICE_HANDLE(FlashFileSystem) *);

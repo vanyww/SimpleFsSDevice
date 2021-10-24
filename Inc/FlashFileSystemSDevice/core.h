@@ -7,13 +7,12 @@
 
 #define __FLASH_FILE_SYSTEM_SDEVICE_MAX_ADDRESS (UINT16_MAX - 1)
 #define __FLASH_FILE_SYSTEM_SDEVICE_SECTORS_COUNT 2
-#define __FLASH_FILE_SYSTEM_SDEVICE_BLOCK_SIZE sizeof(uint64_t)
 
 typedef uint16_t FlashFileSystemSDeviceAddress;
 
 typedef struct
 {
-   void *SectorContext;
+   void *Context;
    intptr_t StartAddress;
    size_t Size;
 } FlashFileSystemSDeviceSector;
@@ -21,8 +20,9 @@ typedef struct
 typedef struct
 {
    const FlashFileSystemSDeviceSector *Sector;
-   intptr_t FirstFreeBlockAddress;
-} FlashFileSystemSDeviceSectorDynamicData;
+   intptr_t WriteCursor;
+   intptr_t ReadCursor;
+} FlashFileSystemSDeviceIterator;
 
 typedef enum
 {
@@ -51,21 +51,20 @@ typedef struct { } __SDEVICE_SETTINGS_DATA(FlashFileSystem);
 
 typedef struct
 {
-   FlashFileSystemSDeviceSectorDynamicData *ActiveSector;
-   FlashFileSystemSDeviceSectorDynamicData Sectors[__FLASH_FILE_SYSTEM_SDEVICE_SECTORS_COUNT];
+   FlashFileSystemSDeviceIterator *ActiveIterator;
+   FlashFileSystemSDeviceIterator Iterators[__FLASH_FILE_SYSTEM_SDEVICE_SECTORS_COUNT];
    struct
    {
+      FlashFileSystemSDeviceAddress Address;
       intptr_t MemoryAddress;
-      FlashFileSystemSDeviceAddress VariableAddress;
+      uint8_t Size;
       bool IsDeleted;
-      uint8_t VariableSize;
    } VariableDataCache;
-   uint8_t BlockBuffer[__FLASH_FILE_SYSTEM_SDEVICE_BLOCK_SIZE];
 } __SDEVICE_DYNAMIC_DATA(FlashFileSystem);
 
 __SDEVICE_HANDLE_DEFINITION(FlashFileSystem);
 
-__SDEVICE_INITIALIZE_INTERNALS_DECLARATION(FlashFileSystem,);
+__SDEVICE_INITIALIZE_HANDLE_DECLARATION(FlashFileSystem,);
 
 /* Satty's interface end */
 
