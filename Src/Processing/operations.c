@@ -1,236 +1,269 @@
 #include "operations.h"
+#include "Base/iterator.h"
 
-FlashFileSystemSDeviceState ReadBlockToBuffer(__SDEVICE_HANDLE(FlashFileSystem) *handle, intptr_t address)
+static inline FlashFileSystemSDeviceIterator * GetNextSectorIterator(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+                                                                     FlashFileSystemSDeviceIterator *iterator)
 {
-   FileSystemBlock *dataBlock = (FileSystemBlock *)handle->Dynamic.BlockBuffer;
-   if(handle->Constant->TryReadFromFlash(handle, address, BlocksSize(1), dataBlock) != true)
-      return FLASH_FILE_SYSTEM_SDEVICE_STATE_IO_MEMORY_ERROR;
+   size_t nextSectorIndex = (iterator - &handle->Dynamic.Iterators[0] + 1) %
+            __FLASH_FILE_SYSTEM_SDEVICE_SECTORS_COUNT;
 
-   return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
+   return &handle->Dynamic.Iterators[nextSectorIndex];
 }
 
-FlashFileSystemSDeviceState WriteBlockFromBuffer(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                                 FlashFileSystemSDeviceSectorDynamicData *sector)
+static FlashFileSystemSDeviceState SkipBackToNotEmptyBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+                                                           FlashFileSystemSDeviceIterator *iterator)
 {
-   if(sector->FirstFreeBlockAddress > SectorLastBlockAddress(sector->Sector))
-      return FLASH_FILE_SYSTEM_SDEVICE_STATE_OUT_OF_MEMORY_ERROR;
-
-   FileSystemBlock *dataBlock = (FileSystemBlock *)handle->Dynamic.BlockBuffer;
-   if(handle->Constant->TryWriteToFlash(handle, sector->FirstFreeBlockAddress, BlocksSize(1), dataBlock) != true)
-      return FLASH_FILE_SYSTEM_SDEVICE_STATE_IO_MEMORY_ERROR;
-
-   sector->FirstFreeBlockAddress = NextBlockAddress(sector->FirstFreeBlockAddress);
-
-   return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
-}
-
-static FlashFileSystemSDeviceState GetFirstEmptyBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                                      const FlashFileSystemSDeviceSector *sector,
-                                                      intptr_t *blockAddress)
-{
-   FileSystemBlock *dataBlock = (FileSystemBlock *)handle->Dynamic.BlockBuffer;
-   intptr_t searchAddress = SectorLastBlockAddress(sector);
-
-   for(; searchAddress >= sector->StartAddress; searchAddress = PreviousBlockAddress(searchAddress))
-   {
-      __RETURN_ERROR_IF_ANY(ReadBlockToBuffer(handle, searchAddress));
-
-      if(IsBlockEmpty(dataBlock) != true)
-      {
-         if(searchAddress == SectorLastBlockAddress(sector))
-            return FLASH_FILE_SYSTEM_SDEVICE_STATE_VALUE_NOT_FOUND_ERROR;
-
-         *blockAddress = NextBlockAddress(searchAddress);
-         return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
-      }
-   }
-
-   *blockAddress = sector->StartAddress;
-   return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
-}
-
-static FlashFileSystemSDeviceState GetPreviousBlockOfType(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                                          const FlashFileSystemSDeviceSector *sector,
-                                                          BlockDescriptor type,
-                                                          intptr_t *blockAddress)
-{
-   FileSystemBlock *dataBlock = (FileSystemBlock *)handle->Dynamic.BlockBuffer;
-   intptr_t searchAddress = PreviousBlockAddress(*blockAddress);
-
-   for(; searchAddress >= sector->StartAddress; searchAddress = PreviousBlockAddress(searchAddress))
-   {
-      __RETURN_ERROR_IF_ANY(ReadBlockToBuffer(handle, searchAddress));
-
-      if(IsBlockOfType(dataBlock, type) == true)
-      {
-         *blockAddress = searchAddress;
-         return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
-      }
-   }
-
-   return FLASH_FILE_SYSTEM_SDEVICE_STATE_VALUE_NOT_FOUND_ERROR;
-}
-
-FlashFileSystemSDeviceState SetSectorState(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                           FlashFileSystemSDeviceSectorDynamicData *sector,
-                                           BlockHeaderState headerState)
-{
-   FileSystemBlock *dataBlock = (FileSystemBlock *)handle->Dynamic.BlockBuffer;
-
-   dataBlock->AsBlock = (struct CommonBlock)
-   {
-      .Descriptor = BLOCK_DESCRIPTOR_HEADER,
-      .AsHeader = (struct HeaderBlock)
-      {
-         .State = headerState,
-         .Padding = __BYTE_EMPTY_VALUE
-      }
-   };
-   dataBlock->AsBlock.AsHeader.Crc = ComputeHeaderBlockCrc(dataBlock);
-
-   return WriteBlockFromBuffer(handle, sector);
-}
-
-FlashFileSystemSDeviceState GetSectorState(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                           const FlashFileSystemSDeviceSector *sector,
-                                           SectorInitialState *state)
-{
-   FileSystemBlock *dataBlock = (FileSystemBlock *)handle->Dynamic.BlockBuffer;
+   FileSystemBlock block;
    FlashFileSystemSDeviceState operationState;
 
-   operationState = GetFirstEmptyBlock(handle, sector, &state->FirstEmptyBlockAddress);
+   while((operationState = PeekFromCurrentBlock(handle, iterator, &block)) == FLASH_FILE_SYSTEM_SDEVICE_STATE_OK)
+   {
+      if(IsBlockEmpty(&block) != true)
+         return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
 
+      DecrementReadCursor(iterator);
+   }
+
+   return operationState;
+}
+
+static FlashFileSystemSDeviceState SkipBackToBlockOfType(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+                                                         FlashFileSystemSDeviceIterator *iterator,
+                                                         BlockDescriptor type)
+{
+   FileSystemBlock block;
+   FlashFileSystemSDeviceState operationState;
+
+   while((operationState = PeekFromCurrentBlock(handle, iterator, &block)) == FLASH_FILE_SYSTEM_SDEVICE_STATE_OK)
+   {
+      if(IsBlockOfType(&block, type) == true)
+         return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
+
+      DecrementReadCursor(iterator);
+   }
+
+   return operationState;
+}
+
+void InvalidateVariableDataCache(__SDEVICE_HANDLE(FlashFileSystem) *handle)
+{
+   handle->Dynamic.VariableDataCache.Address = __FLASH_FILE_SYSTEM_SDEVICE_MAX_ADDRESS + 1;
+}
+
+FlashFileSystemSDeviceState SetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+                                                 FlashFileSystemSDeviceIterator *iterator,
+                                                 BlockHeaderState state)
+{
+   FileSystemBlock block =
+   {
+      .AsBlock = (struct CommonBlock)
+      {
+         .Descriptor = BLOCK_DESCRIPTOR_HEADER,
+         .AsHeader = (struct HeaderBlock)
+         {
+            .State = state,
+            .Padding = __BYTE_EMPTY_VALUE
+         }
+      }
+   };
+   block.AsBlock.AsHeader.Crc = ComputeHeaderBlockCrc(&block);
+
+   return WriteForwardToCurrentBlock(handle, iterator, &block);
+}
+
+FlashFileSystemSDeviceState GetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+                                                 FlashFileSystemSDeviceIterator *iterator,
+                                                 BlockHeaderState *state)
+{
+   FlashFileSystemSDeviceState operationState;
+
+   /* write cursor is always on first free block of the sector */
+   SeekReadCursor(iterator, PreviousBlockAddress(iterator->WriteCursor));
+
+   /* try get sector's header state */
+   while((operationState = SkipBackToBlockOfType(handle, iterator, BLOCK_DESCRIPTOR_HEADER)) ==
+            FLASH_FILE_SYSTEM_SDEVICE_STATE_OK)
+   {
+      FileSystemBlock block;
+
+      __RETURN_ERROR_IF_ANY(ReadBackwardFromCurrentBlock(handle, iterator, &block));
+
+      /* valid header found */
+      if(block.AsBlock.AsHeader.Crc == ComputeHeaderBlockCrc(&block) &&
+               __IS_VALID_BLOCK_HEADER_STATE(block.AsBlock.AsHeader.State) == true)
+      {
+         *state = block.AsBlock.AsHeader.State;
+         return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
+      }
+   }
+
+   return operationState;
+}
+
+FlashFileSystemSDeviceState FormatSectorToState(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+                                                FlashFileSystemSDeviceIterator *iterator,
+                                                BlockHeaderState headerState)
+{
+   __RETURN_ERROR_IF_ANY(EraseSector(handle, iterator->Sector));
+   SeekWriteCursor(iterator, IteratorStart(iterator));
+   return SetSectorHeaderState(handle, iterator, headerState);
+}
+
+FlashFileSystemSDeviceState GetSectorInitialState(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+                                                  FlashFileSystemSDeviceIterator *iterator,
+                                                  SectorInitialState *state)
+{
+   FlashFileSystemSDeviceState operationState;
+
+   /* find first written block starting from end of sector */
+   SeekReadCursor(iterator, IteratorEnd(iterator));
+   operationState = SkipBackToNotEmptyBlock(handle, iterator);
+
+   /* no written blocks -> sector empty, set write cursor to start of the sector */
    if(operationState == FLASH_FILE_SYSTEM_SDEVICE_STATE_VALUE_NOT_FOUND_ERROR)
    {
       state->IsEmpty = true;
+      SeekWriteCursor(iterator, IteratorStart(iterator));
       return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
    }
 
    __RETURN_ERROR_IF_ANY(operationState);
-   intptr_t address = state->FirstEmptyBlockAddress;
+   state->IsEmpty = false;
 
-   do
+   /* set write cursor to next block after found written one, it'll be free or out of bounds in case of full sector */
+   SeekWriteCursor(iterator, NextBlockAddress(iterator->ReadCursor));
+
+   operationState = GetSectorHeaderState(handle, iterator, &state->HeaderState);
+
+   if(operationState == FLASH_FILE_SYSTEM_SDEVICE_STATE_VALUE_NOT_FOUND_ERROR)
    {
-      operationState = GetPreviousBlockOfType(handle, sector, BLOCK_DESCRIPTOR_HEADER, &address);
+      state->HasValidHeaderState = false;
+      return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
+   }
 
-      if(operationState == FLASH_FILE_SYSTEM_SDEVICE_STATE_VALUE_NOT_FOUND_ERROR)
+   __RETURN_ERROR_IF_ANY(operationState);
+   state->HasValidHeaderState = true;
+
+   return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
+}
+
+FlashFileSystemSDeviceState MoveVariableDataToCache(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+                                                    FlashFileSystemSDeviceAddress variableAddress)
+{
+   /* variable with requested address is already in cache */
+   if(handle->Dynamic.VariableDataCache.Address == variableAddress)
+      return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
+
+   FlashFileSystemSDeviceState operationState;
+   FlashFileSystemSDeviceIterator *iterator = handle->Dynamic.ActiveIterator;
+
+   /* write cursor is always on first free block of the sector */
+   SeekReadCursor(iterator, PreviousBlockAddress(iterator->WriteCursor));
+
+   /* iterate over preamble blocks to find valid one with requested address */
+   while((operationState = SkipBackToBlockOfType(handle, iterator, BLOCK_DESCRIPTOR_DATA_PREAMBLE)) ==
+            FLASH_FILE_SYSTEM_SDEVICE_STATE_OK)
+   {
+      /* create temporary cache instance for storage */
+      __typeof__(handle->Dynamic.VariableDataCache) cache;
+      FileSystemBlock block;
+
+      cache.MemoryAddress = iterator->ReadCursor;
+
+      /* read preamble block */
+      __RETURN_ERROR_IF_ANY(ReadForwardFromCurrentBlock(handle, iterator, &block));
+
+      cache.Address = block.AsBlock.AsDataPreamble.Address;
+
+      if(cache.Address != variableAddress)
       {
-         state->HasValidState = false;
-         state->IsEmpty = false;
+         SeekReadCursor(iterator, PreviousBlockAddress(cache.MemoryAddress));
+         continue;
+      }
+
+      cache.IsDeleted = block.AsBlock.AsDataPreamble.IsDeleted;
+      cache.Size = block.AsBlock.AsDataPreamble.VariableSize;
+
+      CrcType readCrc = block.AsBlock.AsDataPreamble.Crc,
+              computedCrc = ComputeHeaderBlockCrc(&block);
+
+      size_t leftToReadSize = cache.Size;
+
+      if(cache.IsDeleted != true && cache.Size != 0)
+      {
+         /* compute crc and in-memory variable size to validate it */
+         while((operationState = ReadForwardFromCurrentBlock(handle, iterator, &block)) ==
+                  FLASH_FILE_SYSTEM_SDEVICE_STATE_OK)
+         {
+            if(IsBlockOfType(&block, BLOCK_DESCRIPTOR_VARIABLE_DATA) != true)
+               break;
+
+            size_t blockDataSize = __MIN(leftToReadSize, sizeof(block.AsBlock.AsData.Data));
+            computedCrc = UpdateCrcWithDataBlock(&block, computedCrc, blockDataSize);
+            leftToReadSize -= blockDataSize;
+
+            if(leftToReadSize == 0)
+               break;
+         }
+
+         if(operationState != FLASH_FILE_SYSTEM_SDEVICE_STATE_VALUE_NOT_FOUND_ERROR)
+            __RETURN_ERROR_IF_ANY(operationState);
+      }
+
+      /* read size and crc are equal to computed ones, entry is valid */
+      if(computedCrc == readCrc && leftToReadSize == 0)
+      {
+         handle->Dynamic.VariableDataCache = cache;
          return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
       }
 
-      __RETURN_ERROR_IF_ANY(operationState);
-   } while(dataBlock->AsBlock.AsHeader.Crc != ComputeHeaderBlockCrc(dataBlock));
+      /* move read cursor to previous block of current variable's preamble */
+      SeekReadCursor(iterator, PreviousBlockAddress(cache.MemoryAddress));
+   }
 
-   state->HasValidState = true;
-   state->HeaderState = dataBlock->AsBlock.AsHeader.State;
-
-   return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
-}
-
-FlashFileSystemSDeviceState FormatSectorToState(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                                FlashFileSystemSDeviceSectorDynamicData *sector,
-                                                BlockHeaderState headerState)
-{
-   if(handle->Constant->TryEraseFlashSector(handle, sector->Sector) != true)
-      return FLASH_FILE_SYSTEM_SDEVICE_STATE_IO_MEMORY_ERROR;
-
-   sector->FirstFreeBlockAddress = sector->Sector->StartAddress;
-   __RETURN_ERROR_IF_ANY(SetSectorState(handle, sector, headerState));
-
-   return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
-}
-
-FlashFileSystemSDeviceState CachePreambleBlockDataWithAddress(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                                              FlashFileSystemSDeviceAddress variableAddress)
-{
-   FileSystemBlock *dataBlock = (FileSystemBlock *)handle->Dynamic.BlockBuffer;
-   intptr_t preambleAddress, searchAddress = handle->Dynamic.ActiveSector->FirstFreeBlockAddress;
-   CrcType computedCrc, readCrc;
-   size_t readBlocksCount, computedBlocksCount, variableSize;
-   bool isDeleted;
-
-   if(handle->Dynamic.VariableDataCache.VariableAddress == variableAddress)
-      return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
-
-   do
-   {
-      __RETURN_ERROR_IF_ANY(GetPreviousBlockOfType(handle,
-                                                   handle->Dynamic.ActiveSector->Sector,
-                                                   BLOCK_DESCRIPTOR_DATA_PREAMBLE,
-                                                   &searchAddress));
-
-      if(dataBlock->AsBlock.AsDataPreamble.Address != variableAddress)
-         continue;
-
-      preambleAddress = searchAddress;
-
-      variableSize = dataBlock->AsBlock.AsDataPreamble.VariableSize;
-      readCrc = dataBlock->AsBlock.AsDataPreamble.Crc;
-      isDeleted = dataBlock->AsBlock.AsDataPreamble.IsDeleted;
-
-      readBlocksCount = VariableBlocksCount(variableSize);
-      computedCrc = ComputeDataPreambleBlockCrc(dataBlock);
-      computedBlocksCount = VariableBlocksCount(0);
-
-      if(isDeleted != true && readBlocksCount != VariableBlocksCount(0))
-      {
-         for(;;)
-         {
-            searchAddress = NextBlockAddress(searchAddress);
-
-            __RETURN_ERROR_IF_ANY(ReadBlockToBuffer(handle, searchAddress));
-
-            if(IsBlockOfType(dataBlock, BLOCK_DESCRIPTOR_VARIABLE_DATA) != true)
-               break;
-
-            computedCrc = UpdateCrcByDataBlock(dataBlock, computedCrc);
-            computedBlocksCount++;
-         }
-      }
-   } while(computedCrc != readCrc || computedBlocksCount != readBlocksCount);
-
-   handle->Dynamic.VariableDataCache = (__typeof__(handle->Dynamic.VariableDataCache))
-   {
-      .VariableAddress = variableAddress,
-      .MemoryAddress = preambleAddress,
-      .VariableSize = variableSize,
-      .IsDeleted = isDeleted
-   };
-
-   return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
+   return operationState;
 }
 
 FlashFileSystemSDeviceState TransferSectors(__SDEVICE_HANDLE(FlashFileSystem) *handle)
 {
-   FlashFileSystemSDeviceSectorDynamicData *receivingSector = AnotherSector(handle, handle->Dynamic.ActiveSector);
-   FlashFileSystemSDeviceState operationState;
-   size_t blocksCount;
-   intptr_t address;
 
-   for(FlashFileSystemSDeviceAddress i = 0; i <= handle->Constant->MaxUsedAddress; i++)
+   FlashFileSystemSDeviceIterator *source = handle->Dynamic.ActiveIterator;
+   FlashFileSystemSDeviceIterator *target = GetNextSectorIterator(handle, source);
+
+   __RETURN_ERROR_IF_ANY(SetSectorHeaderState(handle, target, HEADER_STATE_TRANSFER_IN_PROGRESS));
+
+   /* run through all used addresses and copy variables to target sector */
+   for(FlashFileSystemSDeviceAddress address = 0; address <= handle->Constant->MaxUsedAddress; address++)
    {
-      operationState = CachePreambleBlockDataWithAddress(handle, i);
+      FlashFileSystemSDeviceState operationState = MoveVariableDataToCache(handle, address);
 
+      /* variable not found, maybe deleted before last transfer -> just skip it */
       if(operationState == FLASH_FILE_SYSTEM_SDEVICE_STATE_VALUE_NOT_FOUND_ERROR)
          continue;
 
       __RETURN_ERROR_IF_ANY(operationState);
 
+      /* variable is deleted, no need to transfer it */
       if(handle->Dynamic.VariableDataCache.IsDeleted == true)
          continue;
 
-      blocksCount = VariableBlocksCount(handle->Dynamic.VariableDataCache.VariableSize);
-      address = handle->Dynamic.VariableDataCache.MemoryAddress;
+      size_t variableBlocksCount = VariableBlocksCount(handle->Dynamic.VariableDataCache.Size);
+      SeekReadCursor(source, handle->Dynamic.VariableDataCache.MemoryAddress);
 
-      while(blocksCount-- > 0)
+      /* copy each variable's block from source to target sector */
+      while(variableBlocksCount-- > 0)
       {
-         address = NextBlockAddress(address);
-         __RETURN_ERROR_IF_ANY(ReadBlockToBuffer(handle, address));
-         __RETURN_ERROR_IF_ANY(WriteBlockFromBuffer(handle, receivingSector));
+         FileSystemBlock block;
+         __RETURN_ERROR_IF_ANY(ReadForwardFromCurrentBlock(handle, source, &block));
+         __RETURN_ERROR_IF_ANY(WriteForwardToCurrentBlock(handle, target, &block));
       }
    }
+
+   __RETURN_ERROR_IF_ANY(SetSectorHeaderState(handle, target, HEADER_STATE_TRANSFER_END));
+   __RETURN_ERROR_IF_ANY(FormatSectorToState(handle, source, HEADER_STATE_ERASED));
+   __RETURN_ERROR_IF_ANY(SetSectorHeaderState(handle, target, HEADER_STATE_ACTIVE));
+   InvalidateVariableDataCache(handle);
+   handle->Dynamic.ActiveIterator = target;
 
    return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
 }
