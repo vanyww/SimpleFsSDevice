@@ -45,6 +45,11 @@ static FlashFileSystemSDeviceState SkipBackToBlockOfType(__SDEVICE_HANDLE(FlashF
    return operationState;
 }
 
+void InvalidateVariableDataCache(__SDEVICE_HANDLE(FlashFileSystem) *handle)
+{
+   handle->Dynamic.VariableDataCache.Address = __FLASH_FILE_SYSTEM_SDEVICE_MAX_ADDRESS + 1;
+}
+
 FlashFileSystemSDeviceState SetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *handle,
                                                  FlashFileSystemSDeviceIterator *iterator,
                                                  BlockHeaderState state)
@@ -171,7 +176,10 @@ FlashFileSystemSDeviceState MoveVariableDataToCache(__SDEVICE_HANDLE(FlashFileSy
       cache.Address = block.AsBlock.AsDataPreamble.Address;
 
       if(cache.Address != variableAddress)
+      {
+         SeekReadCursor(iterator, PreviousBlockAddress(cache.MemoryAddress));
          continue;
+      }
 
       cache.IsDeleted = block.AsBlock.AsDataPreamble.IsDeleted;
       cache.Size = block.AsBlock.AsDataPreamble.VariableSize;
@@ -222,6 +230,8 @@ FlashFileSystemSDeviceState TransferSectors(__SDEVICE_HANDLE(FlashFileSystem) *h
    FlashFileSystemSDeviceIterator *source = handle->Dynamic.ActiveIterator;
    FlashFileSystemSDeviceIterator *target = GetNextSectorIterator(handle, source);
 
+   __RETURN_ERROR_IF_ANY(SetSectorHeaderState(handle, target, HEADER_STATE_TRANSFER_IN_PROGRESS));
+
    /* run through all used addresses and copy variables to target sector */
    for(FlashFileSystemSDeviceAddress address = 0; address <= handle->Constant->MaxUsedAddress; address++)
    {
@@ -248,6 +258,12 @@ FlashFileSystemSDeviceState TransferSectors(__SDEVICE_HANDLE(FlashFileSystem) *h
          __RETURN_ERROR_IF_ANY(WriteForwardToCurrentBlock(handle, target, &block));
       }
    }
+
+   __RETURN_ERROR_IF_ANY(SetSectorHeaderState(handle, target, HEADER_STATE_TRANSFER_END));
+   __RETURN_ERROR_IF_ANY(FormatSectorToState(handle, source, HEADER_STATE_ERASED));
+   __RETURN_ERROR_IF_ANY(SetSectorHeaderState(handle, target, HEADER_STATE_ACTIVE));
+   InvalidateVariableDataCache(handle);
+   handle->Dynamic.ActiveIterator = target;
 
    return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
 }

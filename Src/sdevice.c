@@ -2,6 +2,7 @@
 #include "Processing/Base/block.h"
 
 FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_HANDLE(FlashFileSystem) *);
+void InvalidateVariableDataCache(__SDEVICE_HANDLE(FlashFileSystem) *);
 
 __SDEVICE_INITIALIZE_HANDLE_DECLARATION(FlashFileSystem, handle)
 {
@@ -16,7 +17,6 @@ __SDEVICE_INITIALIZE_HANDLE_DECLARATION(FlashFileSystem, handle)
    for(size_t i = 0; i < __FLASH_FILE_SYSTEM_SDEVICE_SECTORS_COUNT; i++)
       handle->Dynamic.Iterators[i].Sector = &handle->Constant->Sectors[i];
 
-   /* set cache address to invalid value to mark it as invalid */
-   handle->Dynamic.VariableDataCache.Address = __FLASH_FILE_SYSTEM_SDEVICE_MAX_ADDRESS + 1;
+   InvalidateVariableDataCache(handle);
    handle->IsInitialized = FlashFileSystemSDeviceProcessInitialState(handle) == FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
 }

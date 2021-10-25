@@ -21,7 +21,7 @@
 ({                                                                                                                     \
    __typeof__(numerator) _numerator = numerator;                                                                       \
    __typeof__(denominator) _denominator = denominator;                                                                 \
-   _numerator / _denominator + _numerator % _denominator;                                                              \
+   _numerator / _denominator + (_numerator % _denominator != 0);                                                              \
 })
 
 typedef enum __attribute__((packed))
