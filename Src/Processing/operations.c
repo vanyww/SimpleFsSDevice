@@ -226,7 +226,6 @@ FlashFileSystemSDeviceState MoveVariableDataToCache(__SDEVICE_HANDLE(FlashFileSy
 
 FlashFileSystemSDeviceState TransferSectors(__SDEVICE_HANDLE(FlashFileSystem) *handle)
 {
-
    FlashFileSystemSDeviceIterator *source = handle->Dynamic.ActiveIterator;
    FlashFileSystemSDeviceIterator *target = GetNextSectorIterator(handle, source);
 
