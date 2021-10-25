@@ -223,7 +223,7 @@ FlashFileSystemSDeviceState TransferSectors(__SDEVICE_HANDLE(FlashFileSystem) *h
    FlashFileSystemSDeviceIterator *target = GetNextSectorIterator(handle, source);
 
    /* run through all used addresses and copy variables to target sector */
-   for(FlashFileSystemSDeviceAddress address = 0; address <= handle->Constant.MaxUsedAddress; address++)
+   for(FlashFileSystemSDeviceAddress address = 0; address <= handle->Constant->MaxUsedAddress; address++)
    {
       FlashFileSystemSDeviceState operationState = MoveVariableDataToCache(handle, address);
 

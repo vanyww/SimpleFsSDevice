@@ -6,16 +6,17 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_
 __SDEVICE_INITIALIZE_HANDLE_DECLARATION(FlashFileSystem, handle)
 {
    SDeviceAssert(handle != NULL);
+   SDeviceAssert(handle->Constant != NULL);
    SDeviceAssert(handle->IsInitialized == false);
-   SDeviceAssert(handle->Constant.TryWriteToFlash != NULL);
-   SDeviceAssert(handle->Constant.TryReadFromFlash != NULL);
-   SDeviceAssert(handle->Constant.TryEraseFlashSector != NULL);
-   SDeviceAssert(handle->Constant.MaxUsedAddress <= __FLASH_FILE_SYSTEM_SDEVICE_MAX_ADDRESS);
+   SDeviceAssert(handle->Constant->TryWriteToFlash != NULL);
+   SDeviceAssert(handle->Constant->TryReadFromFlash != NULL);
+   SDeviceAssert(handle->Constant->TryEraseFlashSector != NULL);
+   SDeviceAssert(handle->Constant->MaxUsedAddress <= __FLASH_FILE_SYSTEM_SDEVICE_MAX_ADDRESS);
 
    for(size_t i = 0; i < __FLASH_FILE_SYSTEM_SDEVICE_SECTORS_COUNT; i++)
-      handle->Dynamic.Iterators[i].Sector = &handle->Constant.Sectors[i];
+      handle->Dynamic.Iterators[i].Sector = &handle->Constant->Sectors[i];
 
    /* set cache address to invalid value to mark it as invalid */
    handle->Dynamic.VariableDataCache.Address = __FLASH_FILE_SYSTEM_SDEVICE_MAX_ADDRESS + 1;
-   handle->IsInitialized = FlashFileSystemSDeviceProcessInitialState(handle);
+   handle->IsInitialized = FlashFileSystemSDeviceProcessInitialState(handle) == FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
 }

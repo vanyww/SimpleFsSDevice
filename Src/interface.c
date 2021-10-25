@@ -85,7 +85,6 @@ static FlashFileSystemSDeviceState ClearMemoryState(__SDEVICE_HANDLE(FlashFileSy
 FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_HANDLE(FlashFileSystem) *handle)
 {
    SDeviceAssert(handle != NULL);
-   SDeviceAssert(handle->IsInitialized == true);
 
    SectorInitialState sectorsState[__FLASH_FILE_SYSTEM_SDEVICE_SECTORS_COUNT];
 
@@ -260,7 +259,8 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceRead(__SDEVICE_HANDLE(FlashFil
    if(size > handle->Dynamic.VariableDataCache.Size)
       return FLASH_FILE_SYSTEM_SDEVICE_STATE_VALUE_SIZE_ERROR;
 
-   SeekReadCursor(handle->Dynamic.ActiveIterator, handle->Dynamic.VariableDataCache.MemoryAddress);
+   /* data begins right after preamble block */
+   SeekReadCursor(handle->Dynamic.ActiveIterator, NextBlockAddress(handle->Dynamic.VariableDataCache.MemoryAddress));
 
    while(size > 0)
    {

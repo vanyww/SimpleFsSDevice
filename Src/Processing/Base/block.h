@@ -126,7 +126,7 @@ static inline FlashFileSystemSDeviceState ReadBlock(__SDEVICE_HANDLE(FlashFileSy
                                                     intptr_t address,
                                                     FileSystemBlock *block)
 {
-   if(handle->Constant.TryReadFromFlash(handle, address, BlocksSize(1), block) != true)
+   if(handle->Constant->TryReadFromFlash(handle, address, BlocksSize(1), block) != true)
       return FLASH_FILE_SYSTEM_SDEVICE_STATE_IO_MEMORY_ERROR;
 
    return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
@@ -136,7 +136,7 @@ static inline FlashFileSystemSDeviceState WriteBlock(__SDEVICE_HANDLE(FlashFileS
                                                      intptr_t address,
                                                      const FileSystemBlock *block)
 {
-   if(handle->Constant.TryWriteToFlash(handle, address, BlocksSize(1), block) != true)
+   if(handle->Constant->TryWriteToFlash(handle, address, BlocksSize(1), block) != true)
       return FLASH_FILE_SYSTEM_SDEVICE_STATE_IO_MEMORY_ERROR;
 
    return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;

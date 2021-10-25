@@ -4,12 +4,12 @@
 
 static inline intptr_t IteratorStart(FlashFileSystemSDeviceIterator *iterator)
 {
-   return SectorLastBlockAddress(iterator->Sector);
+   return SectorFirstBlockAddress(iterator->Sector);
 }
 
 static inline intptr_t IteratorEnd(FlashFileSystemSDeviceIterator *iterator)
 {
-   return SectorFirstBlockAddress(iterator->Sector);
+   return SectorLastBlockAddress(iterator->Sector);
 }
 
 static inline bool CanRead(FlashFileSystemSDeviceIterator *iterator)
