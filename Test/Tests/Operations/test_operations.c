@@ -1,12 +1,13 @@
 #include "test_operations.h"
 #include "../../Device/test_device.h"
 #include "../../Device/Mock/Assertation/mock_assert.h"
+#include "../../Device/Mock/RuntimeError/mock_handle_runtime_error.h"
 
 #include <memory.h>
 
 bool TestSmallWriteAndReadWithReinitialization(void)
 {
-   __SDEVICE_HANDLE(FlashFileSystem) writeHandle;
+   __SDEVICE_HANDLE(FlashFileSystem) writeHandle = { 0 };
    CreateFlashFileSystemSDevice(&writeHandle, true);
    uint8_t dataToWrite[] = { 1, 2, 3, 4 };
    if(FlashFileSystemSDeviceWrite(&writeHandle,
@@ -15,7 +16,7 @@ bool TestSmallWriteAndReadWithReinitialization(void)
                                   dataToWrite) != FLASH_FILE_SYSTEM_SDEVICE_STATE_OK)
       return false;
 
-   __SDEVICE_HANDLE(FlashFileSystem) readHandle;
+   __SDEVICE_HANDLE(FlashFileSystem) readHandle = { 0 };
    CreateFlashFileSystemSDevice(&readHandle, false);
 
    size_t readSize;
@@ -29,12 +30,14 @@ bool TestSmallWriteAndReadWithReinitialization(void)
    if(FlashFileSystemSDeviceRead(&readHandle, 0, sizeof(readData), readData) != FLASH_FILE_SYSTEM_SDEVICE_STATE_OK)
       return false;
 
-   return (memcmp(dataToWrite, readData, readSize) == 0) && (WasAssertFailed() == false);
+   return (memcmp(dataToWrite, readData, readSize) == 0) &&
+          (WasAssertFailed() == false) &&
+          (WasRuntimeErrorRaised() == false);
 }
 
 bool TestLargeWriteAndReadWithReinitialization(void)
 {
-   __SDEVICE_HANDLE(FlashFileSystem) writeHandle;
+   __SDEVICE_HANDLE(FlashFileSystem) writeHandle = { 0 };
    CreateFlashFileSystemSDevice(&writeHandle, true);
    uint8_t dataToWrite[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
    if(FlashFileSystemSDeviceWrite(&writeHandle,
@@ -43,7 +46,7 @@ bool TestLargeWriteAndReadWithReinitialization(void)
                                   dataToWrite) != FLASH_FILE_SYSTEM_SDEVICE_STATE_OK)
       return false;
 
-   __SDEVICE_HANDLE(FlashFileSystem) readHandle;
+   __SDEVICE_HANDLE(FlashFileSystem) readHandle = { 0 };
    CreateFlashFileSystemSDevice(&readHandle, false);
 
    size_t readSize;
@@ -57,12 +60,14 @@ bool TestLargeWriteAndReadWithReinitialization(void)
    if(FlashFileSystemSDeviceRead(&readHandle, 0, sizeof(readData), readData) != FLASH_FILE_SYSTEM_SDEVICE_STATE_OK)
       return false;
 
-   return (memcmp(dataToWrite, readData, readSize) == 0) && (WasAssertFailed() == false);
+   return (memcmp(dataToWrite, readData, readSize) == 0) &&
+          (WasAssertFailed() == false) &&
+          (WasRuntimeErrorRaised() == false);
 }
 
 bool TestMultipleWriteAndReadWithReinitialization(void)
 {
-   __SDEVICE_HANDLE(FlashFileSystem) writeHandle;
+   __SDEVICE_HANDLE(FlashFileSystem) writeHandle = { 0 };
    CreateFlashFileSystemSDevice(&writeHandle, true);
    uint8_t *dataToWrite[2] =
    {
@@ -81,7 +86,7 @@ bool TestMultipleWriteAndReadWithReinitialization(void)
                                   dataToWrite[1]) != FLASH_FILE_SYSTEM_SDEVICE_STATE_OK)
       return false;
 
-   __SDEVICE_HANDLE(FlashFileSystem) readHandle;
+   __SDEVICE_HANDLE(FlashFileSystem) readHandle = { 0 };
    CreateFlashFileSystemSDevice(&readHandle, false);
 
    size_t readSize;
@@ -100,7 +105,7 @@ bool TestMultipleWriteAndReadWithReinitialization(void)
 
 bool TestMultipleVariablesWriteAndReadWithReinitialization(void)
 {
-   __SDEVICE_HANDLE(FlashFileSystem) writeHandle;
+   __SDEVICE_HANDLE(FlashFileSystem) writeHandle = { 0 };
    CreateFlashFileSystemSDevice(&writeHandle, true);
    uint8_t fdataToWrite[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
    uint8_t sdataToWrite[] = { 11, 12, 13, 14, 15 };
@@ -117,7 +122,7 @@ bool TestMultipleVariablesWriteAndReadWithReinitialization(void)
                                   sdataToWrite) != FLASH_FILE_SYSTEM_SDEVICE_STATE_OK)
       return false;
 
-   __SDEVICE_HANDLE(FlashFileSystem) readHandle;
+   __SDEVICE_HANDLE(FlashFileSystem) readHandle = { 0 };
    CreateFlashFileSystemSDevice(&readHandle, false);
 
    size_t readSize;
@@ -143,12 +148,13 @@ bool TestMultipleVariablesWriteAndReadWithReinitialization(void)
 
    return (memcmp(fdataToWrite, freadData, sizeof(freadData)) == 0) &&
           (memcmp(sdataToWrite, sreadData, sizeof(sreadData)) == 0) &&
-          (WasAssertFailed() == false);
+          (WasAssertFailed() == false) &&
+          (WasRuntimeErrorRaised() == false);
 }
 
 bool TestTransferWithReinitialization(void)
 {
-   __SDEVICE_HANDLE(FlashFileSystem) writeHandle;
+   __SDEVICE_HANDLE(FlashFileSystem) writeHandle = { 0 };
    CreateFlashFileSystemSDevice(&writeHandle, true);
 
    uint32_t lastDataToWrite = 25;
@@ -162,7 +168,7 @@ bool TestTransferWithReinitialization(void)
          return false;
    }
 
-   __SDEVICE_HANDLE(FlashFileSystem) readHandle;
+   __SDEVICE_HANDLE(FlashFileSystem) readHandle = { 0 };
    CreateFlashFileSystemSDevice(&readHandle, false);
 
    size_t readSize;
@@ -177,5 +183,6 @@ bool TestTransferWithReinitialization(void)
       return false;
 
    return (memcmp(&lastDataToWrite, readData, sizeof(lastDataToWrite)) == 0) &&
-          (WasAssertFailed() == false);
+          (WasAssertFailed() == false) &&
+          (WasRuntimeErrorRaised() == false);
 }
