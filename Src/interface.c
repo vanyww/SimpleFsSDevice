@@ -18,7 +18,10 @@ static FlashFileSystemSDeviceState WriteVariable(__SDEVICE_HANDLE(FlashFileSyste
 
       /* there is still not enough space after transfer -> out of memory */
       if(EmptyBlocksCount(handle->Dynamic.ActiveIterator) < VariableBlocksCount(size))
+      {
+         SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_OUT_OF_MEMORY_ERROR);
          return FLASH_FILE_SYSTEM_SDEVICE_STATE_OUT_OF_MEMORY_ERROR;
+      }
    }
 
    /* create preamble block */
@@ -104,6 +107,7 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_
       /* sector has no valid header state, format it to ERASED state */
       if(sectorsState[i].HasValidHeaderState != true)
       {
+         SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_MEMORY_CORRUPTED_ERROR);
          __RETURN_ERROR_IF_ANY(FormatSectorToState(handle, &handle->Dynamic.Iterators[i], HEADER_STATE_ERASED));
          sectorsState[i].HeaderState = HEADER_STATE_ERASED;
          continue;
@@ -134,6 +138,7 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_
 
             /* invalid state */
             case HEADER_STATE_ACTIVE:
+               SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_MEMORY_CORRUPTED_ERROR);
                return ClearMemoryState(handle);
 
             default:
@@ -157,6 +162,7 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_
             case HEADER_STATE_TRANSFER_END:
                /* fall through */
             case HEADER_STATE_ERASED:
+               SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_MEMORY_CORRUPTED_ERROR);
                return ClearMemoryState(handle);
 
             default:
@@ -180,6 +186,7 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_
             case HEADER_STATE_TRANSFER_IN_PROGRESS:
                /* fall through */
             case HEADER_STATE_TRANSFER_END:
+               SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_MEMORY_CORRUPTED_ERROR);
                return ClearMemoryState(handle);
 
             default:
@@ -204,6 +211,7 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_
 
             /* invalid states */
             case HEADER_STATE_TRANSFER_IN_PROGRESS:
+               SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_MEMORY_CORRUPTED_ERROR);
                return ClearMemoryState(handle);
 
             default:
@@ -257,7 +265,10 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceRead(__SDEVICE_HANDLE(FlashFil
       return FLASH_FILE_SYSTEM_SDEVICE_STATE_VALUE_NOT_FOUND_ERROR;
 
    if(size > handle->Dynamic.VariableDataCache.Size)
+   {
+      SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_VARIABLE_SIZE_ERROR);
       return FLASH_FILE_SYSTEM_SDEVICE_STATE_VALUE_SIZE_ERROR;
+   }
 
    /* data begins right after preamble block */
    SeekReadCursor(handle->Dynamic.ActiveIterator, NextBlockAddress(handle->Dynamic.VariableDataCache.MemoryAddress));

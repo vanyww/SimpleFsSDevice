@@ -14,7 +14,10 @@ static inline FlashFileSystemSDeviceState EraseSector(__SDEVICE_HANDLE(FlashFile
                                                       const FlashFileSystemSDeviceSector *sector)
 {
    if(handle->Constant->TryEraseFlashSector(handle, sector) != true)
+   {
+      SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_IO_ERASE_MEMORY_ERROR);
       return FLASH_FILE_SYSTEM_SDEVICE_STATE_IO_MEMORY_ERROR;
+   }
 
    return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
 }
