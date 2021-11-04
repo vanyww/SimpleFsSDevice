@@ -217,6 +217,8 @@ FlashFileSystemSDeviceState MoveVariableDataToCache(__SDEVICE_HANDLE(FlashFileSy
          return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
       }
 
+      SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_MEMORY_CORRUPTED_ERROR);
+
       /* move read cursor to previous block of current variable's preamble */
       SeekReadCursor(iterator, PreviousBlockAddress(cache.MemoryAddress));
    }

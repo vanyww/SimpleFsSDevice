@@ -127,7 +127,10 @@ static inline FlashFileSystemSDeviceState ReadBlock(__SDEVICE_HANDLE(FlashFileSy
                                                     FileSystemBlock *block)
 {
    if(handle->Constant->TryReadFromFlash(handle, address, BlocksSize(1), block) != true)
+   {
+      SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_IO_READ_MEMORY_ERROR);
       return FLASH_FILE_SYSTEM_SDEVICE_STATE_IO_MEMORY_ERROR;
+   }
 
    return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
 }
@@ -137,7 +140,10 @@ static inline FlashFileSystemSDeviceState WriteBlock(__SDEVICE_HANDLE(FlashFileS
                                                      const FileSystemBlock *block)
 {
    if(handle->Constant->TryWriteToFlash(handle, address, BlocksSize(1), block) != true)
+   {
+      SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_IO_WRITE_MEMORY_ERROR);
       return FLASH_FILE_SYSTEM_SDEVICE_STATE_IO_MEMORY_ERROR;
+   }
 
    return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
 }

@@ -101,7 +101,10 @@ static inline FlashFileSystemSDeviceState WriteForwardToCurrentBlock(__SDEVICE_H
                                                                      const FileSystemBlock *block)
 {
    if(CanWrite(iterator) != true)
+   {
+      SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_OUT_OF_MEMORY_ERROR);
       return FLASH_FILE_SYSTEM_SDEVICE_STATE_OUT_OF_MEMORY_ERROR;
+   }
 
    intptr_t address = iterator->WriteCursor;
    IncrementWriteCursor(iterator);
