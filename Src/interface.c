@@ -76,6 +76,8 @@ static FlashFileSystemSDeviceState WriteVariable(__SDEVICE_HANDLE(FlashFileSyste
 
 static FlashFileSystemSDeviceState ClearMemoryState(__SDEVICE_HANDLE(FlashFileSystem) *handle)
 {
+   SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_MEMORY_CORRUPTED_ERROR);
+
    for(size_t i = 0; i < __FLASH_FILE_SYSTEM_SDEVICE_SECTORS_COUNT; i++)
       __RETURN_ERROR_IF_ANY(FormatSectorToState(handle, &handle->Dynamic.Iterators[i], HEADER_STATE_ERASED));
 
@@ -107,7 +109,6 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_
       /* sector has no valid header state, format it to ERASED state */
       if(sectorsState[i].HasValidHeaderState != true)
       {
-         SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_MEMORY_CORRUPTED_ERROR);
          __RETURN_ERROR_IF_ANY(FormatSectorToState(handle, &handle->Dynamic.Iterators[i], HEADER_STATE_ERASED));
          sectorsState[i].HeaderState = HEADER_STATE_ERASED;
          continue;
@@ -138,7 +139,6 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_
 
             /* invalid state */
             case HEADER_STATE_ACTIVE:
-               SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_MEMORY_CORRUPTED_ERROR);
                return ClearMemoryState(handle);
 
             default:
@@ -162,7 +162,6 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_
             case HEADER_STATE_TRANSFER_END:
                /* fall through */
             case HEADER_STATE_ERASED:
-               SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_MEMORY_CORRUPTED_ERROR);
                return ClearMemoryState(handle);
 
             default:
@@ -186,7 +185,6 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_
             case HEADER_STATE_TRANSFER_IN_PROGRESS:
                /* fall through */
             case HEADER_STATE_TRANSFER_END:
-               SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_MEMORY_CORRUPTED_ERROR);
                return ClearMemoryState(handle);
 
             default:
@@ -211,7 +209,6 @@ FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_
 
             /* invalid states */
             case HEADER_STATE_TRANSFER_IN_PROGRESS:
-               SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_MEMORY_CORRUPTED_ERROR);
                return ClearMemoryState(handle);
 
             default:

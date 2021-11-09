@@ -5,7 +5,7 @@ static inline FlashFileSystemSDeviceIterator * GetNextSectorIterator(__SDEVICE_H
                                                                      FlashFileSystemSDeviceIterator *iterator)
 {
    size_t nextSectorIndex = (iterator - &handle->Dynamic.Iterators[0] + 1) %
-            __FLASH_FILE_SYSTEM_SDEVICE_SECTORS_COUNT;
+                            __FLASH_FILE_SYSTEM_SDEVICE_SECTORS_COUNT;
 
    return &handle->Dynamic.Iterators[nextSectorIndex];
 }
@@ -90,7 +90,7 @@ FlashFileSystemSDeviceState GetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSyste
 
       /* valid header found */
       if(block.AsBlock.AsHeader.Crc == ComputeHeaderBlockCrc(&block) &&
-               __IS_VALID_BLOCK_HEADER_STATE(block.AsBlock.AsHeader.State) == true)
+         __IS_VALID_BLOCK_HEADER_STATE(block.AsBlock.AsHeader.State) == true)
       {
          *state = block.AsBlock.AsHeader.State;
          return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;

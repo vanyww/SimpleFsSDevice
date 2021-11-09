@@ -8,8 +8,8 @@
 #define __WORD_EMPTY_VALUE        UINT32_MAX
 #define __DOUBLE_WORD_EMPTY_VALUE UINT64_MAX
 
-#define __IS_VALID_BLOCK_HEADER_STATE(state)                                                                           \
-({                                                                                                                     \
+#define __IS_VALID_BLOCK_HEADER_STATE(state) (                                                                         \
+{                                                                                                                      \
    __typeof__(state) _state = state;                                                                                   \
    _state == HEADER_STATE_ACTIVE               ||                                                                      \
    _state == HEADER_STATE_TRANSFER_IN_PROGRESS ||                                                                      \
@@ -17,11 +17,11 @@
    _state == HEADER_STATE_ERASED;                                                                                      \
 })
 
-#define __CEIL_INTEGER_DIVISION(numerator, denominator)                                                                \
-({                                                                                                                     \
+#define __CEIL_INTEGER_DIVISION(numerator, denominator) (                                                              \
+{                                                                                                                      \
    __typeof__(numerator) _numerator = numerator;                                                                       \
    __typeof__(denominator) _denominator = denominator;                                                                 \
-   _numerator / _denominator + (_numerator % _denominator != 0);                                                              \
+   _numerator / _denominator + ((_numerator % _denominator != 0) ? 1 : 0);                                             \
 })
 
 typedef enum __attribute__((packed))

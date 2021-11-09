@@ -3,8 +3,8 @@
 #include "../../Inc/FlashFileSystemSDevice/core.h"
 #include "Base/block.h"
 
-#define __RETURN_ERROR_IF_ANY(expression)                                                                              \
-({                                                                                                                     \
+#define __RETURN_ERROR_IF_ANY(expression) (                                                                            \
+{                                                                                                                      \
    FlashFileSystemSDeviceState state = expression;                                                                     \
    if(state != FLASH_FILE_SYSTEM_SDEVICE_STATE_OK)                                                                     \
       return state;                                                                                                    \
