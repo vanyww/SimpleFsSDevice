@@ -39,7 +39,6 @@ __SDEVICE_HANDLE_FORWARD_DECLARATION(FlashFileSystem);
 
 typedef struct
 {
-   void *Context;
    bool (*TryReadFromFlash)(__SDEVICE_HANDLE(FlashFileSystem) *, intptr_t, size_t, void *);
    bool (*TryWriteToFlash)(__SDEVICE_HANDLE(FlashFileSystem) *, intptr_t, size_t, const void *);
    bool (*TryEraseFlashSector)(__SDEVICE_HANDLE(FlashFileSystem) *, const FlashFileSystemSDeviceSector *);
