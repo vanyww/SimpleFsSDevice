@@ -3,7 +3,6 @@
 #include "SDeviceCore/interface.h"
 
 #include <stddef.h>
-#include <stdint.h>
 
 #define __FLASH_FILE_SYSTEM_SDEVICE_MAX_ADDRESS (UINT16_MAX - 1)
 #define __FLASH_FILE_SYSTEM_SDEVICE_SECTORS_COUNT 2
