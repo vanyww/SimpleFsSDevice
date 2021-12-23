@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../Inc/FlashFileSystemSDevice/core.h"
 #include "Base/block.h"
 
 #define __RETURN_ERROR_IF_ANY(expression) (                                                                            \

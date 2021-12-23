@@ -1,4 +1,3 @@
-#include "../Inc/FlashFileSystemSDevice/core.h"
 #include "Processing/Base/block.h"
 
 FlashFileSystemSDeviceState FlashFileSystemSDeviceProcessInitialState(__SDEVICE_HANDLE(FlashFileSystem) *);
