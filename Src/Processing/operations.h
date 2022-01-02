@@ -4,9 +4,9 @@
 
 #define __RETURN_ERROR_IF_ANY(expression) (                                                                            \
 {                                                                                                                      \
-   FlashFileSystemSDeviceState state = expression;                                                                     \
-   if(state != FLASH_FILE_SYSTEM_SDEVICE_STATE_OK)                                                                     \
-      return state;                                                                                                    \
+   FlashFileSystemState _state = expression;                                                                           \
+   if(_state != FLASH_FILE_SYSTEM_STATE_OK)                                                                            \
+      return _state;                                                                                                   \
 })
 
 typedef struct
@@ -16,23 +16,21 @@ typedef struct
    bool IsEmpty;
 } SectorInitialState;
 
-FlashFileSystemSDeviceState SetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                                 FlashFileSystemSDeviceIterator *,
-                                                 BlockHeaderState);
+FlashFileSystemState SetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *,
+                                          FlashFileSystemIterator *,
+                                          BlockHeaderState);
 
-FlashFileSystemSDeviceState GetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                                 FlashFileSystemSDeviceIterator *,
-                                                 BlockHeaderState *);
+FlashFileSystemState GetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *,
+                                          FlashFileSystemIterator *,
+                                          BlockHeaderState *);
 
-FlashFileSystemSDeviceState FormatSectorToState(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                                FlashFileSystemSDeviceIterator *,
-                                                BlockHeaderState);
+FlashFileSystemState FormatSectorToState(__SDEVICE_HANDLE(FlashFileSystem) *,
+                                         FlashFileSystemIterator *,
+                                         BlockHeaderState);
 
-FlashFileSystemSDeviceState GetSectorInitialState(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                                  FlashFileSystemSDeviceIterator *,
-                                                  SectorInitialState *);
+FlashFileSystemState GetSectorInitialState(__SDEVICE_HANDLE(FlashFileSystem) *,
+                                           FlashFileSystemIterator *,
+                                           SectorInitialState *);
 
-FlashFileSystemSDeviceState MoveVariableDataToCache(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                                    FlashFileSystemSDeviceAddress);
-
-FlashFileSystemSDeviceState TransferSectors(__SDEVICE_HANDLE(FlashFileSystem) *);
+FlashFileSystemState MoveVariableDataToCache(__SDEVICE_HANDLE(FlashFileSystem) *, FlashFileSystemAddress);
+FlashFileSystemState TransferSectors(__SDEVICE_HANDLE(FlashFileSystem) *);

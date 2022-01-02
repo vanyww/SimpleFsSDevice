@@ -4,33 +4,33 @@
 
 #include <stddef.h>
 
-#define __FLASH_FILE_SYSTEM_SDEVICE_MAX_ADDRESS (UINT16_MAX - 1)
-#define __FLASH_FILE_SYSTEM_SDEVICE_SECTORS_COUNT 2
+#define __FLASH_FILE_SYSTEM_MAX_ADDRESS (UINT16_MAX - 1)
+#define __FLASH_FILE_SYSTEM_SECTORS_COUNT 2
 
-typedef uint16_t FlashFileSystemSDeviceAddress;
+typedef uint16_t FlashFileSystemAddress;
 
 typedef struct
 {
    void *Context;
    intptr_t StartAddress;
    size_t Size;
-} FlashFileSystemSDeviceSector;
+} FlashFileSystemSector;
 
 typedef struct
 {
-   const FlashFileSystemSDeviceSector *Sector;
+   const FlashFileSystemSector *Sector;
    intptr_t WriteCursor;
    intptr_t ReadCursor;
-} FlashFileSystemSDeviceIterator;
+} FlashFileSystemIterator;
 
 typedef enum
 {
-   FLASH_FILE_SYSTEM_SDEVICE_STATE_OK,
-   FLASH_FILE_SYSTEM_SDEVICE_STATE_IO_MEMORY_ERROR,
-   FLASH_FILE_SYSTEM_SDEVICE_STATE_OUT_OF_MEMORY_ERROR,
-   FLASH_FILE_SYSTEM_SDEVICE_STATE_VALUE_NOT_FOUND_ERROR,
-   FLASH_FILE_SYSTEM_SDEVICE_STATE_VALUE_SIZE_ERROR
-} FlashFileSystemSDeviceState;
+   FLASH_FILE_SYSTEM_STATE_OK,
+   FLASH_FILE_SYSTEM_STATE_IO_MEMORY_ERROR,
+   FLASH_FILE_SYSTEM_STATE_OUT_OF_MEMORY_ERROR,
+   FLASH_FILE_SYSTEM_STATE_VALUE_NOT_FOUND_ERROR,
+   FLASH_FILE_SYSTEM_STATE_VALUE_SIZE_ERROR
+} FlashFileSystemState;
 
 /* Satty's interface start */
 
@@ -38,22 +38,22 @@ __SDEVICE_HANDLE_FORWARD_DECLARATION(FlashFileSystem);
 
 typedef struct
 {
-   bool (*TryReadFromFlash)(__SDEVICE_HANDLE(FlashFileSystem) *, intptr_t, size_t, void *);
-   bool (*TryWriteToFlash)(__SDEVICE_HANDLE(FlashFileSystem) *, intptr_t, size_t, const void *);
-   bool (*TryEraseFlashSector)(__SDEVICE_HANDLE(FlashFileSystem) *, const FlashFileSystemSDeviceSector *);
-   FlashFileSystemSDeviceSector Sectors[__FLASH_FILE_SYSTEM_SDEVICE_SECTORS_COUNT];
-   FlashFileSystemSDeviceAddress MaxUsedAddress;
+   bool (* TryRead)(__SDEVICE_HANDLE(FlashFileSystem) *, intptr_t, size_t, void *);
+   bool (* TryWrite)(__SDEVICE_HANDLE(FlashFileSystem) *, intptr_t, size_t, const void *);
+   bool (* TryEraseSector)(__SDEVICE_HANDLE(FlashFileSystem) *, const FlashFileSystemSector *);
+   FlashFileSystemSector Sectors[__FLASH_FILE_SYSTEM_SECTORS_COUNT];
+   FlashFileSystemAddress MaxUsedAddress;
 } __SDEVICE_CONSTANT_DATA(FlashFileSystem);
 
 typedef struct { } __SDEVICE_SETTINGS_DATA(FlashFileSystem);
 
 typedef struct
 {
-   FlashFileSystemSDeviceIterator *ActiveIterator;
-   FlashFileSystemSDeviceIterator Iterators[__FLASH_FILE_SYSTEM_SDEVICE_SECTORS_COUNT];
+   FlashFileSystemIterator *ActiveIterator;
+   FlashFileSystemIterator Iterators[__FLASH_FILE_SYSTEM_SECTORS_COUNT];
    struct
    {
-      FlashFileSystemSDeviceAddress Address;
+      FlashFileSystemAddress Address;
       intptr_t MemoryAddress;
       uint8_t Size;
       bool IsDeleted;
@@ -66,29 +66,24 @@ __SDEVICE_INITIALIZE_HANDLE_DECLARATION(FlashFileSystem,);
 
 typedef enum
 {
-   FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_IO_READ_MEMORY_ERROR   = 0x01,
-   FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_IO_WRITE_MEMORY_ERROR  = 0x02,
-   FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_IO_ERASE_MEMORY_ERROR  = 0x03,
-   FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_OUT_OF_MEMORY_ERROR    = 0x04,
-   FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_MEMORY_CORRUPTED_ERROR = 0x05,
-   FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_VARIABLE_SIZE_ERROR    = 0x06
-} FlashFileSystemSDeviceRuntimeError;
+   FLASH_FILE_SYSTEM_RUNTIME_ERROR_READ_FAIL           = 0x01,
+   FLASH_FILE_SYSTEM_RUNTIME_ERROR_WRITE_FAIL          = 0x02,
+   FLASH_FILE_SYSTEM_RUNTIME_ERROR_ERASE_FAIL          = 0x03,
+   FLASH_FILE_SYSTEM_RUNTIME_ERROR_OUT_OF_MEMORY       = 0x04,
+   FLASH_FILE_SYSTEM_RUNTIME_ERROR_CORRUPTED_STATE     = 0x05,
+   FLASH_FILE_SYSTEM_RUNTIME_ERROR_WRONG_VARIABLE_SIZE = 0x06
+} FlashFileSystemRuntimeError;
 
 /* Satty's interface end */
 
-FlashFileSystemSDeviceState FlashFileSystemSDeviceGetVariableSize(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                                                  FlashFileSystemSDeviceAddress,
-                                                                  size_t *);
+FlashFileSystemState FlashFileSystemGetVariableSize(__SDEVICE_HANDLE(FlashFileSystem) *,
+                                                    FlashFileSystemAddress,
+                                                    size_t *);
 
-FlashFileSystemSDeviceState FlashFileSystemSDeviceRead(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                                       FlashFileSystemSDeviceAddress,
-                                                       size_t,
-                                                       void *);
+FlashFileSystemState FlashFileSystemWrite(__SDEVICE_HANDLE(FlashFileSystem) *,
+                                          FlashFileSystemAddress,
+                                          size_t,
+                                          const void *);
 
-FlashFileSystemSDeviceState FlashFileSystemSDeviceWrite(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                                        FlashFileSystemSDeviceAddress,
-                                                        size_t,
-                                                        const void *);
-
-FlashFileSystemSDeviceState FlashFileSystemSDeviceDelete(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                                         FlashFileSystemSDeviceAddress);
+FlashFileSystemState FlashFileSystemRead(__SDEVICE_HANDLE(FlashFileSystem) *, FlashFileSystemAddress, size_t, void *);
+FlashFileSystemState FlashFileSystemDelete(__SDEVICE_HANDLE(FlashFileSystem) *, FlashFileSystemAddress);

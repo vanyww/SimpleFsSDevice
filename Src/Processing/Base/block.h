@@ -11,9 +11,9 @@
 #define __IS_VALID_BLOCK_HEADER_STATE(state) (                                                                         \
 {                                                                                                                      \
    __typeof__(state) _state = state;                                                                                   \
-   _state == HEADER_STATE_ACTIVE               ||                                                                      \
-   _state == HEADER_STATE_TRANSFER_IN_PROGRESS ||                                                                      \
-   _state == HEADER_STATE_TRANSFER_END         ||                                                                      \
+   _state == HEADER_STATE_ACTIVE           ||                                                                          \
+   _state == HEADER_STATE_TRANSFER_ONGOING ||                                                                          \
+   _state == HEADER_STATE_TRANSFER_END     ||                                                                          \
    _state == HEADER_STATE_ERASED;                                                                                      \
 })
 
@@ -27,17 +27,17 @@
 typedef enum __attribute__((packed))
 {
    BLOCK_DESCRIPTOR_HEADER        = 0x01,
-   BLOCK_DESCRIPTOR_DATA_PREAMBLE = 0x02,
+   BLOCK_DESCRIPTOR_PREAMBLE      = 0x02,
    BLOCK_DESCRIPTOR_VARIABLE_DATA = 0x04,
    BLOCK_DESCRIPTOR_ERASED        = __BYTE_EMPTY_VALUE
 } BlockDescriptor;
 
 typedef enum __attribute__((packed))
 {
-   HEADER_STATE_ACTIVE               = 0x11111111,
-   HEADER_STATE_TRANSFER_IN_PROGRESS = 0x55555555,
-   HEADER_STATE_TRANSFER_END         = 0xAAAAAAAA,
-   HEADER_STATE_ERASED               = __WORD_EMPTY_VALUE,
+   HEADER_STATE_ACTIVE           = 0x11111111,
+   HEADER_STATE_TRANSFER_ONGOING = 0x55555555,
+   HEADER_STATE_TRANSFER_END     = 0xAAAAAAAA,
+   HEADER_STATE_ERASED           = __WORD_EMPTY_VALUE,
 } BlockHeaderState;
 
 typedef union
@@ -58,7 +58,7 @@ typedef union
             CrcType Crc;
             bool IsDeleted;
             uint8_t VariableSize;
-            FlashFileSystemSDeviceAddress Address;
+            FlashFileSystemAddress Address;
             uint8_t Padding;
          } AsDataPreamble;
 
@@ -109,41 +109,41 @@ static inline bool IsBlockOfType(FileSystemBlock *block, BlockDescriptor type)
 
 static inline CrcType ComputeHeaderBlockCrc(FileSystemBlock *block)
 {
-   return Crc16Compute(&block->AsBlock.AsHeader.State, BlocksSize(1) - sizeof(CrcType));
+   return ComputeCrc16(&block->AsBlock.AsHeader.State, BlocksSize(1) - sizeof(CrcType));
 }
 
 static inline CrcType ComputeDataPreambleBlockCrc(FileSystemBlock *block)
 {
-   return Crc16Compute(&block->AsBlock.AsDataPreamble.IsDeleted, BlocksSize(1) - sizeof(CrcType));
+   return ComputeCrc16(&block->AsBlock.AsDataPreamble.IsDeleted, BlocksSize(1) - sizeof(CrcType));
 }
 
 static inline CrcType UpdateCrcWithDataBlock(FileSystemBlock *block, CrcType crc, size_t size)
 {
-   return Crc16Update(&block->AsBlock.AsData.Data, __MIN(size, sizeof(block->AsBlock.AsData.Data)), crc);
+   return UpdateCrc16(&block->AsBlock.AsData.Data, __MIN(size, sizeof(block->AsBlock.AsData.Data)), crc);
 }
 
-static inline FlashFileSystemSDeviceState ReadBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                                    intptr_t address,
-                                                    FileSystemBlock *block)
+static inline FlashFileSystemState ReadBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+                                             intptr_t address,
+                                             FileSystemBlock *block)
 {
-   if(handle->Constant->TryReadFromFlash(handle, address, BlocksSize(1), block) != true)
+   if(handle->Constant->TryRead(handle, address, BlocksSize(1), block) != true)
    {
-      SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_IO_READ_MEMORY_ERROR);
-      return FLASH_FILE_SYSTEM_SDEVICE_STATE_IO_MEMORY_ERROR;
+      SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_READ_FAIL);
+      return FLASH_FILE_SYSTEM_STATE_IO_MEMORY_ERROR;
    }
 
-   return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
+   return FLASH_FILE_SYSTEM_STATE_OK;
 }
 
-static inline FlashFileSystemSDeviceState WriteBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                                     intptr_t address,
-                                                     const FileSystemBlock *block)
+static inline FlashFileSystemState WriteBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+                                              intptr_t address,
+                                              const FileSystemBlock *block)
 {
-   if(handle->Constant->TryWriteToFlash(handle, address, BlocksSize(1), block) != true)
+   if(handle->Constant->TryWrite(handle, address, BlocksSize(1), block) != true)
    {
-      SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_IO_WRITE_MEMORY_ERROR);
-      return FLASH_FILE_SYSTEM_SDEVICE_STATE_IO_MEMORY_ERROR;
+      SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_WRITE_FAIL);
+      return FLASH_FILE_SYSTEM_STATE_IO_MEMORY_ERROR;
    }
 
-   return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
+   return FLASH_FILE_SYSTEM_STATE_OK;
 }
