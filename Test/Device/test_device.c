@@ -5,9 +5,9 @@
 
 static const __SDEVICE_CONSTANT_DATA(FlashFileSystem) ConstantData =
 {
-   .TryEraseFlashSector = TryEraseMemorySector,
-   .TryReadFromFlash = TryReadFromMemory,
-   .TryWriteToFlash = TryWriteToMemory,
+   .TryEraseSector = TryEraseMemorySector,
+   .TryRead = TryReadFromMemory,
+   .TryWrite = TryWriteToMemory,
    .MaxUsedAddress = __MAX_USED_ADDRESS,
    .Sectors =
    {

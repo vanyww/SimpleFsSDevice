@@ -1,23 +1,23 @@
  #include "block.h"
 
-static inline intptr_t SectorLastBlockAddress(const FlashFileSystemSDeviceSector *sector)
+static inline intptr_t SectorLastBlockAddress(const FlashFileSystemSector *sector)
 {
    return PreviousBlockAddress(sector->StartAddress + sector->Size);
 }
 
-static inline intptr_t SectorFirstBlockAddress(const FlashFileSystemSDeviceSector *sector)
+static inline intptr_t SectorFirstBlockAddress(const FlashFileSystemSector *sector)
 {
    return sector->StartAddress;
 }
 
-static inline FlashFileSystemSDeviceState EraseSector(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                                      const FlashFileSystemSDeviceSector *sector)
+static inline FlashFileSystemState EraseSector(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+                                               const FlashFileSystemSector *sector)
 {
-   if(handle->Constant->TryEraseFlashSector(handle, sector) != true)
+   if(handle->Constant->TryEraseSector(handle, sector) != true)
    {
-      SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_SDEVICE_RUNTIME_IO_ERASE_MEMORY_ERROR);
-      return FLASH_FILE_SYSTEM_SDEVICE_STATE_IO_MEMORY_ERROR;
+      SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_ERASE_FAIL);
+      return FLASH_FILE_SYSTEM_STATE_IO_MEMORY_ERROR;
    }
 
-   return FLASH_FILE_SYSTEM_SDEVICE_STATE_OK;
+   return FLASH_FILE_SYSTEM_STATE_OK;
 }

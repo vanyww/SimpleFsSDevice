@@ -38,12 +38,12 @@ static const uint16_t CrcTable[] =
    0x8201, 0x42C0, 0x4380, 0x8341, 0x4100, 0x81C1, 0x8081, 0x4040
 };
 
-CrcType Crc16Compute(const void *data, size_t length)
+CrcType ComputeCrc16(const void *data, size_t length)
 {
-   return Crc16Update(data, length, __CRC_16_INITIAL_VALUE);
+   return UpdateCrc16(data, length, __CRC_16_INITIAL_VALUE);
 }
 
-CrcType Crc16Update(const void *data, size_t length, CrcType crc)
+CrcType UpdateCrc16(const void *data, size_t length, CrcType crc)
 {
    const uint8_t *bytes = data;
    uint8_t index;
