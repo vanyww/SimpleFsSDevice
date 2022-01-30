@@ -25,12 +25,12 @@ typedef struct
 
 typedef enum
 {
-   FLASH_FILE_SYSTEM_STATE_OK,
-   FLASH_FILE_SYSTEM_STATE_IO_MEMORY_ERROR,
-   FLASH_FILE_SYSTEM_STATE_OUT_OF_MEMORY_ERROR,
-   FLASH_FILE_SYSTEM_STATE_VALUE_NOT_FOUND_ERROR,
-   FLASH_FILE_SYSTEM_STATE_VALUE_SIZE_ERROR
-} FlashFileSystemState;
+   FLASH_FILE_SYSTEM_STATUS_OK,
+   FLASH_FILE_SYSTEM_STATUS_IO_MEMORY_ERROR,
+   FLASH_FILE_SYSTEM_STATUS_OUT_OF_MEMORY_ERROR,
+   FLASH_FILE_SYSTEM_STATUS_VALUE_NOT_FOUND_ERROR,
+   FLASH_FILE_SYSTEM_STATUS_VALUE_SIZE_ERROR
+} FlashFileSystemStatus;
 
 /* Satty's interface start */
 
@@ -76,14 +76,14 @@ typedef enum
 
 /* Satty's interface end */
 
-FlashFileSystemState FlashFileSystemGetVariableSize(__SDEVICE_HANDLE(FlashFileSystem) *,
+FlashFileSystemStatus FlashFileSystemGetVariableSize(__SDEVICE_HANDLE(FlashFileSystem) *,
                                                     FlashFileSystemAddress,
                                                     size_t *);
 
-FlashFileSystemState FlashFileSystemWrite(__SDEVICE_HANDLE(FlashFileSystem) *,
+FlashFileSystemStatus FlashFileSystemWrite(__SDEVICE_HANDLE(FlashFileSystem) *,
                                           FlashFileSystemAddress,
                                           size_t,
                                           const void *);
 
-FlashFileSystemState FlashFileSystemRead(__SDEVICE_HANDLE(FlashFileSystem) *, FlashFileSystemAddress, size_t, void *);
-FlashFileSystemState FlashFileSystemDelete(__SDEVICE_HANDLE(FlashFileSystem) *, FlashFileSystemAddress);
+FlashFileSystemStatus FlashFileSystemRead(__SDEVICE_HANDLE(FlashFileSystem) *, FlashFileSystemAddress, size_t, void *);
+FlashFileSystemStatus FlashFileSystemDelete(__SDEVICE_HANDLE(FlashFileSystem) *, FlashFileSystemAddress);
