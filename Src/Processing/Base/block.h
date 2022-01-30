@@ -122,28 +122,28 @@ static inline CrcType UpdateCrcWithDataBlock(FileSystemBlock *block, CrcType crc
    return UpdateCrc16(&block->AsBlock.AsData.Data, __MIN(size, sizeof(block->AsBlock.AsData.Data)), crc);
 }
 
-static inline FlashFileSystemState ReadBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+static inline FlashFileSystemStatus ReadBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
                                              intptr_t address,
                                              FileSystemBlock *block)
 {
    if(handle->Constant->TryRead(handle, address, BlocksSize(1), block) != true)
    {
       SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_READ_FAIL);
-      return FLASH_FILE_SYSTEM_STATE_IO_MEMORY_ERROR;
+      return FLASH_FILE_SYSTEM_STATUS_IO_MEMORY_ERROR;
    }
 
-   return FLASH_FILE_SYSTEM_STATE_OK;
+   return FLASH_FILE_SYSTEM_STATUS_OK;
 }
 
-static inline FlashFileSystemState WriteBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+static inline FlashFileSystemStatus WriteBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
                                               intptr_t address,
                                               const FileSystemBlock *block)
 {
    if(handle->Constant->TryWrite(handle, address, BlocksSize(1), block) != true)
    {
       SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_WRITE_FAIL);
-      return FLASH_FILE_SYSTEM_STATE_IO_MEMORY_ERROR;
+      return FLASH_FILE_SYSTEM_STATUS_IO_MEMORY_ERROR;
    }
 
-   return FLASH_FILE_SYSTEM_STATE_OK;
+   return FLASH_FILE_SYSTEM_STATUS_OK;
 }
