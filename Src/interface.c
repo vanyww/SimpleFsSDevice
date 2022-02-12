@@ -4,10 +4,10 @@
 #include <memory.h>
 
 static FlashFileSystemStatus WriteVariable(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                          FlashFileSystemAddress address,
-                                          const void *data,
-                                          size_t size,
-                                          bool delete)
+                                           FlashFileSystemAddress address,
+                                           const void *data,
+                                           size_t size,
+                                           bool delete)
 {
    /* check if there is enough free space and initiate transfer if not */
    if(EmptyBlocksCount(handle->Dynamic.ActiveIterator) < VariableBlocksCount(size))
@@ -224,8 +224,8 @@ FlashFileSystemStatus FlashFileSystemProcessInitialState(__SDEVICE_HANDLE(FlashF
 }
 
 FlashFileSystemStatus FlashFileSystemGetVariableSize(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                                    FlashFileSystemAddress address,
-                                                    size_t *size)
+                                                     FlashFileSystemAddress address,
+                                                     size_t *size)
 {
    SDeviceAssert(handle != NULL);
    SDeviceAssert(handle->IsInitialized == true);
@@ -243,9 +243,9 @@ FlashFileSystemStatus FlashFileSystemGetVariableSize(__SDEVICE_HANDLE(FlashFileS
 }
 
 FlashFileSystemStatus FlashFileSystemRead(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                         FlashFileSystemAddress address,
-                                         size_t size,
-                                         void *data)
+                                          FlashFileSystemAddress address,
+                                          size_t size,
+                                          void *data)
 {
    SDeviceAssert(handle != NULL);
    SDeviceAssert(handle->IsInitialized == true);
@@ -283,9 +283,9 @@ FlashFileSystemStatus FlashFileSystemRead(__SDEVICE_HANDLE(FlashFileSystem) *han
 }
 
 FlashFileSystemStatus FlashFileSystemWrite(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                          FlashFileSystemAddress address,
-                                          size_t size,
-                                          const void *data)
+                                           FlashFileSystemAddress address,
+                                           size_t size,
+                                           const void *data)
 {
    SDeviceAssert(handle != NULL);
    SDeviceAssert(handle->IsInitialized == true);

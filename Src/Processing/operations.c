@@ -9,7 +9,7 @@ static inline FlashFileSystemIterator * GetNextSectorIterator(__SDEVICE_HANDLE(F
 }
 
 static FlashFileSystemStatus SkipBackToNotEmptyBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                                    FlashFileSystemIterator *iterator)
+                                                     FlashFileSystemIterator *iterator)
 {
    FileSystemBlock block;
    FlashFileSystemStatus state;
@@ -25,8 +25,8 @@ static FlashFileSystemStatus SkipBackToNotEmptyBlock(__SDEVICE_HANDLE(FlashFileS
 }
 
 static FlashFileSystemStatus SkipBackToBlockOfType(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                                  FlashFileSystemIterator *iterator,
-                                                  BlockDescriptor type)
+                                                   FlashFileSystemIterator *iterator,
+                                                   BlockDescriptor type)
 {
    FileSystemBlock block;
    FlashFileSystemStatus state;
@@ -47,8 +47,8 @@ void InvalidateVariableDataCache(__SDEVICE_HANDLE(FlashFileSystem) *handle)
 }
 
 FlashFileSystemStatus SetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                          FlashFileSystemIterator *iterator,
-                                          BlockHeaderState headerState)
+                                           FlashFileSystemIterator *iterator,
+                                           BlockHeaderState headerState)
 {
    FileSystemBlock block =
    {
@@ -68,8 +68,8 @@ FlashFileSystemStatus SetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *ha
 }
 
 FlashFileSystemStatus GetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                          FlashFileSystemIterator *iterator,
-                                          BlockHeaderState *headerState)
+                                           FlashFileSystemIterator *iterator,
+                                           BlockHeaderState *headerState)
 {
    /* write cursor is always on first free block of the sector */
    SeekReadCursor(iterator, PreviousBlockAddress(iterator->WriteCursor));
@@ -95,8 +95,8 @@ FlashFileSystemStatus GetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *ha
 }
 
 FlashFileSystemStatus FormatSectorToState(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                         FlashFileSystemIterator *iterator,
-                                         BlockHeaderState headerState)
+                                          FlashFileSystemIterator *iterator,
+                                          BlockHeaderState headerState)
 {
    __RETURN_ERROR_IF_ANY(EraseSector(handle, iterator->Sector));
    SeekWriteCursor(iterator, IteratorStart(iterator));
@@ -141,7 +141,7 @@ FlashFileSystemStatus GetSectorInitialState(__SDEVICE_HANDLE(FlashFileSystem) *h
 }
 
 FlashFileSystemStatus MoveVariableDataToCache(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                             FlashFileSystemAddress variableAddress)
+                                              FlashFileSystemAddress variableAddress)
 {
    /* variable with requested address is already in cache */
    if(handle->Dynamic.VariableDataCache.Address == variableAddress)

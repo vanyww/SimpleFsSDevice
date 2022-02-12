@@ -75,13 +75,13 @@ typedef enum
 /* Satty's interface end */
 
 FlashFileSystemStatus FlashFileSystemGetVariableSize(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                                    FlashFileSystemAddress,
-                                                    size_t *);
+                                                     FlashFileSystemAddress,
+                                                     size_t *);
 
 FlashFileSystemStatus FlashFileSystemWrite(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                          FlashFileSystemAddress,
-                                          size_t,
-                                          const void *);
+                                           FlashFileSystemAddress,
+                                           size_t,
+                                           const void *);
 
 FlashFileSystemStatus FlashFileSystemRead(__SDEVICE_HANDLE(FlashFileSystem) *, FlashFileSystemAddress, size_t, void *);
 FlashFileSystemStatus FlashFileSystemDelete(__SDEVICE_HANDLE(FlashFileSystem) *, FlashFileSystemAddress);

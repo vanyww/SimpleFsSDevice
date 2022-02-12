@@ -61,8 +61,8 @@ static inline size_t EmptyBlocksCount(FlashFileSystemIterator *iterator)
 }
 
 static inline FlashFileSystemStatus PeekFromCurrentBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                                        FlashFileSystemIterator *iterator,
-                                                        FileSystemBlock *block)
+                                                         FlashFileSystemIterator *iterator,
+                                                         FileSystemBlock *block)
 {
    if(CanRead(iterator) != true)
       return FLASH_FILE_SYSTEM_STATUS_VALUE_NOT_FOUND_ERROR;
@@ -71,8 +71,8 @@ static inline FlashFileSystemStatus PeekFromCurrentBlock(__SDEVICE_HANDLE(FlashF
 }
 
 static inline FlashFileSystemStatus ReadForwardFromCurrentBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                                               FlashFileSystemIterator *iterator,
-                                                               FileSystemBlock *block)
+                                                                FlashFileSystemIterator *iterator,
+                                                                FileSystemBlock *block)
 {
    if(CanRead(iterator) != true)
       return FLASH_FILE_SYSTEM_STATUS_VALUE_NOT_FOUND_ERROR;
@@ -84,8 +84,8 @@ static inline FlashFileSystemStatus ReadForwardFromCurrentBlock(__SDEVICE_HANDLE
 }
 
 static inline FlashFileSystemStatus ReadBackwardFromCurrentBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                                                FlashFileSystemIterator *iterator,
-                                                                FileSystemBlock *block)
+                                                                 FlashFileSystemIterator *iterator,
+                                                                 FileSystemBlock *block)
 {
    if(CanRead(iterator) != true)
       return FLASH_FILE_SYSTEM_STATUS_VALUE_NOT_FOUND_ERROR;
@@ -97,8 +97,8 @@ static inline FlashFileSystemStatus ReadBackwardFromCurrentBlock(__SDEVICE_HANDL
 }
 
 static inline FlashFileSystemStatus WriteForwardToCurrentBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                                              FlashFileSystemIterator *iterator,
-                                                              const FileSystemBlock *block)
+                                                               FlashFileSystemIterator *iterator,
+                                                               const FileSystemBlock *block)
 {
    if(CanWrite(iterator) != true)
    {

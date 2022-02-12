@@ -123,8 +123,8 @@ static inline CrcType UpdateCrcWithDataBlock(FileSystemBlock *block, CrcType crc
 }
 
 static inline FlashFileSystemStatus ReadBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                             intptr_t address,
-                                             FileSystemBlock *block)
+                                              intptr_t address,
+                                              FileSystemBlock *block)
 {
    if(handle->Constant->TryRead(handle, address, BlocksSize(1), block) != true)
    {
@@ -136,8 +136,8 @@ static inline FlashFileSystemStatus ReadBlock(__SDEVICE_HANDLE(FlashFileSystem) 
 }
 
 static inline FlashFileSystemStatus WriteBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                              intptr_t address,
-                                              const FileSystemBlock *block)
+                                               intptr_t address,
+                                               const FileSystemBlock *block)
 {
    if(handle->Constant->TryWrite(handle, address, BlocksSize(1), block) != true)
    {

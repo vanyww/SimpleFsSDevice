@@ -11,7 +11,7 @@ static inline intptr_t SectorFirstBlockAddress(const FlashFileSystemSector *sect
 }
 
 static inline FlashFileSystemStatus EraseSector(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                               const FlashFileSystemSector *sector)
+                                                const FlashFileSystemSector *sector)
 {
    if(handle->Constant->TryEraseSector(handle, sector) != true)
    {
