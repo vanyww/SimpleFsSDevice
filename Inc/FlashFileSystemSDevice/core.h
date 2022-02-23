@@ -16,7 +16,7 @@ typedef struct
 
 typedef struct
 {
-   const FlashFileSystemSector *Sector;
+   size_t SectorIndex;
    intptr_t WriteCursor;
    intptr_t ReadCursor;
 } FlashFileSystemIterator;
@@ -30,6 +30,14 @@ typedef enum
    FLASH_FILE_SYSTEM_STATUS_VALUE_SIZE_ERROR
 } FlashFileSystemStatus;
 
+typedef struct
+{
+   FlashFileSystemAddress Address;
+   intptr_t MemoryAddress;
+   uint8_t Size;
+   bool IsDeleted;
+} FlashFileSystemVariableDataCache;
+
 /* Satty's interface start */
 
 __SDEVICE_HANDLE_FORWARD_DECLARATION(FlashFileSystem);
@@ -41,22 +49,14 @@ typedef struct
    bool (* TryEraseSector)(__SDEVICE_HANDLE(FlashFileSystem) *, const FlashFileSystemSector *);
    FlashFileSystemSector Sectors[__FLASH_FILE_SYSTEM_SECTORS_COUNT];
    FlashFileSystemAddress MaxUsedAddress;
-} __SDEVICE_CONSTANT_DATA(FlashFileSystem);
-
-typedef struct { } __SDEVICE_SETTINGS_DATA(FlashFileSystem);
+} __SDEVICE_INIT_DATA(FlashFileSystem);
 
 typedef struct
 {
-   FlashFileSystemIterator *ActiveIterator;
+   size_t ActiveIteratorIndex;
    FlashFileSystemIterator Iterators[__FLASH_FILE_SYSTEM_SECTORS_COUNT];
-   struct
-   {
-      FlashFileSystemAddress Address;
-      intptr_t MemoryAddress;
-      uint8_t Size;
-      bool IsDeleted;
-   } VariableDataCache;
-} __SDEVICE_DYNAMIC_DATA(FlashFileSystem);
+   FlashFileSystemVariableDataCache VariableDataCache;
+} __SDEVICE_RUNTIME_DATA(FlashFileSystem);
 
 __SDEVICE_HANDLE_DEFINITION(FlashFileSystem);
 
@@ -75,13 +75,13 @@ typedef enum
 /* Satty's interface end */
 
 FlashFileSystemStatus FlashFileSystemGetVariableSize(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                                    FlashFileSystemAddress,
-                                                    size_t *);
+                                                     FlashFileSystemAddress,
+                                                     size_t *);
 
 FlashFileSystemStatus FlashFileSystemWrite(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                          FlashFileSystemAddress,
-                                          size_t,
-                                          const void *);
+                                           FlashFileSystemAddress,
+                                           size_t,
+                                           const void *);
 
 FlashFileSystemStatus FlashFileSystemRead(__SDEVICE_HANDLE(FlashFileSystem) *, FlashFileSystemAddress, size_t, void *);
 FlashFileSystemStatus FlashFileSystemDelete(__SDEVICE_HANDLE(FlashFileSystem) *, FlashFileSystemAddress);

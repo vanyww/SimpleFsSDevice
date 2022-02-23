@@ -7,14 +7,12 @@
 
 bool TestSmallWriteAndReadWithReinitialization(void)
 {
-   __SDEVICE_HANDLE(FlashFileSystem) writeHandle = { 0 };
-   CreateFlashFileSystemSDevice(&writeHandle, true);
+   __SDEVICE_HANDLE(FlashFileSystem) writeHandle = CreateFlashFileSystemSDevice(true);
    uint8_t dataToWrite[] = { 1, 2, 3, 4 };
    if(FlashFileSystemWrite(&writeHandle, 0, sizeof(dataToWrite), dataToWrite) != FLASH_FILE_SYSTEM_STATUS_OK)
       return false;
 
-   __SDEVICE_HANDLE(FlashFileSystem) readHandle = { 0 };
-   CreateFlashFileSystemSDevice(&readHandle, false);
+   __SDEVICE_HANDLE(FlashFileSystem) readHandle = CreateFlashFileSystemSDevice(false);
 
    size_t readSize;
    if(FlashFileSystemGetVariableSize(&readHandle, 0, &readSize) != FLASH_FILE_SYSTEM_STATUS_OK)
@@ -34,14 +32,12 @@ bool TestSmallWriteAndReadWithReinitialization(void)
 
 bool TestLargeWriteAndReadWithReinitialization(void)
 {
-   __SDEVICE_HANDLE(FlashFileSystem) writeHandle = { 0 };
-   CreateFlashFileSystemSDevice(&writeHandle, true);
+   __SDEVICE_HANDLE(FlashFileSystem) writeHandle = CreateFlashFileSystemSDevice(true);
    uint8_t dataToWrite[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
    if(FlashFileSystemWrite(&writeHandle, 0, sizeof(dataToWrite), dataToWrite) != FLASH_FILE_SYSTEM_STATUS_OK)
       return false;
 
-   __SDEVICE_HANDLE(FlashFileSystem) readHandle = { 0 };
-   CreateFlashFileSystemSDevice(&readHandle, false);
+   __SDEVICE_HANDLE(FlashFileSystem) readHandle = CreateFlashFileSystemSDevice(false);
 
    size_t readSize;
    if(FlashFileSystemGetVariableSize(&readHandle, 0, &readSize) != FLASH_FILE_SYSTEM_STATUS_OK)
@@ -61,8 +57,7 @@ bool TestLargeWriteAndReadWithReinitialization(void)
 
 bool TestMultipleWriteAndReadWithReinitialization(void)
 {
-   __SDEVICE_HANDLE(FlashFileSystem) writeHandle = { 0 };
-   CreateFlashFileSystemSDevice(&writeHandle, true);
+   __SDEVICE_HANDLE(FlashFileSystem) writeHandle = CreateFlashFileSystemSDevice(true);
    uint8_t *dataToWrite[2] =
    {
      (uint8_t[]){ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
@@ -80,8 +75,7 @@ bool TestMultipleWriteAndReadWithReinitialization(void)
                                   dataToWrite[1]) != FLASH_FILE_SYSTEM_STATUS_OK)
       return false;
 
-   __SDEVICE_HANDLE(FlashFileSystem) readHandle = { 0 };
-   CreateFlashFileSystemSDevice(&readHandle, false);
+   __SDEVICE_HANDLE(FlashFileSystem) readHandle = CreateFlashFileSystemSDevice(false);
 
    size_t readSize;
    if(FlashFileSystemGetVariableSize(&readHandle, 0, &readSize) != FLASH_FILE_SYSTEM_STATUS_OK)
@@ -99,8 +93,7 @@ bool TestMultipleWriteAndReadWithReinitialization(void)
 
 bool TestMultipleVariablesWriteAndReadWithReinitialization(void)
 {
-   __SDEVICE_HANDLE(FlashFileSystem) writeHandle = { 0 };
-   CreateFlashFileSystemSDevice(&writeHandle, true);
+   __SDEVICE_HANDLE(FlashFileSystem) writeHandle = CreateFlashFileSystemSDevice(true);
    uint8_t fdataToWrite[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
    uint8_t sdataToWrite[] = { 11, 12, 13, 14, 15 };
 
@@ -110,8 +103,7 @@ bool TestMultipleVariablesWriteAndReadWithReinitialization(void)
    if(FlashFileSystemWrite(&writeHandle, 1, sizeof(sdataToWrite), sdataToWrite) != FLASH_FILE_SYSTEM_STATUS_OK)
       return false;
 
-   __SDEVICE_HANDLE(FlashFileSystem) readHandle = { 0 };
-   CreateFlashFileSystemSDevice(&readHandle, false);
+   __SDEVICE_HANDLE(FlashFileSystem) readHandle = CreateFlashFileSystemSDevice(false);
 
    size_t readSize;
    if(FlashFileSystemGetVariableSize(&readHandle, 0, &readSize) != FLASH_FILE_SYSTEM_STATUS_OK)
@@ -142,8 +134,7 @@ bool TestMultipleVariablesWriteAndReadWithReinitialization(void)
 
 bool TestTransferWithReinitialization(void)
 {
-   __SDEVICE_HANDLE(FlashFileSystem) writeHandle = { 0 };
-   CreateFlashFileSystemSDevice(&writeHandle, true);
+   __SDEVICE_HANDLE(FlashFileSystem) writeHandle = CreateFlashFileSystemSDevice(true);
 
    uint32_t lastDataToWrite = 25;
 
@@ -153,8 +144,7 @@ bool TestTransferWithReinitialization(void)
          return false;
    }
 
-   __SDEVICE_HANDLE(FlashFileSystem) readHandle = { 0 };
-   CreateFlashFileSystemSDevice(&readHandle, false);
+   __SDEVICE_HANDLE(FlashFileSystem) readHandle = CreateFlashFileSystemSDevice(false);
 
    size_t readSize;
    if(FlashFileSystemGetVariableSize(&readHandle, 0, &readSize) != FLASH_FILE_SYSTEM_STATUS_OK)
