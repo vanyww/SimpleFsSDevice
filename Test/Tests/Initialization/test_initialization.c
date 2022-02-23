@@ -5,8 +5,7 @@
 
 bool TestHandleInitialization(void)
 {
-   __SDEVICE_HANDLE(FlashFileSystem) handle;
-   CreateFlashFileSystemSDevice(&handle, true);
+   __SDEVICE_HANDLE(FlashFileSystem) handle = CreateFlashFileSystemSDevice(true);
 
    if(handle.IsInitialized != true)
       return false;

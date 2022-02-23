@@ -3,31 +3,34 @@
 
 #include <memory.h>
 
-static const __SDEVICE_CONSTANT_DATA(FlashFileSystem) ConstantData =
+__SDEVICE_HANDLE(FlashFileSystem) CreateFlashFileSystemSDevice(bool clearMemory)
 {
-   .TryEraseSector = TryEraseMemorySector,
-   .TryRead = TryReadFromMemory,
-   .TryWrite = TryWriteToMemory,
-   .MaxUsedAddress = __MAX_USED_ADDRESS,
-   .Sectors =
+   __SDEVICE_HANDLE(FlashFileSystem) handle =
    {
+      .Init = (__SDEVICE_INIT_DATA(FlashFileSystem))
       {
-         .StartAddress = (intptr_t)&MockMemorySectors[0],
-         .Size = __MOCK_MEMORY_SECTOR_SIZE
-      },
-      {
-         .StartAddress = (intptr_t)&MockMemorySectors[1],
-         .Size = __MOCK_MEMORY_SECTOR_SIZE
+         .TryEraseSector = TryEraseMemorySector,
+         .TryRead = TryReadFromMemory,
+         .TryWrite = TryWriteToMemory,
+         .MaxUsedAddress = __MAX_USED_ADDRESS,
+         .Sectors =
+         {
+            {
+               .StartAddress = (intptr_t)&MockMemorySectors[0],
+               .Size = __MOCK_MEMORY_SECTOR_SIZE
+            },
+            {
+               .StartAddress = (intptr_t)&MockMemorySectors[1],
+               .Size = __MOCK_MEMORY_SECTOR_SIZE
+            }
+         }
       }
-   }
-};
-
-void CreateFlashFileSystemSDevice(__SDEVICE_HANDLE(FlashFileSystem) *handle, bool clearMemory)
-{
-   handle->Constant = &ConstantData;
+   };
 
    if(clearMemory)
       memset(MockMemorySectors, 0xFF, sizeof(MockMemorySectors));
 
-   __SDEVICE_INITIALIZE_HANDLE(FlashFileSystem)(handle);
+   __SDEVICE_INITIALIZE_HANDLE(FlashFileSystem)(&handle);
+
+   return handle;
 }
