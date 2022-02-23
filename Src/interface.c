@@ -10,12 +10,12 @@ static FlashFileSystemStatus WriteVariable(__SDEVICE_HANDLE(FlashFileSystem) *ha
                                            bool delete)
 {
    /* check if there is enough free space and initiate transfer if not */
-   if(EmptyBlocksCount(handle->Runtime.ActiveIterator) < VariableBlocksCount(size))
+   if(EmptyBlocksCount(handle, &__ACTIVE_ITERATOR(handle)) < VariableBlocksCount(size))
    {
       __RETURN_ERROR_IF_ANY(TransferSectors(handle));
 
       /* there is still not enough space after transfer -> out of memory */
-      if(EmptyBlocksCount(handle->Runtime.ActiveIterator) < VariableBlocksCount(size))
+      if(EmptyBlocksCount(handle, &__ACTIVE_ITERATOR(handle)) < VariableBlocksCount(size))
       {
          SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_OUT_OF_MEMORY);
          return FLASH_FILE_SYSTEM_STATUS_OUT_OF_MEMORY_ERROR;
@@ -41,7 +41,7 @@ static FlashFileSystemStatus WriteVariable(__SDEVICE_HANDLE(FlashFileSystem) *ha
    block.AsBlock.AsDataPreamble.Crc = crc;
 
    /* write preamble block */
-   __RETURN_ERROR_IF_ANY(WriteForwardToCurrentBlock(handle, handle->Runtime.ActiveIterator, &block));
+   __RETURN_ERROR_IF_ANY(WriteForwardToCurrentBlock(handle, &__ACTIVE_ITERATOR(handle), &block));
 
    /* if it's delete write, there is no other blocks */
    if(delete == true)
@@ -63,7 +63,7 @@ static FlashFileSystemStatus WriteVariable(__SDEVICE_HANDLE(FlashFileSystem) *ha
                 sizeof(block.AsBlock.AsData.Data) - blockWriteSize);
       }
 
-      __RETURN_ERROR_IF_ANY(WriteForwardToCurrentBlock(handle, handle->Runtime.ActiveIterator, &block));
+      __RETURN_ERROR_IF_ANY(WriteForwardToCurrentBlock(handle, &__ACTIVE_ITERATOR(handle), &block));
 
       data += blockWriteSize;
       size -= blockWriteSize;
@@ -80,7 +80,7 @@ static FlashFileSystemStatus ClearMemoryState(__SDEVICE_HANDLE(FlashFileSystem) 
       __RETURN_ERROR_IF_ANY(FormatSectorToState(handle, &handle->Runtime.Iterators[i], HEADER_STATE_ERASED));
 
    __RETURN_ERROR_IF_ANY(FormatSectorToState(handle, &handle->Runtime.Iterators[0], HEADER_STATE_ACTIVE));
-   handle->Runtime.ActiveIterator = &handle->Runtime.Iterators[0];
+   handle->Runtime.ActiveIteratorIndex = 0;
 
    return FLASH_FILE_SYSTEM_STATUS_OK;
 }
@@ -121,18 +121,18 @@ FlashFileSystemStatus FlashFileSystemProcessInitialState(__SDEVICE_HANDLE(FlashF
          {
             case HEADER_STATE_TRANSFER_ONGOING:
                __RETURN_ERROR_IF_ANY(FormatSectorToState(handle, &handle->Runtime.Iterators[1], HEADER_STATE_ERASED));
-               handle->Runtime.ActiveIterator = &handle->Runtime.Iterators[0];
+               handle->Runtime.ActiveIteratorIndex = 0;
                __RETURN_ERROR_IF_ANY(TransferSectors(handle));
                break;
 
             case HEADER_STATE_TRANSFER_END:
                __RETURN_ERROR_IF_ANY(FormatSectorToState(handle, &handle->Runtime.Iterators[0], HEADER_STATE_ERASED));
-               handle->Runtime.ActiveIterator = &handle->Runtime.Iterators[1];
-               __RETURN_ERROR_IF_ANY(SetSectorHeaderState(handle, handle->Runtime.ActiveIterator, HEADER_STATE_ACTIVE));
+               handle->Runtime.ActiveIteratorIndex = 1;
+               __RETURN_ERROR_IF_ANY(SetSectorHeaderState(handle, &__ACTIVE_ITERATOR(handle), HEADER_STATE_ACTIVE));
                break;
 
             case HEADER_STATE_ERASED:
-               handle->Runtime.ActiveIterator = &handle->Runtime.Iterators[0];
+               handle->Runtime.ActiveIteratorIndex = 0;
                break;
 
             /* invalid state */
@@ -150,7 +150,7 @@ FlashFileSystemStatus FlashFileSystemProcessInitialState(__SDEVICE_HANDLE(FlashF
          {
             case HEADER_STATE_ACTIVE:
                __RETURN_ERROR_IF_ANY(FormatSectorToState(handle, &handle->Runtime.Iterators[0], HEADER_STATE_ERASED));
-               handle->Runtime.ActiveIterator = &handle->Runtime.Iterators[1];
+               handle->Runtime.ActiveIteratorIndex = 1;
                __RETURN_ERROR_IF_ANY(TransferSectors(handle));
                break;
 
@@ -175,8 +175,8 @@ FlashFileSystemStatus FlashFileSystemProcessInitialState(__SDEVICE_HANDLE(FlashF
                __RETURN_ERROR_IF_ANY(FormatSectorToState(handle, &handle->Runtime.Iterators[1], HEADER_STATE_ERASED));
                /* fall through */
             case HEADER_STATE_ERASED:
-               handle->Runtime.ActiveIterator = &handle->Runtime.Iterators[0];
-               __RETURN_ERROR_IF_ANY(SetSectorHeaderState(handle, handle->Runtime.ActiveIterator, HEADER_STATE_ACTIVE));
+               handle->Runtime.ActiveIteratorIndex = 0;
+               __RETURN_ERROR_IF_ANY(SetSectorHeaderState(handle, &__ACTIVE_ITERATOR(handle), HEADER_STATE_ACTIVE));
                break;
 
             /* invalid states */
@@ -195,14 +195,14 @@ FlashFileSystemStatus FlashFileSystemProcessInitialState(__SDEVICE_HANDLE(FlashF
          switch(sectorsState[1].HeaderState)
          {
             case HEADER_STATE_ACTIVE:
-               handle->Runtime.ActiveIterator = &handle->Runtime.Iterators[1];
+               handle->Runtime.ActiveIteratorIndex = 1;
                break;
 
             case HEADER_STATE_TRANSFER_END:
                /* fall through */
             case HEADER_STATE_ERASED:
-               handle->Runtime.ActiveIterator = &handle->Runtime.Iterators[1];
-               __RETURN_ERROR_IF_ANY(SetSectorHeaderState(handle, handle->Runtime.ActiveIterator, HEADER_STATE_ACTIVE));
+               handle->Runtime.ActiveIteratorIndex = 1;
+               __RETURN_ERROR_IF_ANY(SetSectorHeaderState(handle, &__ACTIVE_ITERATOR(handle), HEADER_STATE_ACTIVE));
                break;
 
             /* invalid states */
@@ -266,11 +266,11 @@ FlashFileSystemStatus FlashFileSystemRead(__SDEVICE_HANDLE(FlashFileSystem) *han
    }
 
    /* data begins right after preamble block */
-   SeekReadCursor(handle->Runtime.ActiveIterator, NextBlockAddress(handle->Runtime.VariableDataCache.MemoryAddress));
+   SeekReadCursor(&__ACTIVE_ITERATOR(handle), NextBlockAddress(handle->Runtime.VariableDataCache.MemoryAddress));
 
    while(size > 0)
    {
-      __RETURN_ERROR_IF_ANY(ReadForwardFromCurrentBlock(handle, handle->Runtime.ActiveIterator, &block));
+      __RETURN_ERROR_IF_ANY(ReadForwardFromCurrentBlock(handle, &__ACTIVE_ITERATOR(handle), &block));
 
       size_t blockReadSize = __MIN(size, sizeof(block.AsBlock.AsData.Data));
       memcpy(data, block.AsBlock.AsData.Data, blockReadSize);

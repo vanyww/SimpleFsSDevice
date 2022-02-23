@@ -1,4 +1,4 @@
- #include "block.h"
+#include "block.h"
 
 static inline intptr_t SectorLastBlockAddress(const FlashFileSystemSector *sector)
 {

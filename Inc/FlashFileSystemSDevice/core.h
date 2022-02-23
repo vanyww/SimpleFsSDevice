@@ -16,7 +16,7 @@ typedef struct
 
 typedef struct
 {
-   const FlashFileSystemSector *Sector;
+   size_t SectorIndex;
    intptr_t WriteCursor;
    intptr_t ReadCursor;
 } FlashFileSystemIterator;
@@ -29,6 +29,14 @@ typedef enum
    FLASH_FILE_SYSTEM_STATUS_VALUE_NOT_FOUND_ERROR,
    FLASH_FILE_SYSTEM_STATUS_VALUE_SIZE_ERROR
 } FlashFileSystemStatus;
+
+typedef struct
+{
+   FlashFileSystemAddress Address;
+   intptr_t MemoryAddress;
+   uint8_t Size;
+   bool IsDeleted;
+} FlashFileSystemVariableDataCache;
 
 /* Satty's interface start */
 
@@ -45,15 +53,9 @@ typedef struct
 
 typedef struct
 {
-   FlashFileSystemIterator *ActiveIterator;
+   size_t ActiveIteratorIndex;
    FlashFileSystemIterator Iterators[__FLASH_FILE_SYSTEM_SECTORS_COUNT];
-   struct
-   {
-      FlashFileSystemAddress Address;
-      intptr_t MemoryAddress;
-      uint8_t Size;
-      bool IsDeleted;
-   } VariableDataCache;
+   FlashFileSystemVariableDataCache VariableDataCache;
 } __SDEVICE_RUNTIME_DATA(FlashFileSystem);
 
 __SDEVICE_HANDLE_DEFINITION(FlashFileSystem);

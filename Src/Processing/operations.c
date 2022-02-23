@@ -1,11 +1,11 @@
 #include "operations.h"
 #include "Base/iterator.h"
 
-static inline FlashFileSystemIterator * GetNextSectorIterator(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                                              FlashFileSystemIterator *iterator)
+static inline size_t GetNextSectorIteratorIndex(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+                                                FlashFileSystemIterator *iterator)
 {
-   size_t nextSectorIndex = (iterator - &handle->Runtime.Iterators[0] + 1) % __FLASH_FILE_SYSTEM_SECTORS_COUNT;
-   return &handle->Runtime.Iterators[nextSectorIndex];
+   size_t nextIteratorIndex = (iterator - &handle->Runtime.Iterators[0] + 1) % __FLASH_FILE_SYSTEM_SECTORS_COUNT;
+   return nextIteratorIndex;
 }
 
 static FlashFileSystemStatus SkipBackToNotEmptyBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
@@ -98,8 +98,8 @@ FlashFileSystemStatus FormatSectorToState(__SDEVICE_HANDLE(FlashFileSystem) *han
                                           FlashFileSystemIterator *iterator,
                                           BlockHeaderState headerState)
 {
-   __RETURN_ERROR_IF_ANY(EraseSector(handle, iterator->Sector));
-   SeekWriteCursor(iterator, IteratorStart(iterator));
+   __RETURN_ERROR_IF_ANY(EraseSector(handle, &__ITERATOR_SECTOR(handle, iterator)));
+   SeekWriteCursor(iterator, IteratorStart(handle, iterator));
    return SetSectorHeaderState(handle, iterator, headerState);
 }
 
@@ -108,7 +108,7 @@ FlashFileSystemStatus GetSectorInitialState(__SDEVICE_HANDLE(FlashFileSystem) *h
                                            SectorInitialState *sectorState)
 {
    /* find first written block starting from end of sector */
-   SeekReadCursor(iterator, IteratorEnd(iterator));
+   SeekReadCursor(iterator, IteratorEnd(handle, iterator));
    FlashFileSystemStatus state;
    state = SkipBackToNotEmptyBlock(handle, iterator);
 
@@ -116,7 +116,7 @@ FlashFileSystemStatus GetSectorInitialState(__SDEVICE_HANDLE(FlashFileSystem) *h
    if(state == FLASH_FILE_SYSTEM_STATUS_VALUE_NOT_FOUND_ERROR)
    {
       sectorState->IsEmpty = true;
-      SeekWriteCursor(iterator, IteratorStart(iterator));
+      SeekWriteCursor(iterator, IteratorStart(handle, iterator));
       return FLASH_FILE_SYSTEM_STATUS_OK;
    }
 
@@ -148,7 +148,7 @@ FlashFileSystemStatus MoveVariableDataToCache(__SDEVICE_HANDLE(FlashFileSystem) 
       return FLASH_FILE_SYSTEM_STATUS_OK;
 
    FlashFileSystemStatus state;
-   FlashFileSystemIterator *iterator = handle->Runtime.ActiveIterator;
+   FlashFileSystemIterator *iterator = &__ACTIVE_ITERATOR(handle);
 
    /* write cursor is always on first free block of the sector */
    SeekReadCursor(iterator, PreviousBlockAddress(iterator->WriteCursor));
@@ -219,8 +219,9 @@ FlashFileSystemStatus MoveVariableDataToCache(__SDEVICE_HANDLE(FlashFileSystem) 
 
 FlashFileSystemStatus TransferSectors(__SDEVICE_HANDLE(FlashFileSystem) *handle)
 {
-   FlashFileSystemIterator *source = handle->Runtime.ActiveIterator;
-   FlashFileSystemIterator *target = GetNextSectorIterator(handle, source);
+   FlashFileSystemIterator *source = &__ACTIVE_ITERATOR(handle);
+   size_t nextIteratorIndex = GetNextSectorIteratorIndex(handle, source);
+   FlashFileSystemIterator *target = &handle->Runtime.Iterators[nextIteratorIndex];
 
    __RETURN_ERROR_IF_ANY(SetSectorHeaderState(handle, target, HEADER_STATE_TRANSFER_ONGOING));
 
@@ -255,7 +256,7 @@ FlashFileSystemStatus TransferSectors(__SDEVICE_HANDLE(FlashFileSystem) *handle)
    __RETURN_ERROR_IF_ANY(FormatSectorToState(handle, source, HEADER_STATE_ERASED));
    __RETURN_ERROR_IF_ANY(SetSectorHeaderState(handle, target, HEADER_STATE_ACTIVE));
    InvalidateVariableDataCache(handle);
-   handle->Runtime.ActiveIterator = target;
+   handle->Runtime.ActiveIteratorIndex = nextIteratorIndex;
 
    return FLASH_FILE_SYSTEM_STATUS_OK;
 }
