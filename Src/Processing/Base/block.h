@@ -71,10 +71,11 @@ typedef union
       BlockDescriptor Descriptor;
    } AsBlock;
 
-   uint8_t AsBytes[sizeof(uint64_t) / sizeof(uint8_t)];
-   uint16_t AsHalfWords[sizeof(uint64_t) / sizeof(uint16_t)];
-   uint32_t AsWords[sizeof(uint64_t) / sizeof(uint32_t)];
-   uint64_t AsDoubleWords[sizeof(uint64_t) / sizeof(uint64_t)];
+   uint8_t AsBytes[sizeof(FlashFileSystemBlockValue) / sizeof(uint8_t)];
+   uint16_t AsHalfWords[sizeof(FlashFileSystemBlockValue) / sizeof(uint16_t)];
+   uint32_t AsWords[sizeof(FlashFileSystemBlockValue) / sizeof(uint32_t)];
+   uint64_t AsDoubleWords[sizeof(FlashFileSystemBlockValue) / sizeof(uint64_t)];
+   FlashFileSystemBlockValue AsValue;
 } FileSystemBlock;
 
 static inline size_t BlocksSize(size_t blocksCount)
@@ -126,7 +127,7 @@ static inline FlashFileSystemStatus ReadBlock(__SDEVICE_HANDLE(FlashFileSystem) 
                                               intptr_t address,
                                               FileSystemBlock *block)
 {
-   if(handle->Init.TryRead(handle, address, BlocksSize(1), block) != true)
+   if(handle->Init.TryReadBlock(handle, address, &block->AsValue) != true)
    {
       SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_READ_FAIL);
       return FLASH_FILE_SYSTEM_STATUS_IO_MEMORY_ERROR;
@@ -139,7 +140,7 @@ static inline FlashFileSystemStatus WriteBlock(__SDEVICE_HANDLE(FlashFileSystem)
                                                intptr_t address,
                                                const FileSystemBlock *block)
 {
-   if(handle->Init.TryWrite(handle, address, BlocksSize(1), block) != true)
+   if(handle->Init.TryWriteBlock(handle, address, &block->AsValue) != true)
    {
       SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_WRITE_FAIL);
       return FLASH_FILE_SYSTEM_STATUS_IO_MEMORY_ERROR;

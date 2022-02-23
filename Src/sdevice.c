@@ -7,8 +7,8 @@ __SDEVICE_INITIALIZE_HANDLE_DECLARATION(FlashFileSystem, handle)
 {
    SDeviceAssert(handle != NULL);
    SDeviceAssert(handle->IsInitialized == false);
-   SDeviceAssert(handle->Init.TryWrite != NULL);
-   SDeviceAssert(handle->Init.TryRead != NULL);
+   SDeviceAssert(handle->Init.TryWriteBlock != NULL);
+   SDeviceAssert(handle->Init.TryReadBlock != NULL);
    SDeviceAssert(handle->Init.TryEraseSector != NULL);
    SDeviceAssert(handle->Init.MaxUsedAddress <= __FLASH_FILE_SYSTEM_MAX_ADDRESS);
 

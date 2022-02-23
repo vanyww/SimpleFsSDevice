@@ -5,6 +5,7 @@
 #define __FLASH_FILE_SYSTEM_MAX_ADDRESS (UINT16_MAX - 1)
 #define __FLASH_FILE_SYSTEM_SECTORS_COUNT 2
 
+typedef uint64_t FlashFileSystemBlockValue;
 typedef uint16_t FlashFileSystemAddress;
 
 typedef struct
@@ -44,8 +45,8 @@ __SDEVICE_HANDLE_FORWARD_DECLARATION(FlashFileSystem);
 
 typedef struct
 {
-   bool (* TryRead)(__SDEVICE_HANDLE(FlashFileSystem) *, intptr_t, size_t, void *);
-   bool (* TryWrite)(__SDEVICE_HANDLE(FlashFileSystem) *, intptr_t, size_t, const void *);
+   bool (* TryReadBlock)(__SDEVICE_HANDLE(FlashFileSystem) *, intptr_t, FlashFileSystemBlockValue *);
+   bool (* TryWriteBlock)(__SDEVICE_HANDLE(FlashFileSystem) *, intptr_t, const FlashFileSystemBlockValue *);
    bool (* TryEraseSector)(__SDEVICE_HANDLE(FlashFileSystem) *, const FlashFileSystemSector *);
    FlashFileSystemSector Sectors[__FLASH_FILE_SYSTEM_SECTORS_COUNT];
    FlashFileSystemAddress MaxUsedAddress;
@@ -74,14 +75,15 @@ typedef enum
 
 /* Satty's interface end */
 
-FlashFileSystemStatus FlashFileSystemGetVariableSize(__SDEVICE_HANDLE(FlashFileSystem) *,
-                                                     FlashFileSystemAddress,
-                                                     size_t *);
 
+
+
+FlashFileSystemStatus FlashFileSystemRead(__SDEVICE_HANDLE(FlashFileSystem) *, FlashFileSystemAddress, size_t, void *);
+FlashFileSystemStatus FlashFileSystemDelete(__SDEVICE_HANDLE(FlashFileSystem) *, FlashFileSystemAddress);
 FlashFileSystemStatus FlashFileSystemWrite(__SDEVICE_HANDLE(FlashFileSystem) *,
                                            FlashFileSystemAddress,
                                            size_t,
                                            const void *);
-
-FlashFileSystemStatus FlashFileSystemRead(__SDEVICE_HANDLE(FlashFileSystem) *, FlashFileSystemAddress, size_t, void *);
-FlashFileSystemStatus FlashFileSystemDelete(__SDEVICE_HANDLE(FlashFileSystem) *, FlashFileSystemAddress);
+FlashFileSystemStatus FlashFileSystemGetVariableSize(__SDEVICE_HANDLE(FlashFileSystem) *,
+                                                     FlashFileSystemAddress,
+                                                     size_t *);
