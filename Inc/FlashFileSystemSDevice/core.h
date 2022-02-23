@@ -41,9 +41,7 @@ typedef struct
    bool (* TryEraseSector)(__SDEVICE_HANDLE(FlashFileSystem) *, const FlashFileSystemSector *);
    FlashFileSystemSector Sectors[__FLASH_FILE_SYSTEM_SECTORS_COUNT];
    FlashFileSystemAddress MaxUsedAddress;
-} __SDEVICE_CONSTANT_DATA(FlashFileSystem);
-
-typedef struct { } __SDEVICE_SETTINGS_DATA(FlashFileSystem);
+} __SDEVICE_INIT_DATA(FlashFileSystem);
 
 typedef struct
 {
@@ -56,7 +54,7 @@ typedef struct
       uint8_t Size;
       bool IsDeleted;
    } VariableDataCache;
-} __SDEVICE_DYNAMIC_DATA(FlashFileSystem);
+} __SDEVICE_RUNTIME_DATA(FlashFileSystem);
 
 __SDEVICE_HANDLE_DEFINITION(FlashFileSystem);
 

@@ -13,7 +13,7 @@ static inline intptr_t SectorFirstBlockAddress(const FlashFileSystemSector *sect
 static inline FlashFileSystemStatus EraseSector(__SDEVICE_HANDLE(FlashFileSystem) *handle,
                                                 const FlashFileSystemSector *sector)
 {
-   if(handle->Constant->TryEraseSector(handle, sector) != true)
+   if(handle->Init.TryEraseSector(handle, sector) != true)
    {
       SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_ERASE_FAIL);
       return FLASH_FILE_SYSTEM_STATUS_IO_MEMORY_ERROR;
