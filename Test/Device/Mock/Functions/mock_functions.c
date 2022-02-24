@@ -4,15 +4,19 @@
 
 uint8_t MockMemorySectors[__FLASH_FILE_SYSTEM_SECTORS_COUNT][__MOCK_MEMORY_SECTOR_SIZE];
 
-bool TryReadFromMemory(__SDEVICE_HANDLE(FlashFileSystem) *handle, intptr_t address, size_t size, void *data)
+bool TryReadFromMemory(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+                       uintptr_t address,
+                       FlashFileSystemBlockValue *data)
 {
-   memcpy(data, (void *)address, size);
+   memcpy(data, (void *)address, sizeof(FlashFileSystemBlockValue));
    return true;
 }
 
-bool TryWriteToMemory(__SDEVICE_HANDLE(FlashFileSystem) *handle, intptr_t address, size_t size, const void *data)
+bool TryWriteToMemory(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+                      uintptr_t address,
+                      const FlashFileSystemBlockValue *data)
 {
-   memcpy((void *)address, data, size);
+   memcpy((void *)address, data, sizeof(FlashFileSystemBlockValue));
    return true;
 }
 

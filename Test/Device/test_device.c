@@ -10,8 +10,8 @@ __SDEVICE_HANDLE(FlashFileSystem) CreateFlashFileSystemSDevice(bool clearMemory)
       .Init = (__SDEVICE_INIT_DATA(FlashFileSystem))
       {
          .TryEraseSector = TryEraseMemorySector,
-         .TryRead = TryReadFromMemory,
-         .TryWrite = TryWriteToMemory,
+         .TryReadBlock = TryReadFromMemory,
+         .TryWriteBlock = TryWriteToMemory,
          .MaxUsedAddress = __MAX_USED_ADDRESS,
          .Sectors =
          {

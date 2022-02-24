@@ -1,11 +1,11 @@
 #include "block.h"
 
-static inline intptr_t SectorLastBlockAddress(const FlashFileSystemSector *sector)
+static inline uintptr_t SectorLastBlockAddress(const FlashFileSystemSector *sector)
 {
    return PreviousBlockAddress(sector->StartAddress + sector->Size);
 }
 
-static inline intptr_t SectorFirstBlockAddress(const FlashFileSystemSector *sector)
+static inline uintptr_t SectorFirstBlockAddress(const FlashFileSystemSector *sector)
 {
    return sector->StartAddress;
 }
