@@ -5,12 +5,12 @@
 #define __ACTIVE_ITERATOR(handle) (handle->Runtime.Iterators[handle->Runtime.ActiveIteratorIndex])
 #define __ITERATOR_SECTOR(handle, iterator) (handle->Init.Sectors[iterator->SectorIndex])
 
-static inline intptr_t IteratorStart(__SDEVICE_HANDLE(FlashFileSystem) *handle, FlashFileSystemIterator *iterator)
+static inline uintptr_t IteratorStart(__SDEVICE_HANDLE(FlashFileSystem) *handle, FlashFileSystemIterator *iterator)
 {
    return SectorFirstBlockAddress(&__ITERATOR_SECTOR(handle, iterator));
 }
 
-static inline intptr_t IteratorEnd(__SDEVICE_HANDLE(FlashFileSystem) *handle, FlashFileSystemIterator *iterator)
+static inline uintptr_t IteratorEnd(__SDEVICE_HANDLE(FlashFileSystem) *handle, FlashFileSystemIterator *iterator)
 {
    return SectorLastBlockAddress(&__ITERATOR_SECTOR(handle, iterator));
 }
@@ -27,12 +27,12 @@ static inline bool CanWrite(__SDEVICE_HANDLE(FlashFileSystem) *handle, FlashFile
           iterator->WriteCursor <= IteratorEnd(handle, iterator);
 }
 
-static inline void SeekReadCursor(FlashFileSystemIterator *iterator, intptr_t offset)
+static inline void SeekReadCursor(FlashFileSystemIterator *iterator, uintptr_t offset)
 {
    iterator->ReadCursor = offset;
 }
 
-static inline void SeekWriteCursor(FlashFileSystemIterator *iterator, intptr_t offset)
+static inline void SeekWriteCursor(FlashFileSystemIterator *iterator, uintptr_t offset)
 {
    iterator->WriteCursor = offset;
 }
@@ -82,7 +82,7 @@ static inline FlashFileSystemStatus ReadForwardFromCurrentBlock(__SDEVICE_HANDLE
    if(CanRead(handle, iterator) != true)
       return FLASH_FILE_SYSTEM_STATUS_VALUE_NOT_FOUND_ERROR;
 
-   intptr_t address = iterator->ReadCursor;
+   uintptr_t address = iterator->ReadCursor;
    IncrementReadCursor(iterator);
 
    return ReadBlock(handle, address, block);
@@ -95,7 +95,7 @@ static inline FlashFileSystemStatus ReadBackwardFromCurrentBlock(__SDEVICE_HANDL
    if(CanRead(handle, iterator) != true)
       return FLASH_FILE_SYSTEM_STATUS_VALUE_NOT_FOUND_ERROR;
 
-   intptr_t address = iterator->ReadCursor;
+   uintptr_t address = iterator->ReadCursor;
    DecrementReadCursor(iterator);
 
    return ReadBlock(handle, address, block);
@@ -111,7 +111,7 @@ static inline FlashFileSystemStatus WriteForwardToCurrentBlock(__SDEVICE_HANDLE(
       return FLASH_FILE_SYSTEM_STATUS_OUT_OF_MEMORY_ERROR;
    }
 
-   intptr_t address = iterator->WriteCursor;
+   uintptr_t address = iterator->WriteCursor;
    IncrementWriteCursor(iterator);
 
    return WriteBlock(handle, address, block);

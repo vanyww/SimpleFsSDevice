@@ -11,15 +11,15 @@ typedef uint16_t FlashFileSystemAddress;
 typedef struct
 {
    void *Context;
-   intptr_t StartAddress;
+   uintptr_t StartAddress;
    size_t Size;
 } FlashFileSystemSector;
 
 typedef struct
 {
    size_t SectorIndex;
-   intptr_t WriteCursor;
-   intptr_t ReadCursor;
+   uintptr_t WriteCursor;
+   uintptr_t ReadCursor;
 } FlashFileSystemIterator;
 
 typedef enum
@@ -34,7 +34,7 @@ typedef enum
 typedef struct
 {
    FlashFileSystemAddress Address;
-   intptr_t MemoryAddress;
+   uintptr_t MemoryAddress;
    uint8_t Size;
    bool IsDeleted;
 } FlashFileSystemVariableDataCache;
@@ -45,8 +45,8 @@ __SDEVICE_HANDLE_FORWARD_DECLARATION(FlashFileSystem);
 
 typedef struct
 {
-   bool (* TryReadBlock)(__SDEVICE_HANDLE(FlashFileSystem) *, intptr_t, FlashFileSystemBlockValue *);
-   bool (* TryWriteBlock)(__SDEVICE_HANDLE(FlashFileSystem) *, intptr_t, const FlashFileSystemBlockValue *);
+   bool (* TryReadBlock)(__SDEVICE_HANDLE(FlashFileSystem) *, uintptr_t, FlashFileSystemBlockValue *);
+   bool (* TryWriteBlock)(__SDEVICE_HANDLE(FlashFileSystem) *, uintptr_t, const FlashFileSystemBlockValue *);
    bool (* TryEraseSector)(__SDEVICE_HANDLE(FlashFileSystem) *, const FlashFileSystemSector *);
    FlashFileSystemSector Sectors[__FLASH_FILE_SYSTEM_SECTORS_COUNT];
    FlashFileSystemAddress MaxUsedAddress;

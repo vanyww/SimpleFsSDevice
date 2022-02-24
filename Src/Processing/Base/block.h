@@ -88,12 +88,12 @@ static inline size_t VariableBlocksCount(size_t variableSize)
    return 1 + __CEIL_INTEGER_DIVISION(variableSize, BlocksSize(1) - sizeof(BlockDescriptor));
 }
 
-static inline intptr_t NextBlockAddress(intptr_t address)
+static inline uintptr_t NextBlockAddress(uintptr_t address)
 {
    return address + BlocksSize(1);
 }
 
-static inline intptr_t PreviousBlockAddress(intptr_t address)
+static inline uintptr_t PreviousBlockAddress(uintptr_t address)
 {
    return address - BlocksSize(1);
 }
@@ -124,7 +124,7 @@ static inline CrcType UpdateCrcWithDataBlock(FileSystemBlock *block, CrcType crc
 }
 
 static inline FlashFileSystemStatus ReadBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                              intptr_t address,
+                                              uintptr_t address,
                                               FileSystemBlock *block)
 {
    if(handle->Init.TryReadBlock(handle, address, &block->AsValue) != true)
@@ -137,7 +137,7 @@ static inline FlashFileSystemStatus ReadBlock(__SDEVICE_HANDLE(FlashFileSystem) 
 }
 
 static inline FlashFileSystemStatus WriteBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                               intptr_t address,
+                                               uintptr_t address,
                                                const FileSystemBlock *block)
 {
    if(handle->Init.TryWriteBlock(handle, address, &block->AsValue) != true)
