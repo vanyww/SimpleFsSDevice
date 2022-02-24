@@ -5,7 +5,7 @@
 uint8_t MockMemorySectors[__FLASH_FILE_SYSTEM_SECTORS_COUNT][__MOCK_MEMORY_SECTOR_SIZE];
 
 bool TryReadFromMemory(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                       intptr_t address,
+                       uintptr_t address,
                        FlashFileSystemBlockValue *data)
 {
    memcpy(data, (void *)address, sizeof(FlashFileSystemBlockValue));
@@ -13,7 +13,7 @@ bool TryReadFromMemory(__SDEVICE_HANDLE(FlashFileSystem) *handle,
 }
 
 bool TryWriteToMemory(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                      intptr_t address,
+                      uintptr_t address,
                       const FlashFileSystemBlockValue *data)
 {
    memcpy((void *)address, data, sizeof(FlashFileSystemBlockValue));
