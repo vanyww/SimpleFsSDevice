@@ -32,7 +32,7 @@ static FlashFileSystemStatus WriteFile(__SDEVICE_HANDLE(FlashFileSystem) *handle
          .IsDeleted = delete,
          .FileSize = size,
          .Address = address,
-         .Padding = __BYTE_EMPTY_VALUE
+         .Padding = ErasedByteValue(handle)
       }
    };
 
@@ -59,7 +59,7 @@ static FlashFileSystemStatus WriteFile(__SDEVICE_HANDLE(FlashFileSystem) *handle
       if(blockWriteSize < sizeof(block.AsBlock.AsData.Data))
       {
          memset(&block.AsBlock.AsData.Data[blockWriteSize],
-                __BYTE_EMPTY_VALUE,
+                ErasedByteValue(handle),
                 sizeof(block.AsBlock.AsData.Data) - blockWriteSize);
       }
 

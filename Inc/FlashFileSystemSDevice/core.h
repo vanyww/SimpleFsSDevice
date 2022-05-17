@@ -50,6 +50,7 @@ typedef struct
    bool (* TryEraseSector)(__SDEVICE_HANDLE(FlashFileSystem) *, const FlashFileSystemSector *);
    FlashFileSystemSector Sectors[__FLASH_FILE_SYSTEM_SECTORS_COUNT];
    FlashFileSystemAddress MaxUsedAddress;
+   bool IsErasingToZero;
 } __SDEVICE_INIT_DATA(FlashFileSystem);
 
 typedef struct

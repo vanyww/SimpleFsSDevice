@@ -3,11 +3,6 @@
 #include "../../../Inc/FlashFileSystemSDevice/core.h"
 #include "../../CRC/crc16.h"
 
-#define __BYTE_EMPTY_VALUE        UINT8_MAX
-#define __HALF_WORD_EMPTY_VALUE   UINT16_MAX
-#define __WORD_EMPTY_VALUE        UINT32_MAX
-#define __DOUBLE_WORD_EMPTY_VALUE UINT64_MAX
-
 #define __IS_VALID_BLOCK_HEADER_STATE(state) (                                                                         \
 {                                                                                                                      \
    __typeof__(state) _state = state;                                                                                   \
@@ -29,7 +24,7 @@ typedef enum __attribute__((packed))
    BLOCK_DESCRIPTOR_HEADER        = 0x01,
    BLOCK_DESCRIPTOR_PREAMBLE      = 0x02,
    BLOCK_DESCRIPTOR_VARIABLE_DATA = 0x04,
-   BLOCK_DESCRIPTOR_ERASED        = __BYTE_EMPTY_VALUE
+   BLOCK_DESCRIPTOR_ERASED        = 0x80
 } BlockDescriptor;
 
 typedef enum __attribute__((packed))
@@ -37,7 +32,7 @@ typedef enum __attribute__((packed))
    HEADER_STATE_ACTIVE           = 0x11111111,
    HEADER_STATE_TRANSFER_ONGOING = 0x55555555,
    HEADER_STATE_TRANSFER_END     = 0xAAAAAAAA,
-   HEADER_STATE_ERASED           = __WORD_EMPTY_VALUE,
+   HEADER_STATE_ERASED           = 0xFFFFFFFF,
 } BlockHeaderState;
 
 typedef union
@@ -78,6 +73,26 @@ typedef union
    FlashFileSystemBlockValue AsValue;
 } FileSystemBlock;
 
+static inline uint8_t ErasedByteValue(__SDEVICE_HANDLE(FlashFileSystem) *handle)
+{
+   return (handle->Init.IsErasingToZero == true) ? 0 : UINT8_MAX;
+}
+
+static inline uint16_t ErasedHalfWordValue(__SDEVICE_HANDLE(FlashFileSystem) *handle)
+{
+   return (handle->Init.IsErasingToZero == true) ? 0 : UINT16_MAX;
+}
+
+static inline uint32_t ErasedWordValue(__SDEVICE_HANDLE(FlashFileSystem) *handle)
+{
+   return (handle->Init.IsErasingToZero == true) ? 0 : UINT32_MAX;
+}
+
+static inline uint64_t ErasedDoubleWordValue(__SDEVICE_HANDLE(FlashFileSystem) *handle)
+{
+   return (handle->Init.IsErasingToZero == true) ? 0 : UINT64_MAX;
+}
+
 static inline size_t BlocksSize(size_t blocksCount)
 {
    return blocksCount * sizeof(FileSystemBlock);
@@ -98,9 +113,9 @@ static inline uintptr_t PreviousBlockAddress(uintptr_t address)
    return address - BlocksSize(1);
 }
 
-static inline bool IsBlockEmpty(FileSystemBlock *block)
+static inline bool IsBlockEmpty(__SDEVICE_HANDLE(FlashFileSystem) *handle, FileSystemBlock *block)
 {
-   return block->AsDoubleWords[0] == __DOUBLE_WORD_EMPTY_VALUE;
+   return block->AsDoubleWords[0] == ErasedDoubleWordValue(handle);
 }
 
 static inline bool IsBlockOfType(FileSystemBlock *block, BlockDescriptor type)

@@ -15,7 +15,7 @@ static FlashFileSystemStatus SkipBackToNotEmptyBlock(__SDEVICE_HANDLE(FlashFileS
    FlashFileSystemStatus state;
    while((state = PeekFromCurrentBlock(handle, iterator, &block)) == FLASH_FILE_SYSTEM_STATUS_OK)
    {
-      if(IsBlockEmpty(&block) != true)
+      if(IsBlockEmpty(handle, &block) != true)
          return FLASH_FILE_SYSTEM_STATUS_OK;
 
       DecrementReadCursor(iterator);
@@ -58,7 +58,7 @@ FlashFileSystemStatus SetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *ha
          .AsHeader = (struct HeaderBlock)
          {
             .State = headerState,
-            .Padding = __BYTE_EMPTY_VALUE
+            .Padding = ErasedByteValue(handle)
          }
       }
    };
