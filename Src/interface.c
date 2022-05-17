@@ -3,19 +3,19 @@
 
 #include <memory.h>
 
-static FlashFileSystemStatus WriteVariable(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                           FlashFileSystemAddress address,
-                                           const void *data,
-                                           size_t size,
-                                           bool delete)
+static FlashFileSystemStatus WriteFile(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+                                       FlashFileSystemAddress address,
+                                       const void *data,
+                                       size_t size,
+                                       bool delete)
 {
    /* check if there is enough free space and initiate transfer if not */
-   if(EmptyBlocksCount(handle, &__ACTIVE_ITERATOR(handle)) < VariableBlocksCount(size))
+   if(EmptyBlocksCount(handle, &__ACTIVE_ITERATOR(handle)) < FileBlocksCount(size))
    {
       __RETURN_ERROR_IF_ANY(TransferSectors(handle));
 
       /* there is still not enough space after transfer -> out of memory */
-      if(EmptyBlocksCount(handle, &__ACTIVE_ITERATOR(handle)) < VariableBlocksCount(size))
+      if(EmptyBlocksCount(handle, &__ACTIVE_ITERATOR(handle)) < FileBlocksCount(size))
       {
          SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_OUT_OF_MEMORY);
          return FLASH_FILE_SYSTEM_STATUS_OUT_OF_MEMORY_ERROR;
@@ -30,7 +30,7 @@ static FlashFileSystemStatus WriteVariable(__SDEVICE_HANDLE(FlashFileSystem) *ha
       .AsDataPreamble = (struct DataPreambleBlock)
       {
          .IsDeleted = delete,
-         .VariableSize = size,
+         .FileSize = size,
          .Address = address,
          .Padding = __BYTE_EMPTY_VALUE
       }
@@ -223,7 +223,7 @@ FlashFileSystemStatus FlashFileSystemProcessInitialState(__SDEVICE_HANDLE(FlashF
    return FLASH_FILE_SYSTEM_STATUS_OK;
 }
 
-FlashFileSystemStatus FlashFileSystemGetVariableSize(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+FlashFileSystemStatus FlashFileSystemGetFileSize(__SDEVICE_HANDLE(FlashFileSystem) *handle,
                                                      FlashFileSystemAddress address,
                                                      size_t *size)
 {
@@ -232,12 +232,12 @@ FlashFileSystemStatus FlashFileSystemGetVariableSize(__SDEVICE_HANDLE(FlashFileS
    SDeviceAssert(address <= __FLASH_FILE_SYSTEM_MAX_ADDRESS);
    SDeviceAssert(size != NULL);
 
-   __RETURN_ERROR_IF_ANY(MoveVariableDataToCache(handle, address));
+   __RETURN_ERROR_IF_ANY(MoveFileDataToCache(handle, address));
 
-   if(handle->Runtime.VariableDataCache.IsDeleted == true)
-      return FLASH_FILE_SYSTEM_STATUS_VALUE_NOT_FOUND_ERROR;
+   if(handle->Runtime.FileDataCache.IsDeleted == true)
+      return FLASH_FILE_SYSTEM_STATUS_FILE_NOT_FOUND_ERROR;
 
-   *size = handle->Runtime.VariableDataCache.Size;
+   *size = handle->Runtime.FileDataCache.Size;
 
    return FLASH_FILE_SYSTEM_STATUS_OK;
 }
@@ -254,19 +254,19 @@ FlashFileSystemStatus FlashFileSystemRead(__SDEVICE_HANDLE(FlashFileSystem) *han
 
    FileSystemBlock block;
 
-   __RETURN_ERROR_IF_ANY(MoveVariableDataToCache(handle, address));
+   __RETURN_ERROR_IF_ANY(MoveFileDataToCache(handle, address));
 
-   if(handle->Runtime.VariableDataCache.IsDeleted == true)
-      return FLASH_FILE_SYSTEM_STATUS_VALUE_NOT_FOUND_ERROR;
+   if(handle->Runtime.FileDataCache.IsDeleted == true)
+      return FLASH_FILE_SYSTEM_STATUS_FILE_NOT_FOUND_ERROR;
 
-   if(size > handle->Runtime.VariableDataCache.Size)
+   if(size > handle->Runtime.FileDataCache.Size)
    {
-      SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_WRONG_VARIABLE_SIZE);
-      return FLASH_FILE_SYSTEM_STATUS_VALUE_SIZE_ERROR;
+      SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_WRONG_FILE_SIZE);
+      return FLASH_FILE_SYSTEM_STATUS_FILE_SIZE_ERROR;
    }
 
    /* data begins right after preamble block */
-   SeekReadCursor(&__ACTIVE_ITERATOR(handle), NextBlockAddress(handle->Runtime.VariableDataCache.MemoryAddress));
+   SeekReadCursor(&__ACTIVE_ITERATOR(handle), NextBlockAddress(handle->Runtime.FileDataCache.MemoryAddress));
 
    while(size > 0)
    {
@@ -292,7 +292,7 @@ FlashFileSystemStatus FlashFileSystemWrite(__SDEVICE_HANDLE(FlashFileSystem) *ha
    SDeviceAssert(address <= __FLASH_FILE_SYSTEM_MAX_ADDRESS);
    SDeviceAssert(data != NULL);
 
-   return WriteVariable(handle, address, data, size, false);
+   return WriteFile(handle, address, data, size, false);
 }
 
 FlashFileSystemStatus FlashFileSystemDelete(__SDEVICE_HANDLE(FlashFileSystem) *handle, FlashFileSystemAddress address)
@@ -301,5 +301,5 @@ FlashFileSystemStatus FlashFileSystemDelete(__SDEVICE_HANDLE(FlashFileSystem) *h
    SDeviceAssert(handle->IsInitialized == true);
    SDeviceAssert(address <= __FLASH_FILE_SYSTEM_MAX_ADDRESS);
 
-   return WriteVariable(handle, address, NULL, 0, true);
+   return WriteFile(handle, address, NULL, 0, true);
 }

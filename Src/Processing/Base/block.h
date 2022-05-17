@@ -57,7 +57,7 @@ typedef union
          {
             CrcType Crc;
             bool IsDeleted;
-            uint8_t VariableSize;
+            uint8_t FileSize;
             FlashFileSystemAddress Address;
             uint8_t Padding;
          } AsDataPreamble;
@@ -83,7 +83,7 @@ static inline size_t BlocksSize(size_t blocksCount)
    return blocksCount * sizeof(FileSystemBlock);
 }
 
-static inline size_t VariableBlocksCount(size_t variableSize)
+static inline size_t FileBlocksCount(size_t variableSize)
 {
    return 1 + __CEIL_INTEGER_DIVISION(variableSize, BlocksSize(1) - sizeof(BlockDescriptor));
 }
