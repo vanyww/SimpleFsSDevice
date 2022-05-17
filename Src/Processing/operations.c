@@ -15,7 +15,7 @@ static FlashFileSystemStatus SkipBackToNotEmptyBlock(__SDEVICE_HANDLE(FlashFileS
    FlashFileSystemStatus state;
    while((state = PeekFromCurrentBlock(handle, iterator, &block)) == FLASH_FILE_SYSTEM_STATUS_OK)
    {
-      if(IsBlockEmpty(&block) != true)
+      if(IsBlockEmpty(handle, &block) != true)
          return FLASH_FILE_SYSTEM_STATUS_OK;
 
       DecrementReadCursor(iterator);
@@ -41,9 +41,9 @@ static FlashFileSystemStatus SkipBackToBlockOfType(__SDEVICE_HANDLE(FlashFileSys
    return state;
 }
 
-void InvalidateVariableDataCache(__SDEVICE_HANDLE(FlashFileSystem) *handle)
+void InvalidateFileDataCache(__SDEVICE_HANDLE(FlashFileSystem) *handle)
 {
-   handle->Runtime.VariableDataCache.Address = __FLASH_FILE_SYSTEM_MAX_ADDRESS + 1;
+   handle->Runtime.FileDataCache.Address = __FLASH_FILE_SYSTEM_MAX_ADDRESS + 1;
 }
 
 FlashFileSystemStatus SetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *handle,
@@ -58,7 +58,7 @@ FlashFileSystemStatus SetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *ha
          .AsHeader = (struct HeaderBlock)
          {
             .State = headerState,
-            .Padding = __BYTE_EMPTY_VALUE
+            .Padding = ErasedByteValue(handle)
          }
       }
    };
@@ -113,7 +113,7 @@ FlashFileSystemStatus GetSectorInitialState(__SDEVICE_HANDLE(FlashFileSystem) *h
    state = SkipBackToNotEmptyBlock(handle, iterator);
 
    /* no written blocks -> sector empty, set write cursor to start of the sector */
-   if(state == FLASH_FILE_SYSTEM_STATUS_VALUE_NOT_FOUND_ERROR)
+   if(state == FLASH_FILE_SYSTEM_STATUS_FILE_NOT_FOUND_ERROR)
    {
       sectorState->IsEmpty = true;
       SeekWriteCursor(iterator, IteratorStart(handle, iterator));
@@ -128,7 +128,7 @@ FlashFileSystemStatus GetSectorInitialState(__SDEVICE_HANDLE(FlashFileSystem) *h
 
    state = GetSectorHeaderState(handle, iterator, &sectorState->HeaderState);
 
-   if(state == FLASH_FILE_SYSTEM_STATUS_VALUE_NOT_FOUND_ERROR)
+   if(state == FLASH_FILE_SYSTEM_STATUS_FILE_NOT_FOUND_ERROR)
    {
       sectorState->HasValidHeaderState = false;
       return FLASH_FILE_SYSTEM_STATUS_OK;
@@ -140,11 +140,11 @@ FlashFileSystemStatus GetSectorInitialState(__SDEVICE_HANDLE(FlashFileSystem) *h
    return FLASH_FILE_SYSTEM_STATUS_OK;
 }
 
-FlashFileSystemStatus MoveVariableDataToCache(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                              FlashFileSystemAddress variableAddress)
+FlashFileSystemStatus MoveFileDataToCache(__SDEVICE_HANDLE(FlashFileSystem) *handle,
+                                          FlashFileSystemAddress fileAddress)
 {
-   /* variable with requested address is already in cache */
-   if(handle->Runtime.VariableDataCache.Address == variableAddress)
+   /* file with requested address is already in cache */
+   if(handle->Runtime.FileDataCache.Address == fileAddress)
       return FLASH_FILE_SYSTEM_STATUS_OK;
 
    FlashFileSystemStatus state;
@@ -157,7 +157,7 @@ FlashFileSystemStatus MoveVariableDataToCache(__SDEVICE_HANDLE(FlashFileSystem) 
    while((state = SkipBackToBlockOfType(handle, iterator, BLOCK_DESCRIPTOR_PREAMBLE)) == FLASH_FILE_SYSTEM_STATUS_OK)
    {
       /* create temporary cache instance for storage */
-      __typeof__(handle->Runtime.VariableDataCache) cache;
+      __typeof__(handle->Runtime.FileDataCache) cache;
       FileSystemBlock block;
 
       cache.MemoryAddress = iterator->ReadCursor;
@@ -167,14 +167,14 @@ FlashFileSystemStatus MoveVariableDataToCache(__SDEVICE_HANDLE(FlashFileSystem) 
 
       cache.Address = block.AsBlock.AsDataPreamble.Address;
 
-      if(cache.Address != variableAddress)
+      if(cache.Address != fileAddress)
       {
          SeekReadCursor(iterator, PreviousBlockAddress(cache.MemoryAddress));
          continue;
       }
 
       cache.IsDeleted = block.AsBlock.AsDataPreamble.IsDeleted;
-      cache.Size = block.AsBlock.AsDataPreamble.VariableSize;
+      cache.Size = block.AsBlock.AsDataPreamble.FileSize;
 
       CrcType readCrc = block.AsBlock.AsDataPreamble.Crc,
               computedCrc = ComputeHeaderBlockCrc(&block);
@@ -183,7 +183,7 @@ FlashFileSystemStatus MoveVariableDataToCache(__SDEVICE_HANDLE(FlashFileSystem) 
 
       if(cache.IsDeleted != true && cache.Size != 0)
       {
-         /* compute crc and in-memory variable size to validate it */
+         /* compute crc and in-memory file size to validate it */
          while((state = ReadForwardFromCurrentBlock(handle, iterator, &block)) == FLASH_FILE_SYSTEM_STATUS_OK)
          {
             if(IsBlockOfType(&block, BLOCK_DESCRIPTOR_VARIABLE_DATA) != true)
@@ -197,20 +197,20 @@ FlashFileSystemStatus MoveVariableDataToCache(__SDEVICE_HANDLE(FlashFileSystem) 
                break;
          }
 
-         if(state != FLASH_FILE_SYSTEM_STATUS_VALUE_NOT_FOUND_ERROR)
+         if(state != FLASH_FILE_SYSTEM_STATUS_FILE_NOT_FOUND_ERROR)
             __RETURN_ERROR_IF_ANY(state);
       }
 
       /* read size and crc are equal to computed ones, entry is valid */
       if(computedCrc == readCrc && leftToReadSize == 0)
       {
-         handle->Runtime.VariableDataCache = cache;
+         handle->Runtime.FileDataCache = cache;
          return FLASH_FILE_SYSTEM_STATUS_OK;
       }
 
       SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_CORRUPTED_STATE);
 
-      /* move read cursor to previous block of current variable's preamble */
+      /* move read cursor to previous block of current file's preamble */
       SeekReadCursor(iterator, PreviousBlockAddress(cache.MemoryAddress));
    }
 
@@ -225,26 +225,26 @@ FlashFileSystemStatus TransferSectors(__SDEVICE_HANDLE(FlashFileSystem) *handle)
 
    __RETURN_ERROR_IF_ANY(SetSectorHeaderState(handle, target, HEADER_STATE_TRANSFER_ONGOING));
 
-   /* run through all used addresses and copy variables to target sector */
+   /* run through all used addresses and copy file to target sector */
    for(FlashFileSystemAddress address = 0; address <= handle->Init.MaxUsedAddress; address++)
    {
-      FlashFileSystemStatus state = MoveVariableDataToCache(handle, address);
+      FlashFileSystemStatus state = MoveFileDataToCache(handle, address);
 
-      /* variable not found, maybe deleted before last transfer -> just skip it */
-      if(state == FLASH_FILE_SYSTEM_STATUS_VALUE_NOT_FOUND_ERROR)
+      /* file not found, maybe deleted before last transfer -> just skip it */
+      if(state == FLASH_FILE_SYSTEM_STATUS_FILE_NOT_FOUND_ERROR)
          continue;
 
       __RETURN_ERROR_IF_ANY(state);
 
-      /* variable is deleted, no need to transfer it */
-      if(handle->Runtime.VariableDataCache.IsDeleted == true)
+      /* file is deleted, no need to transfer it */
+      if(handle->Runtime.FileDataCache.IsDeleted == true)
          continue;
 
-      size_t variableBlocksCount = VariableBlocksCount(handle->Runtime.VariableDataCache.Size);
-      SeekReadCursor(source, handle->Runtime.VariableDataCache.MemoryAddress);
+      size_t fileBlocksCount = FileBlocksCount(handle->Runtime.FileDataCache.Size);
+      SeekReadCursor(source, handle->Runtime.FileDataCache.MemoryAddress);
 
-      /* copy each variable's block from source to target sector */
-      while(variableBlocksCount-- > 0)
+      /* copy each file's block from source to target sector */
+      while(fileBlocksCount-- > 0)
       {
          FileSystemBlock block;
          __RETURN_ERROR_IF_ANY(ReadForwardFromCurrentBlock(handle, source, &block));
@@ -255,7 +255,7 @@ FlashFileSystemStatus TransferSectors(__SDEVICE_HANDLE(FlashFileSystem) *handle)
    __RETURN_ERROR_IF_ANY(SetSectorHeaderState(handle, target, HEADER_STATE_TRANSFER_END));
    __RETURN_ERROR_IF_ANY(FormatSectorToState(handle, source, HEADER_STATE_ERASED));
    __RETURN_ERROR_IF_ANY(SetSectorHeaderState(handle, target, HEADER_STATE_ACTIVE));
-   InvalidateVariableDataCache(handle);
+   InvalidateFileDataCache(handle);
    handle->Runtime.ActiveIteratorIndex = nextIteratorIndex;
 
    return FLASH_FILE_SYSTEM_STATUS_OK;

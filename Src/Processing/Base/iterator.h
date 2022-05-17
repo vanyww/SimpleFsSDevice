@@ -70,7 +70,7 @@ static inline FlashFileSystemStatus PeekFromCurrentBlock(__SDEVICE_HANDLE(FlashF
                                                          FileSystemBlock *block)
 {
    if(CanRead(handle, iterator) != true)
-      return FLASH_FILE_SYSTEM_STATUS_VALUE_NOT_FOUND_ERROR;
+      return FLASH_FILE_SYSTEM_STATUS_FILE_NOT_FOUND_ERROR;
 
    return ReadBlock(handle, iterator->ReadCursor, block);
 }
@@ -80,7 +80,7 @@ static inline FlashFileSystemStatus ReadForwardFromCurrentBlock(__SDEVICE_HANDLE
                                                                 FileSystemBlock *block)
 {
    if(CanRead(handle, iterator) != true)
-      return FLASH_FILE_SYSTEM_STATUS_VALUE_NOT_FOUND_ERROR;
+      return FLASH_FILE_SYSTEM_STATUS_FILE_NOT_FOUND_ERROR;
 
    uintptr_t address = iterator->ReadCursor;
    IncrementReadCursor(iterator);
@@ -93,7 +93,7 @@ static inline FlashFileSystemStatus ReadBackwardFromCurrentBlock(__SDEVICE_HANDL
                                                                  FileSystemBlock *block)
 {
    if(CanRead(handle, iterator) != true)
-      return FLASH_FILE_SYSTEM_STATUS_VALUE_NOT_FOUND_ERROR;
+      return FLASH_FILE_SYSTEM_STATUS_FILE_NOT_FOUND_ERROR;
 
    uintptr_t address = iterator->ReadCursor;
    DecrementReadCursor(iterator);

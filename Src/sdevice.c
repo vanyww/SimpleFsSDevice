@@ -1,7 +1,7 @@
 #include "Processing/Base/block.h"
 
 FlashFileSystemStatus FlashFileSystemProcessInitialState(__SDEVICE_HANDLE(FlashFileSystem) *);
-void InvalidateVariableDataCache(__SDEVICE_HANDLE(FlashFileSystem) *);
+void InvalidateFileDataCache(__SDEVICE_HANDLE(FlashFileSystem) *);
 
 __SDEVICE_INITIALIZE_HANDLE_DECLARATION(FlashFileSystem, handle)
 {
@@ -15,7 +15,7 @@ __SDEVICE_INITIALIZE_HANDLE_DECLARATION(FlashFileSystem, handle)
    for(size_t i = 0; i < __FLASH_FILE_SYSTEM_SECTORS_COUNT; i++)
       handle->Runtime.Iterators[i].SectorIndex = i;
 
-   InvalidateVariableDataCache(handle);
+   InvalidateFileDataCache(handle);
    if(FlashFileSystemProcessInitialState(handle) != FLASH_FILE_SYSTEM_STATUS_OK)
       return;
 
