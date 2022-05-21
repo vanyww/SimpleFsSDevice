@@ -30,3 +30,4 @@ FlashFileSystemStatus GetSectorInitialState(__SDEVICE_HANDLE(FlashFileSystem) *,
                                             SectorInitialState *);
 FlashFileSystemStatus MoveFileDataToCache(__SDEVICE_HANDLE(FlashFileSystem) *, FlashFileSystemAddress);
 FlashFileSystemStatus TransferSectors(__SDEVICE_HANDLE(FlashFileSystem) *);
+void InvalidateFileDataCache(__SDEVICE_HANDLE(FlashFileSystem) *);
