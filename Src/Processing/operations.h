@@ -19,18 +19,15 @@ typedef struct
 FlashFileSystemStatus SetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *,
                                            FlashFileSystemIterator *,
                                            BlockHeaderState);
-
 FlashFileSystemStatus GetSectorHeaderState(__SDEVICE_HANDLE(FlashFileSystem) *,
                                            FlashFileSystemIterator *,
                                            BlockHeaderState *);
-
 FlashFileSystemStatus FormatSectorToState(__SDEVICE_HANDLE(FlashFileSystem) *,
                                           FlashFileSystemIterator *,
                                           BlockHeaderState);
-
 FlashFileSystemStatus GetSectorInitialState(__SDEVICE_HANDLE(FlashFileSystem) *,
                                             FlashFileSystemIterator *,
                                             SectorInitialState *);
-
 FlashFileSystemStatus MoveFileDataToCache(__SDEVICE_HANDLE(FlashFileSystem) *, FlashFileSystemAddress);
 FlashFileSystemStatus TransferSectors(__SDEVICE_HANDLE(FlashFileSystem) *);
+void InvalidateFileDataCache(__SDEVICE_HANDLE(FlashFileSystem) *);
