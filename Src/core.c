@@ -3,6 +3,31 @@
 
 #include <memory.h>
 
+static FlashFileSystemStatus FlashFileSystemProcessInitialState(__SDEVICE_HANDLE(FlashFileSystem) *);
+
+/**********************************************************************************************************************/
+
+__SDEVICE_INITIALIZE_HANDLE_DECLARATION(FlashFileSystem, handle)
+{
+   SDeviceAssert(handle != NULL);
+   SDeviceAssert(handle->IsInitialized == false);
+   SDeviceAssert(handle->Init.TryWriteBlock != NULL);
+   SDeviceAssert(handle->Init.TryReadBlock != NULL);
+   SDeviceAssert(handle->Init.TryEraseSector != NULL);
+   SDeviceAssert(handle->Init.MaxUsedAddress <= __FLASH_FILE_SYSTEM_MAX_ADDRESS);
+
+   for(size_t i = 0; i < __FLASH_FILE_SYSTEM_SECTORS_COUNT; i++)
+      handle->Runtime.Iterators[i].SectorIndex = i;
+
+   InvalidateFileDataCache(handle);
+   if(FlashFileSystemProcessInitialState(handle) != FLASH_FILE_SYSTEM_STATUS_OK)
+      return;
+
+   handle->IsInitialized = true;
+}
+
+/**********************************************************************************************************************/
+
 static FlashFileSystemStatus WriteFile(__SDEVICE_HANDLE(FlashFileSystem) *handle,
                                        FlashFileSystemAddress address,
                                        const void *data,
@@ -85,7 +110,7 @@ static FlashFileSystemStatus ClearMemoryState(__SDEVICE_HANDLE(FlashFileSystem) 
    return FLASH_FILE_SYSTEM_STATUS_OK;
 }
 
-FlashFileSystemStatus FlashFileSystemProcessInitialState(__SDEVICE_HANDLE(FlashFileSystem) *handle)
+static FlashFileSystemStatus FlashFileSystemProcessInitialState(__SDEVICE_HANDLE(FlashFileSystem) *handle)
 {
    SDeviceAssert(handle != NULL);
 
