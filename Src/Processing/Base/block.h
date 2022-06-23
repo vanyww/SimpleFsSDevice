@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../Inc/FlashFileSystemSDevice/core.h"
+#include "../../private.h"
 #include "../../CRC/crc16.h"
 
 #define __IS_VALID_BLOCK_HEADER_STATE(state) (                                                                         \

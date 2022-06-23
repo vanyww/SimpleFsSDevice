@@ -15,13 +15,6 @@ typedef struct
    size_t Size;
 } FlashFileSystemSector;
 
-typedef struct
-{
-   size_t SectorIndex;
-   uintptr_t WriteCursor;
-   uintptr_t ReadCursor;
-} FlashFileSystemIterator;
-
 typedef enum
 {
    FLASH_FILE_SYSTEM_STATUS_OK,
@@ -31,16 +24,9 @@ typedef enum
    FLASH_FILE_SYSTEM_STATUS_FILE_SIZE_ERROR
 } FlashFileSystemStatus;
 
-typedef struct
-{
-   FlashFileSystemAddress Address;
-   uintptr_t MemoryAddress;
-   uint8_t Size;
-   bool IsDeleted;
-} FlashFileSystemFileDataCache;
-
 /* Satty's interface start */
 
+__SDEVICE_RUNTIME_DATA_FORWARD_DECLARATION(FlashFileSystem);
 __SDEVICE_HANDLE_FORWARD_DECLARATION(FlashFileSystem);
 
 typedef struct
@@ -51,18 +37,14 @@ typedef struct
    FlashFileSystemSector Sectors[__FLASH_FILE_SYSTEM_SECTORS_COUNT];
    FlashFileSystemAddress MaxUsedAddress;
    bool IsErasingToZero;
-} __SDEVICE_INIT_DATA(FlashFileSystem);
+} __SDEVICE_INIT_ARGUMENTS(FlashFileSystem);
 
-typedef struct
-{
-   size_t ActiveIteratorIndex;
-   FlashFileSystemIterator Iterators[__FLASH_FILE_SYSTEM_SECTORS_COUNT];
-   FlashFileSystemFileDataCache FileDataCache;
-} __SDEVICE_RUNTIME_DATA(FlashFileSystem);
+typedef __SDEVICE_INIT_ARGUMENTS(FlashFileSystem) __SDEVICE_INIT_DATA(FlashFileSystem);
 
 __SDEVICE_HANDLE_DEFINITION(FlashFileSystem);
 
-__SDEVICE_INITIALIZE_HANDLE_DECLARATION(FlashFileSystem,);
+__SDEVICE_CREATE_HANDLE_DECLARATION(FlashFileSystem,,,);
+__SDEVICE_DISPOSE_HANDLE_DECLARATION(FlashFileSystem,);
 
 typedef enum
 {
