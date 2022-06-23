@@ -300,7 +300,7 @@ FlashFileSystemStatus FlashFileSystemRead(__SDEVICE_HANDLE(FlashFileSystem) *han
 
    if(size > handle->Runtime->FileDataCache.Size)
    {
-      SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_WRONG_FILE_SIZE);
+      SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_FILE_SIZE_MISMATCH);
       return FLASH_FILE_SYSTEM_STATUS_FILE_SIZE_ERROR;
    }
 
