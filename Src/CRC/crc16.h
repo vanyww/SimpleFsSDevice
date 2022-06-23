@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-typedef uint16_t CrcType;
+typedef uint16_t FlashFileSystemCrcType;
 
-CrcType ComputeCrc16(const void *, size_t);
-CrcType UpdateCrc16(const void *, size_t, uint16_t);
+FlashFileSystemCrcType FlashFileSystemComputeCrc16(const void *, size_t);
+FlashFileSystemCrcType FlashFileSystemUpdateCrc16(const void *, size_t, uint16_t);
