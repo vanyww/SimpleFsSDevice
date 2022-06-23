@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../Inc/FlashFileSystemSDevice/core.h"
 
 typedef struct
