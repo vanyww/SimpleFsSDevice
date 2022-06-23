@@ -2,7 +2,7 @@
 
 #include "sector.h"
 
-#define __ACTIVE_ITERATOR(handle) (handle->Runtime.Iterators[handle->Runtime.ActiveIteratorIndex])
+#define __ACTIVE_ITERATOR(handle) (handle->Runtime->Iterators[handle->Runtime->ActiveIteratorIndex])
 #define __ITERATOR_SECTOR(handle, iterator) (handle->Init.Sectors[iterator->SectorIndex])
 
 static inline uintptr_t IteratorStart(__SDEVICE_HANDLE(FlashFileSystem) *handle, FlashFileSystemIterator *iterator)

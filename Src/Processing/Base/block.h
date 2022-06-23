@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../Inc/FlashFileSystemSDevice/core.h"
+#include "../../private.h"
 #include "../../CRC/crc16.h"
 
 #define __IS_VALID_BLOCK_HEADER_STATE(state) (                                                                         \
@@ -43,14 +43,14 @@ typedef union
       {
          struct __attribute__((packed)) HeaderBlock
          {
-            CrcType Crc;
+            FlashFileSystemCrcType Crc;
             BlockHeaderState State;
             uint8_t Padding;
          } AsHeader;
 
          struct __attribute__((packed)) DataPreambleBlock
          {
-            CrcType Crc;
+            FlashFileSystemCrcType Crc;
             bool IsDeleted;
             uint8_t FileSize;
             FlashFileSystemAddress Address;
@@ -123,19 +123,25 @@ static inline bool IsBlockOfType(FileSystemBlock *block, BlockDescriptor type)
    return (block->AsBlock.Descriptor & type) == type;
 }
 
-static inline CrcType ComputeHeaderBlockCrc(FileSystemBlock *block)
+static inline FlashFileSystemCrcType ComputeHeaderBlockCrc(FileSystemBlock *block)
 {
-   return ComputeCrc16(&block->AsBlock.AsHeader.State, BlocksSize(1) - sizeof(CrcType));
+   return FlashFileSystemComputeCrc16(&block->AsBlock.AsHeader.State,
+                                      BlocksSize(1) - sizeof(FlashFileSystemCrcType));
 }
 
-static inline CrcType ComputeDataPreambleBlockCrc(FileSystemBlock *block)
+static inline FlashFileSystemCrcType ComputeDataPreambleBlockCrc(FileSystemBlock *block)
 {
-   return ComputeCrc16(&block->AsBlock.AsDataPreamble.IsDeleted, BlocksSize(1) - sizeof(CrcType));
+   return FlashFileSystemComputeCrc16(&block->AsBlock.AsDataPreamble.IsDeleted,
+                                      BlocksSize(1) - sizeof(FlashFileSystemCrcType));
 }
 
-static inline CrcType UpdateCrcWithDataBlock(FileSystemBlock *block, CrcType crc, size_t size)
+static inline FlashFileSystemCrcType UpdateCrcWithDataBlock(FileSystemBlock *block,
+                                                            FlashFileSystemCrcType crc,
+                                                            size_t size)
 {
-   return UpdateCrc16(&block->AsBlock.AsData.Data, __MIN(size, sizeof(block->AsBlock.AsData.Data)), crc);
+   return FlashFileSystemUpdateCrc16(&block->AsBlock.AsData.Data,
+                                     __MIN(size, sizeof(block->AsBlock.AsData.Data)),
+                                     crc);
 }
 
 static inline FlashFileSystemStatus ReadBlock(__SDEVICE_HANDLE(FlashFileSystem) *handle,
