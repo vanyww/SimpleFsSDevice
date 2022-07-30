@@ -2,12 +2,12 @@
 <launchConfiguration type="org.eclipse.cdt.launch.applicationLaunchType">
     <intAttribute key="org.eclipse.cdt.launch.ATTR_BUILD_BEFORE_LAUNCH_ATTR" value="2"/>
     <stringAttribute key="org.eclipse.cdt.launch.COREFILE_PATH" value=""/>
-    <stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="TestBuild\FlashFileSystemSDevice.exe"/>
-    <stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="FlashFileSystemSDevice"/>
+    <stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="TestBuild\SimpleFsSDevice.exe"/>
+    <stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="SimpleFsSDevice"/>
     <booleanAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_AUTO_ATTR" value="true"/>
     <stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value="cdt.managedbuild.config.gnu.mingw.exe.debug.412968916.1817656088.1058066027.1111068606"/>
     <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-        <listEntry value="/FlashFileSystemSDevice"/>
+        <listEntry value="/SimpleFsSDevice"/>
     </listAttribute>
     <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
         <listEntry value="4"/>
