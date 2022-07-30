@@ -1,8 +1,8 @@
-#include "crc16.h"
+#include "crc.h"
 
-#define __FLASH_FILE_SYSTEM_CRC_INITIAL_VALUE 0xFFFF
+#define __SIMPLE_FS_CRC_INITIAL_VALUE 0xFFFF
 
-static const uint16_t LookupTable[] =
+static const CrcType LookupTable[] =
 {
    0x0000, 0xC0C1, 0xC181, 0x0140, 0xC301, 0x03C0, 0x0280, 0xC241,
    0xC601, 0x06C0, 0x0780, 0xC741, 0x0500, 0xC5C1, 0xC481, 0x0440,
@@ -38,12 +38,12 @@ static const uint16_t LookupTable[] =
    0x8201, 0x42C0, 0x4380, 0x8341, 0x4100, 0x81C1, 0x8081, 0x4040
 };
 
-FlashFileSystemCrcType FlashFileSystemComputeCrc16(const void *data, size_t length)
+CrcType SimpleFsSDeviceComputeCrc(const void *data, size_t length)
 {
-   return FlashFileSystemUpdateCrc16(data, length, __FLASH_FILE_SYSTEM_CRC_INITIAL_VALUE);
+   return SimpleFsSDeviceUpdateCrc(data, length, __SIMPLE_FS_CRC_INITIAL_VALUE);
 }
 
-FlashFileSystemCrcType FlashFileSystemUpdateCrc16(const void *data, size_t length, FlashFileSystemCrcType crc)
+CrcType SimpleFsSDeviceUpdateCrc(const void *data, CrcType crc, size_t length)
 {
    const uint8_t *bytes = data;
    uint8_t index;

@@ -1,25 +1,32 @@
 #pragma once
 
-#include "../Inc/FlashFileSystemSDevice/core.h"
+#include "SimpleFsSDevice/core.h"
+#include "CRC/crc.h"
+
+__SDEVICE_RUNTIME_DATA_FORWARD_DECLARATION(SimpleFs);
 
 typedef struct
 {
-   size_t SectorIndex;
+   SimpleFsSDeviceSector *Sector;
    uintptr_t WriteCursor;
    uintptr_t ReadCursor;
-} FlashFileSystemIterator;
+} Iterator;
 
 typedef struct
 {
-   FlashFileSystemAddress Address;
    uintptr_t MemoryAddress;
+   SimpleFsSDeviceAddress Address;
+   CrcType Crc;
    uint8_t Size;
    bool IsDeleted;
-} FlashFileSystemFileDataCache;
+   bool IsValid;
+} FileData;
 
-struct __SDEVICE_RUNTIME_DATA(FlashFileSystem)
+struct __SDEVICE_RUNTIME_DATA(SimpleFs)
 {
-   size_t ActiveIteratorIndex;
-   FlashFileSystemIterator Iterators[__FLASH_FILE_SYSTEM_SECTORS_COUNT];
-   FlashFileSystemFileDataCache FileDataCache;
+   Iterator *ActiveIterator;
+   Iterator Iterators[__SIMPLE_FS_SDEVICE_SECTORS_COUNT];
+   FileData FileDataCache;
 };
+
+__SDEVICE_HANDLE_DEFINITION(SimpleFs);

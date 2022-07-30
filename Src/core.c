@@ -1,329 +1,84 @@
-#include "Processing/operations.h"
-#include "Processing/Base/iterator.h"
+#include "Operations/operations.h"
+#include "Operations/Helpers/helpers.h"
+#include "Operations/Base/iterator.h"
+#include "SDeviceCore/errors.h"
+#include "SDeviceCore/heap.h"
 
 #include <memory.h>
-#include <stdlib.h>
-
-static FlashFileSystemStatus FlashFileSystemProcessInitialState(__SDEVICE_HANDLE(FlashFileSystem) *);
 
 /**********************************************************************************************************************/
 
-__SDEVICE_CREATE_HANDLE_DECLARATION(FlashFileSystem, arguments, instanceIndex, context)
+__SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFS, _init, _context, index)
 {
-   SDeviceAssert(arguments != NULL);
-   SDeviceAssert(arguments->TryWriteBlock != NULL);
-   SDeviceAssert(arguments->TryReadBlock != NULL);
-   SDeviceAssert(arguments->TryEraseSector != NULL);
-   SDeviceAssert(arguments->MaxUsedAddress <= __FLASH_FILE_SYSTEM_MAX_ADDRESS);
+   __SDEVICE_INIT_DATA(SimpleFs) *init = _init;
 
-   __SDEVICE_HANDLE(FlashFileSystem) handle =
-   {
-      .Init = *arguments,
-      .Runtime = __SDEVICE_MALLOC(sizeof(__SDEVICE_RUNTIME_DATA(FlashFileSystem))),
-      .Context = context,
-      .InstanceIndex = instanceIndex,
-      .IsInitialized = true
-   };
+   SDeviceAssert(init != NULL);
+   SDeviceAssert(init->WriteBlock != NULL);
+   SDeviceAssert(init->ReadBlock != NULL);
+   SDeviceAssert(init->EraseSector != NULL);
 
-   for(size_t i = 0; i < __FLASH_FILE_SYSTEM_SECTORS_COUNT; i++)
-      handle.Runtime->Iterators[i].SectorIndex = i;
+   __SDEVICE_HANDLE(SimpleFs) *handle = SDeviceMalloc(sizeof(__SDEVICE_HANDLE(SimpleFs)));
 
-   FlashFileSystemInvalidateFileDataCache(&handle);
-   FlashFileSystemProcessInitialState(&handle);
+   handle->Header = (SDeviceHandleHeader){ _context, SIMPLE_FS_SDEVICE_STATUS_OK, index };
+   handle->Init = *init;
+
+   for(size_t i = 0; i < __SIMPLE_FS_SDEVICE_SECTORS_COUNT; i++)
+      handle->Runtime.Iterators[i].Sector = &handle->Init.Sectors[i];
+
+   handle->Runtime.FileDataCache.IsValid = false;
+   SimpleFsSDeviceProcessInitialState(handle);
 
    return handle;
 }
 
-__SDEVICE_DISPOSE_HANDLE_DECLARATION(FlashFileSystem, handle)
+__SDEVICE_DISPOSE_HANDLE_DECLARATION(SimpleFS, _handlePointer)
 {
-   __SDEVICE_FREE(handle->Runtime);
-   handle->Runtime = NULL;
+   __SDEVICE_HANDLE(SimpleFs) **handlePointer = _handlePointer;
+   SDeviceFree(*handlePointer);
+   *handlePointer = NULL;
 }
 
 /**********************************************************************************************************************/
 
-static FlashFileSystemStatus WriteFile(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                       FlashFileSystemAddress address,
-                                       const void *data,
-                                       size_t size,
-                                       bool delete)
-{
-   /* check if there is enough free space and initiate transfer if not */
-   if(EmptyBlocksCount(handle, &__ACTIVE_ITERATOR(handle)) < FileBlocksCount(size))
-   {
-      __RETURN_ERROR_IF_ANY(FlashFileSystemTransferSectors(handle));
-
-      /* there is still not enough space after transfer -> out of memory */
-      if(EmptyBlocksCount(handle, &__ACTIVE_ITERATOR(handle)) < FileBlocksCount(size))
-      {
-         SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_OUT_OF_MEMORY);
-         return FLASH_FILE_SYSTEM_STATUS_OUT_OF_MEMORY_ERROR;
-      }
-   }
-
-   /* create preamble block */
-   FileSystemBlock block;
-   block.AsBlock = (struct CommonBlock)
-   {
-      .Descriptor = BLOCK_DESCRIPTOR_PREAMBLE,
-      .AsDataPreamble = (struct DataPreambleBlock)
-      {
-         .IsDeleted = delete,
-         .FileSize = size,
-         .Address = address,
-         .Padding = ErasedByteValue(handle)
-      }
-   };
-
-   FlashFileSystemCrcType crc = ComputeDataPreambleBlockCrc(&block);
-   crc = FlashFileSystemUpdateCrc16(data, size, crc);
-   block.AsBlock.AsDataPreamble.Crc = crc;
-
-   /* write preamble block */
-   __RETURN_ERROR_IF_ANY(WriteForwardToCurrentBlock(handle, &__ACTIVE_ITERATOR(handle), &block));
-
-   /* if it's delete write, there is no other blocks */
-   if(delete == true)
-      return FLASH_FILE_SYSTEM_STATUS_OK;
-
-   block.AsBlock.Descriptor = BLOCK_DESCRIPTOR_VARIABLE_DATA;
-
-   /* make and write data blocks */
-   while(size > 0)
-   {
-      size_t blockWriteSize = __MIN(size, sizeof(block.AsBlock.AsData.Data));
-      memcpy(block.AsBlock.AsData.Data, data, blockWriteSize);
-
-      /* set all unused data bytes to empty value if block has such */
-      if(blockWriteSize < sizeof(block.AsBlock.AsData.Data))
-      {
-         memset(&block.AsBlock.AsData.Data[blockWriteSize],
-                ErasedByteValue(handle),
-                sizeof(block.AsBlock.AsData.Data) - blockWriteSize);
-      }
-
-      __RETURN_ERROR_IF_ANY(WriteForwardToCurrentBlock(handle, &__ACTIVE_ITERATOR(handle), &block));
-
-      data += blockWriteSize;
-      size -= blockWriteSize;
-   }
-
-   return FLASH_FILE_SYSTEM_STATUS_OK;
-}
-
-static FlashFileSystemStatus ClearMemoryState(__SDEVICE_HANDLE(FlashFileSystem) *handle)
-{
-   SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_CORRUPTED_STATE);
-
-   for(size_t i = 0; i < __FLASH_FILE_SYSTEM_SECTORS_COUNT; i++)
-   {
-      __RETURN_ERROR_IF_ANY(
-            FlashFileSystemFormatSectorToState(handle, &handle->Runtime->Iterators[i], HEADER_STATE_ERASED));
-   }
-
-   __RETURN_ERROR_IF_ANY(
-         FlashFileSystemFormatSectorToState(handle, &handle->Runtime->Iterators[0], HEADER_STATE_ACTIVE));
-   handle->Runtime->ActiveIteratorIndex = 0;
-
-   return FLASH_FILE_SYSTEM_STATUS_OK;
-}
-
-static FlashFileSystemStatus FlashFileSystemProcessInitialState(__SDEVICE_HANDLE(FlashFileSystem) *handle)
-{
-   SDeviceAssert(handle != NULL);
-
-   SectorInitialState sectorsState[__FLASH_FILE_SYSTEM_SECTORS_COUNT];
-
-   /* read and partially preprocess sectors initial states */
-   for(size_t i = 0; i < __FLASH_FILE_SYSTEM_SECTORS_COUNT; i++)
-   {
-      __RETURN_ERROR_IF_ANY(
-            FlashFileSystemGetSectorInitialState(handle, &handle->Runtime->Iterators[i], &sectorsState[i]));
-
-      /* sector is empty, set it's header state to ERASED */
-      if(sectorsState[i].IsEmpty == true)
-      {
-         __RETURN_ERROR_IF_ANY(
-               FlashFileSystemFormatSectorToState(handle, &handle->Runtime->Iterators[i], HEADER_STATE_ERASED));
-         sectorsState[i].HeaderState = HEADER_STATE_ERASED;
-         continue;
-      }
-
-      /* sector has no valid header state, format it to ERASED state */
-      if(sectorsState[i].HasValidHeaderState != true)
-      {
-         __RETURN_ERROR_IF_ANY(
-               FlashFileSystemFormatSectorToState(handle, &handle->Runtime->Iterators[i], HEADER_STATE_ERASED));
-         sectorsState[i].HeaderState = HEADER_STATE_ERASED;
-         continue;
-      }
-   }
-
-   /* process sector header block state combinations */
-   switch(sectorsState[0].HeaderState)
-   {
-      case HEADER_STATE_ACTIVE:
-         switch(sectorsState[1].HeaderState)
-         {
-            case HEADER_STATE_TRANSFER_ONGOING:
-               __RETURN_ERROR_IF_ANY(
-                     FlashFileSystemFormatSectorToState(handle, &handle->Runtime->Iterators[1], HEADER_STATE_ERASED));
-               handle->Runtime->ActiveIteratorIndex = 0;
-               __RETURN_ERROR_IF_ANY(FlashFileSystemTransferSectors(handle));
-               break;
-
-            case HEADER_STATE_TRANSFER_END:
-               __RETURN_ERROR_IF_ANY(
-                     FlashFileSystemFormatSectorToState(handle, &handle->Runtime->Iterators[0], HEADER_STATE_ERASED));
-               handle->Runtime->ActiveIteratorIndex = 1;
-               __RETURN_ERROR_IF_ANY(
-                     FlashFileSystemFormatSectorToState(handle, &__ACTIVE_ITERATOR(handle), HEADER_STATE_ACTIVE));
-               break;
-
-            case HEADER_STATE_ERASED:
-               handle->Runtime->ActiveIteratorIndex = 0;
-               break;
-
-            /* invalid state */
-            case HEADER_STATE_ACTIVE:
-               return ClearMemoryState(handle);
-
-            default:
-               SDeviceAssert(false);
-               return FLASH_FILE_SYSTEM_STATUS_IO_MEMORY_ERROR;
-         }
-         break;
-
-      case HEADER_STATE_TRANSFER_ONGOING:
-         switch(sectorsState[1].HeaderState)
-         {
-            case HEADER_STATE_ACTIVE:
-               __RETURN_ERROR_IF_ANY(
-                     FlashFileSystemFormatSectorToState(handle, &handle->Runtime->Iterators[0], HEADER_STATE_ERASED));
-               handle->Runtime->ActiveIteratorIndex = 1;
-               __RETURN_ERROR_IF_ANY(FlashFileSystemTransferSectors(handle));
-               break;
-
-            /* invalid states */
-            case HEADER_STATE_TRANSFER_ONGOING:
-               /* fall through */
-            case HEADER_STATE_TRANSFER_END:
-               /* fall through */
-            case HEADER_STATE_ERASED:
-               return ClearMemoryState(handle);
-
-            default:
-               SDeviceAssert(false);
-               return FLASH_FILE_SYSTEM_STATUS_IO_MEMORY_ERROR;
-         }
-         break;
-
-      case HEADER_STATE_TRANSFER_END:
-         switch(sectorsState[1].HeaderState)
-         {
-            case HEADER_STATE_ACTIVE:
-               __RETURN_ERROR_IF_ANY(
-                     FlashFileSystemFormatSectorToState(handle, &handle->Runtime->Iterators[1], HEADER_STATE_ERASED));
-               /* fall through */
-            case HEADER_STATE_ERASED:
-               handle->Runtime->ActiveIteratorIndex = 0;
-               __RETURN_ERROR_IF_ANY(
-                     FlashFileSystemFormatSectorToState(handle, &__ACTIVE_ITERATOR(handle), HEADER_STATE_ACTIVE));
-               break;
-
-            /* invalid states */
-            case HEADER_STATE_TRANSFER_ONGOING:
-               /* fall through */
-            case HEADER_STATE_TRANSFER_END:
-               return ClearMemoryState(handle);
-
-            default:
-               SDeviceAssert(false);
-               return FLASH_FILE_SYSTEM_STATUS_IO_MEMORY_ERROR;
-         }
-         break;
-
-      case HEADER_STATE_ERASED:
-         switch(sectorsState[1].HeaderState)
-         {
-            case HEADER_STATE_ACTIVE:
-               handle->Runtime->ActiveIteratorIndex = 1;
-               break;
-
-            case HEADER_STATE_TRANSFER_END:
-               /* fall through */
-            case HEADER_STATE_ERASED:
-               handle->Runtime->ActiveIteratorIndex = 1;
-               __RETURN_ERROR_IF_ANY(
-                     FlashFileSystemFormatSectorToState(handle, &__ACTIVE_ITERATOR(handle), HEADER_STATE_ACTIVE));
-               break;
-
-            /* invalid states */
-            case HEADER_STATE_TRANSFER_ONGOING:
-               return ClearMemoryState(handle);
-
-            default:
-               SDeviceAssert(false);
-               return FLASH_FILE_SYSTEM_STATUS_IO_MEMORY_ERROR;
-         }
-         break;
-
-      default:
-         SDeviceAssert(false);
-         return FLASH_FILE_SYSTEM_STATUS_IO_MEMORY_ERROR;
-   }
-
-   return FLASH_FILE_SYSTEM_STATUS_OK;
-}
-
-FlashFileSystemStatus FlashFileSystemGetFileSize(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                                 FlashFileSystemAddress address,
-                                                 size_t *size)
+bool SimpleFsSDeviceTryGetFileSize(__SDEVICE_HANDLE(SimpleFs) *handle, SimpleFsSDeviceAddress address, size_t *size)
 {
    SDeviceAssert(handle != NULL);
    SDeviceAssert(handle->IsInitialized == true);
    SDeviceAssert(address <= __FLASH_FILE_SYSTEM_MAX_ADDRESS);
    SDeviceAssert(size != NULL);
 
-   __RETURN_ERROR_IF_ANY(FlashFileSystemMoveFileDataToCache(handle, address));
+   if(SimpleFsSDeviceTryMoveFileDataToCache(handle, address) != true ||
+      handle->Runtime.FileDataCache.IsDeleted == true)
+      return false;
 
-   if(handle->Runtime->FileDataCache.IsDeleted == true)
-      return FLASH_FILE_SYSTEM_STATUS_FILE_NOT_FOUND_ERROR;
+   *size = handle->Runtime.FileDataCache.Size;
 
-   *size = handle->Runtime->FileDataCache.Size;
-
-   return FLASH_FILE_SYSTEM_STATUS_OK;
+   return true;
 }
 
-FlashFileSystemStatus FlashFileSystemRead(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                          FlashFileSystemAddress address,
-                                          size_t size,
-                                          void *data)
+bool SimpleFsSDeviceTryRead(__SDEVICE_HANDLE(SimpleFs) *handle, SimpleFsSDeviceAddress address, size_t size, void *data)
 {
    SDeviceAssert(handle != NULL);
    SDeviceAssert(handle->IsInitialized == true);
    SDeviceAssert(address <= __FLASH_FILE_SYSTEM_MAX_ADDRESS);
    SDeviceAssert(data != NULL);
 
-   FileSystemBlock block;
+   Block block;
 
-   __RETURN_ERROR_IF_ANY(FlashFileSystemMoveFileDataToCache(handle, address));
+   if(SimpleFsSDeviceTryMoveFileDataToCache(handle, address) != true ||
+      handle->Runtime.FileDataCache.IsDeleted == true)
+      return false;
 
-   if(handle->Runtime->FileDataCache.IsDeleted == true)
-      return FLASH_FILE_SYSTEM_STATUS_FILE_NOT_FOUND_ERROR;
-
-   if(size > handle->Runtime->FileDataCache.Size)
-   {
-      SDeviceRuntimeErrorRaised(handle, FLASH_FILE_SYSTEM_RUNTIME_ERROR_FILE_SIZE_MISMATCH);
-      return FLASH_FILE_SYSTEM_STATUS_FILE_SIZE_ERROR;
-   }
+   if(size > handle->Runtime.FileDataCache.Size)
+      return false;
 
    /* data begins right after preamble block */
-   SeekReadCursor(&__ACTIVE_ITERATOR(handle), NextBlockAddress(handle->Runtime->FileDataCache.MemoryAddress));
+   SeekIteratorReadCursor(handle->Runtime.ActiveIterator,
+                          GetNextBlockAddress(handle->Runtime.FileDataCache.MemoryAddress));
 
    while(size > 0)
    {
-      __RETURN_ERROR_IF_ANY(ReadForwardFromCurrentBlock(handle, &__ACTIVE_ITERATOR(handle), &block));
+      IteratorTryReadForward(handle, handle->Runtime.ActiveIterator, &block);
 
       size_t blockReadSize = __MIN(size, sizeof(block.AsBlock.AsData.Data));
       memcpy(data, block.AsBlock.AsData.Data, blockReadSize);
@@ -332,27 +87,32 @@ FlashFileSystemStatus FlashFileSystemRead(__SDEVICE_HANDLE(FlashFileSystem) *han
       size -= blockReadSize;
    }
 
-   return FLASH_FILE_SYSTEM_STATUS_OK;
+   return true;
 }
 
-FlashFileSystemStatus FlashFileSystemWrite(__SDEVICE_HANDLE(FlashFileSystem) *handle,
-                                           FlashFileSystemAddress address,
-                                           size_t size,
-                                           const void *data)
+bool FlashFileSystemWrite(__SDEVICE_HANDLE(SimpleFs) *handle,
+                          SimpleFsSDeviceAddress address,
+                          size_t size,
+                          const void *data)
 {
    SDeviceAssert(handle != NULL);
    SDeviceAssert(handle->IsInitialized == true);
    SDeviceAssert(address <= __FLASH_FILE_SYSTEM_MAX_ADDRESS);
    SDeviceAssert(data != NULL);
 
-   return WriteFile(handle, address, data, size, false);
+   SimpleFsSDeviceWriteFile(handle, address, data, size, false);
+
+   return true;
 }
 
-FlashFileSystemStatus FlashFileSystemDelete(__SDEVICE_HANDLE(FlashFileSystem) *handle, FlashFileSystemAddress address)
+bool FlashFileSystemDelete(__SDEVICE_HANDLE(SimpleFs) *handle,
+                           SimpleFsSDeviceAddress address)
 {
    SDeviceAssert(handle != NULL);
    SDeviceAssert(handle->IsInitialized == true);
    SDeviceAssert(address <= __FLASH_FILE_SYSTEM_MAX_ADDRESS);
 
-   return WriteFile(handle, address, NULL, 0, true);
+   SimpleFsSDeviceWriteFile(handle, address, NULL, 0, true);
+
+   return true;
 }
