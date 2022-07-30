@@ -65,7 +65,7 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Inc"/>
-						<entry excluding="*/Test/|*/SDevice/" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="SDevice"/>
+						<entry excluding="*/Test|*/SDevice|*/Submodules" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="SDevice"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Src"/>
 					</sourceEntries>
 				</configuration>
@@ -123,7 +123,7 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Inc"/>
-						<entry excluding="*/Test/|*/SDevice/" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="SDevice"/>
+						<entry excluding="*/Test|*/SDevice|*/Submodules" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="SDevice"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Src"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Test"/>
 					</sourceEntries>
@@ -135,13 +135,23 @@
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="SimpleFsSDevice.com.st.stm32cube.ide.mcu.gnu.managedbuild.projecttype.lib.760647728" name="Static Library" projectType="com.st.stm32cube.ide.mcu.gnu.managedbuild.projecttype.lib"/>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="TestBuild">
+			<resource resourceType="PROJECT" workspacePath="/SimpleFsSDevice"/>
+		</configuration>
+		<configuration configurationName="LibraryBuild">
+			<resource resourceType="PROJECT" workspacePath="/SimpleFsSDevice"/>
+		</configuration>
+	</storageModule>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.exe.debug.412968916.1817656088.1058066027.1111068606;cdt.managedbuild.config.gnu.mingw.exe.debug.412968916.1817656088.1058066027.1111068606.;cdt.managedbuild.tool.gnu.c.compiler.mingw.exe.debug.1791304978;cdt.managedbuild.tool.gnu.c.compiler.input.33765822">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.lib.release.156137732;com.st.stm32cube.ide.mcu.gnu.managedbuild.config.lib.release.156137732.;com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.2133685309;com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.210477678">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 	</storageModule>
-	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
-	<storageModule moduleId="refreshScope"/>
 </cproject>
