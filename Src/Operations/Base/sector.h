@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../../Operations/Base/block.h"
 
 static inline uintptr_t GetSectorStartAddress(const SimpleFsSDeviceSector *sector)
