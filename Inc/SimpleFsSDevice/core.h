@@ -4,6 +4,10 @@
 
 #include <stdbool.h>
 
+#if (__SDEVICE_CORE_VERSION_MAJOR != 2) || (__SDEVICE_CORE_VERSION_MINOR < 2)
+#error SDevice core version is incorrect.
+#endif
+
 #define __SIMPLE_FS_SDEVICE_VERSION_MAJOR 2
 #define __SIMPLE_FS_SDEVICE_VERSION_MINOR 0
 #define __SIMPLE_FS_SDEVICE_VERSION_PATCH 0
