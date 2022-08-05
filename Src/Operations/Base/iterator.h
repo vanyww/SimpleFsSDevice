@@ -119,32 +119,24 @@ static inline bool IteratorTryWriteForward(__SDEVICE_HANDLE(SimpleFs) *handle, I
 
 static inline bool IteratorTryReadBackToNotEmptyBlock(__SDEVICE_HANDLE(SimpleFs) *handle, Iterator *iterator)
 {
-   for(;;)
+   for(Block block; IteratorTryPeek(handle, iterator, &block) == true; DecrementIteratorReadCursor(iterator))
    {
-      Block block;
-      if(IteratorTryPeek(handle, iterator, &block) != true)
-         return false;
-
       if(IsBlockEmpty(handle, &block) != true)
          return true;
-
-      DecrementIteratorReadCursor(iterator);
    }
+
+   return false;
 }
 
 static inline bool IteratorTryReadBackToBlockOfType(__SDEVICE_HANDLE(SimpleFs) *handle,
                                                     Iterator *iterator,
-                                                    BlockDescriptor type)
+                                                    BlockDescriptor blockType)
 {
-   for(;;)
+   for(Block block; IteratorTryPeek(handle, iterator, &block) == true; DecrementIteratorReadCursor(iterator))
    {
-      Block block;
-      if(IteratorTryPeek(handle, iterator, &block) != true)
-         return false;
-
-      if(IsBlockOfType(&block, type) == true)
+      if(IsBlockOfType(&block, blockType) == true)
          return true;
-
-      DecrementIteratorReadCursor(iterator);
    }
+
+   return false;
 }
