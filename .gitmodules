@@ -1,3 +1,6 @@
 [submodule "SDeviceCore"]
 	path = Submodules/sdevicecore
 	url = https://gitlab.dnouglublenie.ru/nonius/embeddedfirmware/embeddedcommon/sdevicecore.git
+[submodule "TableCrcSDevice"]
+	path = Submodules/tablecrcsdevice
+	url = https://gitlab.dnouglublenie.ru/nonius/embeddedfirmware/embeddedcommon/tablecrcsdevice.git
