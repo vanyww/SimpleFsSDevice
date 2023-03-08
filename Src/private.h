@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SimpleFsSDevice/core.h"
+#include "SimpleFsSDevice/public.h"
 
 typedef SimpleFsSDeviceSector Sector;
 
