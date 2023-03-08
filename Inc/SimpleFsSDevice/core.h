@@ -19,54 +19,61 @@
    .Patch = __SIMPLE_FS_SDEVICE_VERSION_PATCH                                                                          \
 })
 
-#define __SIMPLE_FS_SDEVICE_SECTORS_COUNT 2
-
-typedef uint64_t SimpleFsSDeviceBlockValue;
-typedef uint16_t SimpleFsSDeviceAddress;
-
 typedef struct
 {
    void *Context;
-   uintptr_t Address;
    size_t Size;
 } SimpleFsSDeviceSector;
 
-/* Satty's interface start */
-
-__SDEVICE_HANDLE_FORWARD_DECLARATION(SimpleFs);
-__SDEVICE_INIT_DATA_FORWARD_DECLARATION(SimpleFs);
+SDEVICE_HANDLE_FORWARD_DECLARATION(SimpleFs);
+SDEVICE_INIT_DATA_FORWARD_DECLARATION(SimpleFs);
 
 typedef enum
 {
-   SIMPLE_FS_SDEVICE_EXCEPTION_READ_FAIL        = 0x01,
-   SIMPLE_FS_SDEVICE_EXCEPTION_WRITE_FAIL       = 0x02,
-   SIMPLE_FS_SDEVICE_EXCEPTION_ERASE_FAIL       = 0x03,
-   SIMPLE_FS_SDEVICE_EXCEPTION_OUT_OF_MEMORY    = 0x04
+   SIMPLE_FS_SDEVICE_EXCEPTION_OUT_OF_MEMORY,
+   SIMPLE_FS_SDEVICE_EXCEPTION_BAD_AREA_OVERFLOW
 } SimpleFsSDeviceException;
 
 typedef enum
 {
-   SIMPLE_FS_SDEVICE_STATUS_OK                  = 0x00,
-   SIMPLE_FS_SDEVICE_STATUS_CORRUPTED_HEADER    = 0x01,
-   SIMPLE_FS_SDEVICE_STATUS_CORRUPTED_FILE      = 0x02
+   SIMPLE_FS_SDEVICE_STATUS_OK,
+   SIMPLE_FS_SDEVICE_STATUS_CORRUPTED_BLOCK_DETECTED,
+   SIMPLE_FS_SDEVICE_STATUS_BAD_AREA_DETECTED
 } SimpleFsSDeviceStatus;
 
-struct __SDEVICE_INIT_DATA(SimpleFs)
+SDEVICE_INIT_DATA_DECLARATION(SimpleFs)
 {
-   bool (* TryReadBlock)(__SDEVICE_HANDLE(SimpleFs) *, uintptr_t, SimpleFsSDeviceBlockValue *);
-   bool (* TryWriteBlock)(__SDEVICE_HANDLE(SimpleFs) *, uintptr_t, const SimpleFsSDeviceBlockValue *);
-   bool (* TryEraseSector)(__SDEVICE_HANDLE(SimpleFs) *, const SimpleFsSDeviceSector *);
-   SimpleFsSDeviceSector Sectors[__SIMPLE_FS_SDEVICE_SECTORS_COUNT];
-   SimpleFsSDeviceAddress MaxUsedAddress;
-   bool IsErasingToZero;
+   void (* ReadUInt64)(SDEVICE_HANDLE(SimpleFs) *handle,
+                       const SimpleFsSDeviceSector *sector,
+                       uintptr_t address,
+                       uint64_t *value);
+   void (* WriteUInt64)(SDEVICE_HANDLE(SimpleFs) *handle,
+                        const SimpleFsSDeviceSector *sector,
+                        uintptr_t address,
+                        uint64_t value);
+   void (* EraseSector)(SDEVICE_HANDLE(SimpleFs) *handle, const SimpleFsSDeviceSector *sector);
+
+#ifdef SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
+   uint8_t (* UpdateCrc8)(SDEVICE_HANDLE(SimpleFs) *handle, uint8_t crc, const void *data, size_t size);
+   uint8_t (* ComputeCrc8)(SDEVICE_HANDLE(SimpleFs) *handle, const void *data, size_t size);
+   uint16_t (* UpdateCrc16)(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t crc, const void *data, size_t size);
+   uint16_t (* ComputeCrc16)(SDEVICE_HANDLE(SimpleFs) *handle, const void *data, size_t size);
+#endif
+
+   SimpleFsSDeviceSector Sector$0;
+   SimpleFsSDeviceSector Sector$1;
+   bool IsMemoryErasingToZero;
 };
 
-__SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFs,,,);
-__SDEVICE_DISPOSE_HANDLE_DECLARATION(SimpleFs,);
+SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFs, init, parent, identifier, context);
+SDEVICE_DISPOSE_HANDLE_DECLARATION(SimpleFs, handlePointer);
 
-/* Satty's interface end */
+SDEVICE_PROPERTY_TYPE_DECLARATION(SimpleFs, TotalBadBlocksCount, size_t);
+SDEVICE_GET_PROPERTY_DECLARATION(SimpleFs, TotalBadBlocksCount, handle, value);
 
-bool SimpleFsSDeviceTryGetFileSize(__SDEVICE_HANDLE(SimpleFs) *, SimpleFsSDeviceAddress, size_t *);
-bool SimpleFsSDeviceTryRead(__SDEVICE_HANDLE(SimpleFs) *, SimpleFsSDeviceAddress, size_t, void *);
-bool SimpleFsSDeviceTryDelete(__SDEVICE_HANDLE(SimpleFs) *, SimpleFsSDeviceAddress);
-bool SimpleFsSDeviceTryWrite(__SDEVICE_HANDLE(SimpleFs) *, SimpleFsSDeviceAddress, size_t, const void *);
+void SimpleFsSDeviceFormatMemory(SDEVICE_HANDLE(SimpleFs) *handle);
+void SimpleFsSDeviceForceHistoryDeletion(SDEVICE_HANDLE(SimpleFs) *handle);
+void SimpleFsSDeviceDeleteFile(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileId);
+size_t SimpleFsSDeviceGetMaxFileSize(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileId);
+size_t SimpleFsSDeviceReadFile(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileId, void *data, size_t size);
+void SimpleFsSDeviceWriteFile(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileId, const void *data, size_t size);

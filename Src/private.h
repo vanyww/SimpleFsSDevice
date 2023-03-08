@@ -1,32 +1,29 @@
 #pragma once
 
 #include "SimpleFsSDevice/core.h"
-#include "CRC/crc.h"
 
-__SDEVICE_RUNTIME_DATA_FORWARD_DECLARATION(SimpleFs);
-
-typedef struct
-{
-   SimpleFsSDeviceSector *Sector;
-   uintptr_t WriteCursor;
-   uintptr_t ReadCursor;
-} Iterator;
+typedef SimpleFsSDeviceSector Sector;
 
 typedef struct
 {
-   uintptr_t MemoryAddress;
-   SimpleFsSDeviceAddress Address;
-   CrcType Crc;
-   uint8_t Size;
-   bool IsDeleted;
-   bool IsValid;
-} FileData;
+   const Sector *Sector;
+   uintptr_t Cursor;
+   bool IsInBounds;
+} Stream;
 
-struct __SDEVICE_RUNTIME_DATA(SimpleFs)
+typedef Stream WriteStream;
+typedef Stream ReadStream;
+
+SDEVICE_RUNTIME_DATA_FORWARD_DECLARATION(SimpleFs);
+
+SDEVICE_RUNTIME_DATA_DECLARATION(SimpleFs)
 {
-   Iterator *ActiveIterator;
-   Iterator Iterators[__SIMPLE_FS_SDEVICE_SECTORS_COUNT];
-   FileData FileDataCache;
+   WriteStream *ActiveWriteStream;
+   WriteStream *InactiveWriteStream;
+
+   WriteStream Sector$0WriteStream;
+   WriteStream Sector$1WriteStream;
 };
 
-__SDEVICE_HANDLE_DEFINITION(SimpleFs);
+SDEVICE_HANDLE_DECLARATION(SimpleFs);
+SDEVICE_INTERNAL_ALIASES_DECLARATION(SimpleFs);

@@ -1,118 +1,131 @@
-#include "Operations/operations.h"
-#include "Operations/Helpers/helpers.h"
-#include "Operations/Base/iterator.h"
-#include "SDeviceCore/errors.h"
+#include "Mid-layer/initialization.h"
+#include "Mid-layer/integrity.h"
+
 #include "SDeviceCore/heap.h"
 
-#include <memory.h>
-
-/**********************************************************************************************************************/
-
-__SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFS, _init, _context, index)
+SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFS, init, parent, identifier, context)
 {
-   __SDEVICE_INIT_DATA(SimpleFs) *init = _init;
-
    SDeviceAssert(init != NULL);
-   SDeviceAssert(init->WriteBlock != NULL);
-   SDeviceAssert(init->ReadBlock != NULL);
-   SDeviceAssert(init->EraseSector != NULL);
 
-   __SDEVICE_HANDLE(SimpleFs) *handle = SDeviceMalloc(sizeof(__SDEVICE_HANDLE(SimpleFs)));
+   const ThisInitData *_init = init;
 
-   handle->Header = (SDeviceHandleHeader){ _context, SIMPLE_FS_SDEVICE_STATUS_OK, index };
-   handle->Init = *init;
+   SDeviceAssert(_init->ReadUInt64 != NULL);
+   SDeviceAssert(_init->WriteUInt64 != NULL);
+   SDeviceAssert(_init->EraseSector != NULL);
 
-   for(size_t i = 0; i < __SIMPLE_FS_SDEVICE_SECTORS_COUNT; i++)
-      handle->Runtime.Iterators[i].Sector = &handle->Init.Sectors[i];
+#ifdef SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
+   SDeviceAssert(_init->UpdateCrc8 != NULL);
+   SDeviceAssert(_init->ComputeCrc8 != NULL);
+   SDeviceAssert(_init->UpdateCrc16 != NULL);
+   SDeviceAssert(_init->ComputeCrc16 != NULL);
+#endif
 
-   handle->Runtime.FileDataCache.IsValid = false;
-   SimpleFsSDeviceProcessInitialState(handle);
+   SDeviceAssert(HasSectorValidSize(&_init->Sector$0));
+   SDeviceAssert(HasSectorValidSize(&_init->Sector$1));
+
+   ThisHandle *handle = SDeviceMalloc(sizeof(ThisHandle));
+
+   handle->Header = (SDeviceHandleHeader)
+   {
+      .Context = context,
+      .ParentHandle = parent,
+      .Identifier = identifier,
+      .LatestStatus = SIMPLE_FS_SDEVICE_STATUS_OK
+   };
+
+   handle->Init = *_init;
+   handle->Runtime = (ThisRuntimeData)
+   {
+      .Sector$0WriteStream = { .Sector = &handle->Init.Sector$0, .IsInBounds = false },
+      .Sector$1WriteStream = { .Sector = &handle->Init.Sector$1, .IsInBounds = false },
+      .InactiveWriteStream = NULL,
+      .ActiveWriteStream = NULL
+   };
+
+   InitializeCrc8();
+   InitializeCrc16();
+
+   ProcessInitialMemoryState(handle);
 
    return handle;
 }
 
-__SDEVICE_DISPOSE_HANDLE_DECLARATION(SimpleFS, _handlePointer)
+SDEVICE_DISPOSE_HANDLE_DECLARATION(SimpleFS, handlePointer)
 {
-   __SDEVICE_HANDLE(SimpleFs) **handlePointer = _handlePointer;
-   SDeviceFree(*handlePointer);
-   *handlePointer = NULL;
+   SDeviceAssert(handlePointer != NULL);
+
+   ThisHandle **_handlePointer = handlePointer;
+   ThisHandle *handle = *_handlePointer;
+
+   SDeviceAssert(handle != NULL);
+
+   SDeviceFree(handle);
+   *_handlePointer = NULL;
 }
 
-/**********************************************************************************************************************/
-
-bool SimpleFsSDeviceTryGetFileSize(__SDEVICE_HANDLE(SimpleFs) *handle, SimpleFsSDeviceAddress address, size_t *size)
+SDEVICE_GET_PROPERTY_DECLARATION(SimpleFs, TotalBadBlocksCount, handle, value)
 {
+   SDeviceAssert(value != NULL);
    SDeviceAssert(handle != NULL);
-   SDeviceAssert(handle->IsInitialized == true);
-   SDeviceAssert(address <= __FLASH_FILE_SYSTEM_MAX_ADDRESS);
-   SDeviceAssert(size != NULL);
 
-   if(SimpleFsSDeviceTryMoveFileDataToCache(handle, address) != true ||
-      handle->Runtime.FileDataCache.IsDeleted == true)
-      return false;
+   size_t totalBadBlocksCount = ComputeTotalBadBlocksCount(handle);
+   memcpy(value, &totalBadBlocksCount, sizeof(totalBadBlocksCount));
 
-   *size = handle->Runtime.FileDataCache.Size;
-
-   return true;
+   return SDEVICE_PROPERTY_OPERATION_STATUS_OK;
 }
 
-bool SimpleFsSDeviceTryRead(__SDEVICE_HANDLE(SimpleFs) *handle, SimpleFsSDeviceAddress address, size_t size, void *data)
+void SimpleFsSDeviceFormatMemory(ThisHandle *handle)
 {
    SDeviceAssert(handle != NULL);
-   SDeviceAssert(handle->IsInitialized == true);
-   SDeviceAssert(address <= __FLASH_FILE_SYSTEM_MAX_ADDRESS);
+
+   FormatMemory(handle);
+}
+
+void SimpleFsSDeviceForceHistoryDeletion(SDEVICE_HANDLE(SimpleFs) *handle)
+{
+   SDeviceAssert(handle != NULL);
+
+   TransferActiveStream(handle, NULL);
+}
+
+void SimpleFsSDeviceWriteFile(ThisHandle *handle, uint16_t fileId, const void *data, size_t size)
+{
+   SDeviceAssert(size != 0 && size <= MAX_FILE_SIZE);
    SDeviceAssert(data != NULL);
+   SDeviceAssert(handle != NULL);
 
-   Block block;
-
-   if(SimpleFsSDeviceTryMoveFileDataToCache(handle, address) != true ||
-      handle->Runtime.FileDataCache.IsDeleted == true)
-      return false;
-
-   if(size > handle->Runtime.FileDataCache.Size)
-      return false;
-
-   /* data begins right after preamble block */
-   SeekIteratorReadCursor(handle->Runtime.ActiveIterator,
-                          GetNextBlockAddress(handle->Runtime.FileDataCache.MemoryAddress));
-
-   while(size > 0)
+   if(!TryWriteStreamFile(handle, GetActiveWriteStream(handle), fileId, data, size))
    {
-      IteratorTryReadForward(handle, handle->Runtime.ActiveIterator, &block);
-
-      size_t blockReadSize = __MIN(size, sizeof(block.AsBlock.AsData.Data));
-      memcpy(data, block.AsBlock.AsData.Data, blockReadSize);
-
-      data += blockReadSize;
-      size -= blockReadSize;
+      TransferWriteFileInfo transferFileInfo = { fileId, data, size };
+      TransferActiveStream(handle, &transferFileInfo);
    }
-
-   return true;
 }
 
-bool FlashFileSystemWrite(__SDEVICE_HANDLE(SimpleFs) *handle,
-                          SimpleFsSDeviceAddress address,
-                          size_t size,
-                          const void *data)
+void SimpleFsSDeviceDeleteFile(ThisHandle *handle, uint16_t fileId)
 {
    SDeviceAssert(handle != NULL);
-   SDeviceAssert(handle->IsInitialized == true);
-   SDeviceAssert(address <= __FLASH_FILE_SYSTEM_MAX_ADDRESS);
-   SDeviceAssert(data != NULL);
 
-   SimpleFsSDeviceWriteFile(handle, address, data, size, false);
-
-   return true;
+   if(!TryWriteStreamFile(handle, GetActiveWriteStream(handle), fileId, NULL, 0))
+   {
+      TransferWriteFileInfo transferFileInfo = { fileId, NULL, 0 };
+      TransferActiveStream(handle, &transferFileInfo);
+   }
 }
 
-bool FlashFileSystemDelete(__SDEVICE_HANDLE(SimpleFs) *handle,
-                           SimpleFsSDeviceAddress address)
+size_t SimpleFsSDeviceGetMaxFileSize(ThisHandle *handle, uint16_t fileId)
 {
    SDeviceAssert(handle != NULL);
-   SDeviceAssert(handle->IsInitialized == true);
-   SDeviceAssert(address <= __FLASH_FILE_SYSTEM_MAX_ADDRESS);
 
-   SimpleFsSDeviceWriteFile(handle, address, NULL, 0, true);
+   ReadStream stream = BuildActiveReadStream(handle);
+   return ReadStreamMaxFileSize(handle, &stream, fileId);
+}
 
-   return true;
+size_t SimpleFsSDeviceReadFile(ThisHandle *handle, uint16_t fileId, void *buffer, size_t maxFileSize)
+{
+   SDeviceAssert(handle != NULL);
+   SDeviceAssert(buffer != NULL);
+   SDeviceAssert(maxFileSize > 0);
+
+   ReadStream stream = BuildActiveReadStream(handle);
+   return ReadStreamFile(handle, &stream, fileId, buffer, maxFileSize);
 }
