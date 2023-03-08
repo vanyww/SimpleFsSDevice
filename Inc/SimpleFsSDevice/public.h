@@ -1,5 +1,20 @@
 #pragma once
 
+/**
+ * @file public.h
+ * @brief Публичный интерфейс модуля файловой системы SimpleFsSDevice.
+ * @details Объявления и определения, необходимые для пользовательского взаимодействия с модулем.
+ * @n Пример использования (в качестве файловой памяти используется массив):
+ * @include core.h
+ */
+
+/**
+ * @defgroup public Публичный интерфейс
+ * @brief @copybrief public.h
+ * @details @copydetails public.h
+ * @{
+ */
+
 #include "SDeviceCore/core.h"
 
 #include <stdbool.h>
