@@ -8,15 +8,14 @@
 #error SDevice core version is incorrect.
 #endif
 
-#define __SIMPLE_FS_SDEVICE_VERSION_MAJOR 2
-#define __SIMPLE_FS_SDEVICE_VERSION_MINOR 0
-#define __SIMPLE_FS_SDEVICE_VERSION_PATCH 0
-
-#define __SIMPLE_FS_SDEVICE_CORE_VERSION ((SDeviceVersion)                                                             \
+#define SIMPLE_FS_SDEVICE_VERSION_MAJOR 2
+#define SIMPLE_FS_SDEVICE_VERSION_MINOR 0
+#define SIMPLE_FS_SDEVICE_VERSION_PATCH 0
+#define SIMPLE_FS_SDEVICE_CORE_VERSION ((SDeviceVersion)                                                               \
 {                                                                                                                      \
-   .Major = __SIMPLE_FS_SDEVICE_VERSION_MAJOR,                                                                         \
-   .Minor = __SIMPLE_FS_SDEVICE_VERSION_MINOR,                                                                         \
-   .Patch = __SIMPLE_FS_SDEVICE_VERSION_PATCH                                                                          \
+   .Major = SIMPLE_FS_SDEVICE_VERSION_MAJOR,                                                                           \
+   .Minor = SIMPLE_FS_SDEVICE_VERSION_MINOR,                                                                           \
+   .Patch = SIMPLE_FS_SDEVICE_VERSION_PATCH                                                                            \
 })
 
 typedef struct
