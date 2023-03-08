@@ -4,7 +4,7 @@
 
 #include <stdbool.h>
 
-#if (__SDEVICE_CORE_VERSION_MAJOR != 2) || (__SDEVICE_CORE_VERSION_MINOR < 2)
+#if (SDEVICE_CORE_VERSION_MAJOR != 7) || (SDEVICE_CORE_VERSION_MINOR < 0)
 #error SDevice core version is incorrect.
 #endif
 
