@@ -56,17 +56,17 @@ void main(void)
    size_t fileSize = SimpleFsSDeviceGetMaxFileSize(handle, fileId);
    SDeviceAssert(sizeof(value$1) == fileSize);
 
-   char read$1[sizeof(value$1)];
-   /* will read value$1 as it's the newest file version that has size less or equal to sizeof(value$1) */
-   SimpleFsSDeviceReadFile(handle, fileId, read$1, sizeof(read$1));
-
    char read$0[sizeof(value$0)];
-   /* will read value$0 as it's the newest file version that has size less or equal to sizeof(value$0) */
+   /* will read value$0 as it's the newest file version that has size less or equal to sizeof(read$0) */
    SimpleFsSDeviceReadFile(handle, fileId, read$0, sizeof(read$0));
+
+   char read$1[sizeof(value$1)];
+   /* will read value$1 as it's the newest file version that has size less or equal to sizeof(read$1) */
+   SimpleFsSDeviceReadFile(handle, fileId, read$1, sizeof(read$1));
 
    SimpleFsSDeviceForceHistoryDeletion(handle);
 
-   char read$3[sizeof(value$3)];
+   char read$3[sizeof(value$0)];
    /* will read nothing (return 0), as history (value$0) was deleted and value$1 is larger than sizeof(read$3) */
    SimpleFsSDeviceReadFile(handle, fileId, read$3, sizeof(read$3));
 
