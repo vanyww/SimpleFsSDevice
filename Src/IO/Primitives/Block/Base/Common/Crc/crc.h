@@ -8,6 +8,9 @@
 #include "TableCrcSDevice/public_crc16.h"
 #include "TableCrcSDevice/public_crc8.h"
 
+#if (TABLE_CRC_SDEVICE_VERSION_MAJOR != 3) || (TABLE_CRC_SDEVICE_VERSION_MINOR < 0)
+#error Table CRC SDevice version is incorrect.
+#endif
 
 #ifndef SIMPLE_FS_SDEVICE_TABLE_CRC8_INTERNAL_SDEVICE_IDENTIFIER
 #define SIMPLE_FS_SDEVICE_TABLE_CRC8_INTERNAL_SDEVICE_IDENTIFIER 0
