@@ -4,3 +4,6 @@
 [submodule "tablecrcsdevice"]
 	path = Submodules/tablecrcsdevice
 	url = ../tablecrcsdevice.git
+[submodule "doxygen-awesome-css"]
+	path = Doxygen/Style/doxygen-awesome-css
+	url = ../forks/doxygen-awesome-css.git
