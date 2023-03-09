@@ -1,0 +1,20 @@
+variables:
+  GIT_SUBMODULE_STRATEGY: normal
+  GIT_SUBMODULE_PATHS: Doxygen/Style/doxygen-awesome-css Submodules/sdevicecore
+
+image: alpine
+
+before_script:
+- apk update
+- apk add doxygen
+
+pages:
+  script:
+  - doxygen -s -u Doxygen/Doxyfile
+  - doxygen Doxygen/Doxyfile
+  - mv html/ public/
+  artifacts:
+    paths:
+    - public
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH

@@ -1,3 +1,9 @@
-[submodule "SDevice/sdevicecore"]
-	path = SDevice/sdevicecore
-	url = https://gitlab.dnouglublenie.ru/nonius/embeddedfirmware/embeddedcommon/sdevicecore.git
+[submodule "sdevicecore"]
+	path = Submodules/sdevicecore
+	url = ../sdevicecore.git
+[submodule "tablecrcsdevice"]
+	path = Submodules/tablecrcsdevice
+	url = ../tablecrcsdevice.git
+[submodule "doxygen-awesome-css"]
+	path = Doxygen/Style/doxygen-awesome-css
+	url = ../forks/doxygen-awesome-css.git

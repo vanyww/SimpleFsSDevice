@@ -1,25 +1,29 @@
 #pragma once
 
-#include "../Inc/FlashFileSystemSDevice/core.h"
+#include "SimpleFsSDevice/public.h"
+
+typedef SimpleFsSDeviceSector Sector;
 
 typedef struct
 {
-   size_t SectorIndex;
-   uintptr_t WriteCursor;
-   uintptr_t ReadCursor;
-} FlashFileSystemIterator;
+   const Sector *Sector;
+   uintptr_t Cursor;
+   bool IsInBounds;
+} Stream;
 
-typedef struct
-{
-   FlashFileSystemAddress Address;
-   uintptr_t MemoryAddress;
-   uint8_t Size;
-   bool IsDeleted;
-} FlashFileSystemFileDataCache;
+typedef Stream WriteStream;
+typedef Stream ReadStream;
 
-struct __SDEVICE_RUNTIME_DATA(FlashFileSystem)
+SDEVICE_RUNTIME_DATA_FORWARD_DECLARATION(SimpleFs);
+
+SDEVICE_RUNTIME_DATA_DECLARATION(SimpleFs)
 {
-   size_t ActiveIteratorIndex;
-   FlashFileSystemIterator Iterators[__FLASH_FILE_SYSTEM_SECTORS_COUNT];
-   FlashFileSystemFileDataCache FileDataCache;
+   WriteStream *ActiveWriteStream;
+   WriteStream *InactiveWriteStream;
+
+   WriteStream Sector$0WriteStream;
+   WriteStream Sector$1WriteStream;
 };
+
+SDEVICE_HANDLE_DECLARATION(SimpleFs);
+SDEVICE_INTERNAL_ALIASES_DECLARATION(SimpleFs);
