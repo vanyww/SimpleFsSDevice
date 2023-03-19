@@ -25,6 +25,8 @@ SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFS, init, parent, identifier, context)
 
    ThisHandle *handle = SDeviceMalloc(sizeof(ThisHandle));
 
+   SDeviceAssert(handle != NULL);
+
    handle->Header = (SDeviceHandleHeader)
    {
       .Context = context,
@@ -81,7 +83,7 @@ void SimpleFsSDeviceFormatMemory(ThisHandle *handle)
    FormatMemory(handle);
 }
 
-void SimpleFsSDeviceForceHistoryDeletion(SDEVICE_HANDLE(SimpleFs) *handle)
+void SimpleFsSDeviceForceHistoryDeletion(ThisHandle *handle)
 {
    SDeviceAssert(handle != NULL);
 
