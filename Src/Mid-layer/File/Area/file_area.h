@@ -20,6 +20,9 @@ static inline FileAreaInfo BuildFileAreaInfo(FileAreaTagBlock tagBlock)
 
 static inline FileAreaHandle CreateFileAreaHandle(FileAreaInfo *fileInfo, ReadStream *fileStream)
 {
+   SDeviceDebugAssert(fileInfo != NULL);
+   SDeviceDebugAssert(fileStream != NULL);
+
    FileAreaHandle area = { .AreaInfo = fileInfo, .FileStream = CloneStream(fileStream) };
    SeekStream(&area.FileStream, SEEK_STREAM_ORIGIN_CURRENT, -1);
    return area;

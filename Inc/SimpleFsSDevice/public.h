@@ -72,7 +72,7 @@
 /**
  * @brief Младшая компонента версии модуля файловой системы SimpleFsSDevice.
  */
-#define SIMPLE_FS_SDEVICE_VERSION_PATCH 1
+#define SIMPLE_FS_SDEVICE_VERSION_PATCH 2
 
 /**
  * @brief Версия модуля файловой системы SimpleFsSDevice в виде составного литерала структуры SDeviceVersion.

@@ -24,6 +24,8 @@ static size_t ComputeEmptyStreamBadBlocksCount(ThisHandle *handle, WriteStream *
 
 static size_t ComputeTotalBadBlocksCount(ThisHandle *handle)
 {
+   SDeviceDebugAssert(handle != NULL);
+
    size_t totalBadBlocksCount = 0;
 
    totalBadBlocksCount += ComputeEmptyStreamBadBlocksCount(handle, GetInactiveWriteStream(handle));
