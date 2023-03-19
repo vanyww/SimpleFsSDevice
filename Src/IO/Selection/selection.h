@@ -24,8 +24,6 @@ static BlockSelector CreateBlockSelector(ThisHandle *handle, const SelectionFilt
    {
       const SelectionFilter *filter = &filters[i];
 
-      SDeviceDebugAssert(filter->Interface != NULL);
-
       if(filter->Interface->ContextInitFunction != NULL)
          filter->Interface->ContextInitFunction(handle, filter->Parameters, filter->Context);
    }

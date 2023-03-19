@@ -90,9 +90,9 @@ void SimpleFsSDeviceForceHistoryDeletion(SDEVICE_HANDLE(SimpleFs) *handle)
 
 void SimpleFsSDeviceWriteFile(ThisHandle *handle, uint16_t fileId, const void *data, size_t size)
 {
-   SDeviceAssert(size != 0 && size <= MAX_FILE_SIZE);
    SDeviceAssert(data != NULL);
    SDeviceAssert(handle != NULL);
+   SDeviceAssert(size != 0 && size <= MAX_FILE_SIZE);
 
    if(!TryWriteStreamFile(handle, GetActiveWriteStream(handle), fileId, data, size))
    {
