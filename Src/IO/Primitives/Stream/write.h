@@ -22,6 +22,7 @@ static inline bool TryWriteStreamBlock(ThisHandle *handle, WriteStream *stream, 
 {
    SDeviceDebugAssert(handle != NULL);
    SDeviceDebugAssert(stream != NULL);
+   SDeviceDebugAssert(stream->IsInBounds);
 
    bool status = TryPutStreamBlock(handle, stream, block);
    SeekStream(stream, SEEK_STREAM_ORIGIN_CURRENT, +1);
@@ -33,6 +34,7 @@ static bool TryWriteStreamGoodBlock(ThisHandle *handle, WriteStream *stream, Blo
 {
    SDeviceDebugAssert(handle != NULL);
    SDeviceDebugAssert(stream != NULL);
+   SDeviceDebugAssert(stream->IsInBounds);
 
    uint16_t badAreaBadBlocksCount = 0;
    while(stream->IsInBounds)

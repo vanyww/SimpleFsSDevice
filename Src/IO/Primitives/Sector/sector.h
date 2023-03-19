@@ -16,6 +16,7 @@ static inline bool HasSectorValidSize(const Sector *sector)
 
 static inline bool CanAccessSectorUInt64ByAddress(const Sector *sector, uintptr_t address)
 {
+   SDeviceDebugAssert(sector != NULL);
    SDeviceDebugAssert(HasSectorValidSize(sector));
 
    return address <= sector->Size - sizeof(uint64_t);
@@ -32,7 +33,6 @@ static inline void EraseSector(ThisHandle *handle, const Sector *sector)
 {
    SDeviceDebugAssert(handle != NULL);
    SDeviceDebugAssert(sector != NULL);
-   SDeviceDebugAssert(handle->Init.EraseSector != NULL);
 
    handle->Init.EraseSector(handle, sector);
 }
@@ -41,7 +41,7 @@ static inline void ReadSectorUInt64(ThisHandle *handle, const Sector *sector, ui
 {
    SDeviceDebugAssert(value != NULL);
    SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(handle->Init.ReadUInt64 != NULL);
+   SDeviceDebugAssert(sector != NULL);
    SDeviceDebugAssert(CanAccessSectorUInt64ByAddress(sector, address));
 
    handle->Init.ReadUInt64(handle, sector, address, value);
@@ -50,7 +50,7 @@ static inline void ReadSectorUInt64(ThisHandle *handle, const Sector *sector, ui
 static inline void WriteSectorUInt64(ThisHandle *handle, const Sector *sector, uintptr_t address, uint64_t value)
 {
    SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(handle->Init.WriteUInt64 != NULL);
+   SDeviceDebugAssert(sector != NULL);
    SDeviceDebugAssert(CanAccessSectorUInt64ByAddress(sector, address));
 
    handle->Init.WriteUInt64(handle, sector, address, value);

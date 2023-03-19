@@ -6,6 +6,7 @@
 
 static inline FileDataBlock BuildFileDataBlock(ThisHandle *handle, const void *data, size_t size)
 {
+   SDeviceDebugAssert(data != NULL);
    SDeviceDebugAssert(handle != NULL);
    SDeviceDebugAssert(size > 0 && size <= SIZEOF_MEMBER(FileDataBlock, Data));
 

@@ -19,6 +19,7 @@ static inline void ReadStreamBlock(ThisHandle *handle, ReadStream *stream, Block
    SDeviceDebugAssert(block != NULL);
    SDeviceDebugAssert(handle != NULL);
    SDeviceDebugAssert(stream != NULL);
+   SDeviceDebugAssert(stream->IsInBounds);
 
    PeekStreamBlock(handle, stream, block);
    SeekStream(stream, SEEK_STREAM_ORIGIN_CURRENT, -1);

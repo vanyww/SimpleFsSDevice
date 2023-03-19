@@ -41,7 +41,8 @@ static inline void InitializeCrc8(void)
 
    SDeviceHandleIdentifier identifier = SIMPLE_FS_SDEVICE_TABLE_CRC8_INTERNAL_SDEVICE_IDENTIFIER;
    SimpleFsSDeviceInternalCrc8Handle = SDEVICE_CREATE_HANDLE(TableCrc8)(&crc8Init, NULL, identifier, NULL);
-   SDeviceDebugAssert(SimpleFsSDeviceInternalCrc8Handle != NULL);
+
+   SDeviceAssert(SimpleFsSDeviceInternalCrc8Handle != NULL);
 #endif
 }
 
@@ -62,7 +63,8 @@ static inline void InitializeCrc16(void)
 
    SDeviceHandleIdentifier identifier = SIMPLE_FS_SDEVICE_TABLE_CRC16_INTERNAL_SDEVICE_IDENTIFIER;
    SimpleFsSDeviceInternalCrc16Handle = SDEVICE_CREATE_HANDLE(TableCrc16)(&crc16Init, NULL, identifier, NULL);
-   SDeviceDebugAssert(SimpleFsSDeviceInternalCrc16Handle != NULL);
+
+   SDeviceAssert(SimpleFsSDeviceInternalCrc16Handle != NULL);
 #endif
 }
 
@@ -76,8 +78,6 @@ static inline uint8_t UpdateCrc8(ThisHandle *handle, uint8_t crc, const void *da
 
    return TableCrc8SDeviceUpdate(SimpleFsSDeviceInternalCrc8Handle, crc, data, size);
 #else
-   SDeviceDebugAssert(handle->Init.UpdateCrc8 != NULL);
-
    return handle->Init.UpdateCrc8(handle, crc, data, size);
 #endif
 }
@@ -92,8 +92,6 @@ static inline uint8_t ComputeCrc8(ThisHandle *handle, const void *data, size_t s
 
    return TableCrc8SDeviceCompute(SimpleFsSDeviceInternalCrc8Handle, data, size);
 #else
-   SDeviceDebugAssert(handle->Init.ComputeCrc8 != NULL);
-
    return handle->Init.ComputeCrc8(handle, data, size);
 #endif
 }
@@ -108,8 +106,6 @@ static inline uint16_t UpdateCrc16(ThisHandle *handle, uint16_t crc, const void 
 
    return TableCrc16SDeviceUpdate(SimpleFsSDeviceInternalCrc16Handle, crc, data, size);
 #else
-   SDeviceDebugAssert(handle->Init.UpdateCrc16 != NULL);
-
    return handle->Init.UpdateCrc16(handle, crc, data, size);
 #endif
 }
@@ -124,8 +120,6 @@ static inline uint16_t ComputeCrc16(ThisHandle *handle, const void *data, size_t
 
    return TableCrc16SDeviceCompute(SimpleFsSDeviceInternalCrc16Handle, data, size);
 #else
-   SDeviceDebugAssert(handle->Init.ComputeCrc16 != NULL);
-
    return handle->Init.ComputeCrc16(handle, data, size);
 #endif
 }
