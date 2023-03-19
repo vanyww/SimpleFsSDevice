@@ -8,7 +8,7 @@
 #include "TableCrcSDevice/public_crc16.h"
 #include "TableCrcSDevice/public_crc8.h"
 
-#if (TABLE_CRC_SDEVICE_VERSION_MAJOR != 3) || (TABLE_CRC_SDEVICE_VERSION_MINOR < 0)
+#if (TABLE_CRC_SDEVICE_VERSION_MAJOR != 3) || (TABLE_CRC_SDEVICE_VERSION_MINOR < 1)
 #error Table CRC SDevice version is incorrect.
 #endif
 
