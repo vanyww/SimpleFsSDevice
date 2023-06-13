@@ -15,8 +15,9 @@ static bool TryWriteStreamFile(ThisHandle *handle, WriteStream *stream, uint16_t
 
    if(size > 0)
    {
-      size_t blockDataSize = ComputeFileLastBlockDataSize(size);
-      data += size;
+      size_t leftSize = size;
+      size_t blockDataSize = ComputeFileLastBlockDataSize(leftSize);
+      data += leftSize;
 
       do
       {
@@ -26,9 +27,9 @@ static bool TryWriteStreamFile(ThisHandle *handle, WriteStream *stream, uint16_t
          if(!TryWriteStreamGoodBlock(handle, stream, fileDataBlock))
             return false;
 
-         size -= blockDataSize;
+         leftSize -= blockDataSize;
          blockDataSize = SIZEOF_MEMBER(FileDataBlock, Data);
-      } while(size > 0);
+      } while(leftSize > 0);
    }
 
    FileAreaTagBlock fileAreaTag = BuildFileAreaTagBlock(handle, fileId, data, size);
