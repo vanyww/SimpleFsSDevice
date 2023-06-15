@@ -1,6 +1,7 @@
 .metadata
 .settings
 LibraryBuild
+TestBuild
 .launch
 
 html
