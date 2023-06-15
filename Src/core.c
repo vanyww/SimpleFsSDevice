@@ -30,7 +30,7 @@ SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFS, init, parent, identifier, context)
    handle->Header = (SDeviceHandleHeader)
    {
       .Context = context,
-      .ParentHandle = parent,
+      .OwnerHandle = parent,
       .Identifier = identifier,
       .LatestStatus = SIMPLE_FS_SDEVICE_STATUS_OK
    };
