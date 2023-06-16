@@ -1,11 +1,28 @@
 #include "weak.h"
-
 #include "SDeviceCore/heap.h"
 #include "SDeviceCore/errors.h"
 #include "SDeviceCore/global.h"
 
+#include "unity.h"
+#include <stdio.h>
 
-void SDeviceProcessAssertFail(char *file, int line) {}
+bool ProcessAssertFailMustBeCalled;
+bool ProcessLogStatusMustBeCalled;
+bool ProcessUnhandledThrowMustBeCalled;
+
+
+void SDeviceProcessAssertFail(char *file, int line)
+{
+
+   if(ProcessAssertFailMustBeCalled)
+   {
+      char *str[sizeof("assert called on line ") + sizeof(int)];
+      sprintf(str, "%s%d", "assert called on line ", line);
+      TEST_PASS_MESSAGE(str);
+   }
+   else
+      TEST_FAIL();
+}
 
 void SDeviceProcessUnhandledThrow(const void *_handle) {}
 
