@@ -9,6 +9,7 @@
 bool ProcessAssertFailMustBeCalled;
 bool ProcessLogStatusMustBeCalled;
 bool ProcessUnhandledThrowMustBeCalled;
+SDEVICE_HANDLE(SimpleFs) *AssertFailhandle;
 
 
 void SDeviceProcessAssertFail(char *file, int line)
@@ -16,12 +17,20 @@ void SDeviceProcessAssertFail(char *file, int line)
 
    if(ProcessAssertFailMustBeCalled)
    {
+      if(AssertFailhandle!= NULL)
+            SDeviceFree(AssertFailhandle);
+
       char *str[sizeof("assert called on line ") + sizeof(int)];
       sprintf(str, "%s%d", "assert called on line ", line);
       TEST_PASS_MESSAGE(str);
    }
    else
+   {
+      if(AssertFailhandle!= NULL)
+            SDeviceFree(AssertFailhandle);
+
       TEST_FAIL();
+   }
 }
 
 void SDeviceProcessUnhandledThrow(const void *_handle) {}

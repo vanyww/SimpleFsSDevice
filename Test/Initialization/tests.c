@@ -8,7 +8,11 @@
 TEST_GROUP(InitializationTests);
 
 TEST_SETUP(InitializationTests) {}
-TEST_TEAR_DOWN(InitializationTests) {}
+
+TEST_TEAR_DOWN(InitializationTests)
+{
+   AssertFailhandle = NULL;
+}
 
 TEST(InitializationTests, HandleInitialization)
 {
