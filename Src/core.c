@@ -3,7 +3,7 @@
 
 #include "SDeviceCore/heap.h"
 
-SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFS, init, parent, identifier, context)
+SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFs, init, parent, identifier, context)
 {
    SDeviceAssert(init != NULL);
 
@@ -52,7 +52,7 @@ SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFS, init, parent, identifier, context)
    return handle;
 }
 
-SDEVICE_DISPOSE_HANDLE_DECLARATION(SimpleFS, handlePointer)
+SDEVICE_DISPOSE_HANDLE_DECLARATION(SimpleFs, handlePointer)
 {
    SDeviceAssert(handlePointer != NULL);
 
