@@ -19,8 +19,13 @@ void WriteUInt64(SDEVICE_HANDLE(SimpleFs) *handle, const SimpleFsSDeviceSector *
    memcpy(dataDstPtr, &value, sizeof(value));
 }
 
-void EraseSector(SDEVICE_HANDLE(SimpleFs) *handle, const SimpleFsSDeviceSector *sector)
+void Erase_Sector(SDEVICE_HANDLE(SimpleFs) *handle, const SimpleFsSDeviceSector *sector)
 {
    SectorContext *sectorContext = sector->Context;
    memset((SectorsPtr + SectorSize*sectorContext->SectorIndex) , 0x00, SectorSize);
+}
+
+bool IsSectorEquial(const SimpleFsSDeviceSector *sector1, const SimpleFsSDeviceSector *sector2)
+{
+   return (sector1->Context == sector2->Context && sector1->Size == sector2->Size);
 }
