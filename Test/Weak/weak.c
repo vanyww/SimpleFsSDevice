@@ -20,8 +20,8 @@ void SDeviceProcessAssertFail(char *file, int line)
       if(AssertFailhandle!= NULL)
             SDeviceFree(AssertFailhandle);
 
-      char *str[sizeof("assert called on line ") + sizeof(int)];
-      sprintf(str, "%s%d", "assert called on line ", line);
+      char str[200];
+      sprintf(str, "Test pass, assert called on file (%s) line (%d)", file, line);
       TEST_PASS_MESSAGE(str);
    }
    else
@@ -29,7 +29,9 @@ void SDeviceProcessAssertFail(char *file, int line)
       if(AssertFailhandle!= NULL)
             SDeviceFree(AssertFailhandle);
 
-      TEST_FAIL();
+      char str[200];
+      sprintf(str, "Test fail, assert called on file (%s) line (%d)", file,  line);
+      TEST_FAIL_MESSAGE(str);
    }
 }
 
