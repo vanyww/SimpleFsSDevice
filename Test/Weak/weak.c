@@ -35,7 +35,24 @@ void SDeviceProcessAssertFail(char *file, int line)
    }
 }
 
-void SDeviceProcessUnhandledThrow(const void *_handle) {}
+void SDeviceProcessUnhandledThrow(const void *_handle)
+{
+   SDeviceHandleHeader *header = (SDeviceHandleHeader *)(_handle);
+   SimpleFsSDeviceException e = header->LatestStatus;
+
+   switch (e)
+   {
+      case SIMPLE_FS_SDEVICE_EXCEPTION_OUT_OF_MEMORY:
+         TEST_MESSAGE("EXCEPTION_OUT_OF_MEMORY");
+         break;
+
+      case SIMPLE_FS_SDEVICE_EXCEPTION_BAD_AREA_OVERFLOW:
+         TEST_MESSAGE("EXCEPTION_BAD_AREA_OVERFLOW");
+
+      default:
+         break;
+   }
+}
 
 void SDeviceProcessLogStatus(const void *_handle)
 {
