@@ -37,7 +37,26 @@ void SDeviceProcessAssertFail(char *file, int line)
 
 void SDeviceProcessUnhandledThrow(const void *_handle) {}
 
-void SDeviceProcessLogStatus(const void *_handle) {}
+void SDeviceProcessLogStatus(const void *_handle)
+{
+   SDeviceHandleHeader *header = (SDeviceHandleHeader *)(_handle);
+   SimpleFsSDeviceStatus status = header->LatestStatus;
+
+   switch (status)
+   {
+      case SIMPLE_FS_SDEVICE_STATUS_CORRUPTED_BLOCK_DETECTED:
+
+         TEST_MESSAGE("STATUS_CORRUPTED_BLOCK_DETECTED");
+         break;
+
+      case SIMPLE_FS_SDEVICE_STATUS_BAD_AREA_DETECTED:
+         TEST_MESSAGE("STATUS_BAD_AREA_DETECTED");
+         break;
+
+      default:
+         break;
+   }
+}
 
 void* SDeviceMalloc(size_t size)
 {
