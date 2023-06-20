@@ -2,7 +2,9 @@
 
 #include <memory.h>
 
-#include "../Inc/SimpleFsSDevice/public.h"
+#include "../Src/private.h"
+#include "../Src/IO/Primitives/Block/Base/Common/Crc/crc.h"
+#include "../Src/IO/Primitives/Block/Base/DataTypes/block.h"
 
 #define CREATE_SIMPLE_FS_APPLICATION(sectorSize)                                                                       \
    char memorySectors[2][(sectorSize)] = {0,};                                                                         \
@@ -44,3 +46,5 @@ void WriteUInt64(SDEVICE_HANDLE(SimpleFs)    *handle,
 void EraseSectorCallback(SDEVICE_HANDLE(SimpleFs) *handle, const SimpleFsSDeviceSector *sector);
 
 bool IsSectorEquial(const SimpleFsSDeviceSector *sector1, const SimpleFsSDeviceSector *sector2);
+
+Block CreateHeaderBlock(SectorState state, bool isMemoryErasingToZero);
