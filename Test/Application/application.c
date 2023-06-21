@@ -1,13 +1,35 @@
 #include "application.h"
 
-char *SectorsPtr;
-size_t SectorSize;
+static char *GlobalSectorsPtr;
+static size_t GlobalSectorSize;
+
+size_t GetGlobalSectorSize(void)
+{
+   return GlobalSectorSize;
+}
+
+void SetGlobalSectorSize(size_t size)
+{
+   GlobalSectorSize = size;
+}
+
+char* GetGlobalSectorsPtr(void)
+{
+   return GlobalSectorsPtr;
+}
+
+void SetGlobalSectorsPtr(char* ptr)
+{
+   GlobalSectorsPtr = ptr;
+}
 
 void ReadUInt64(SDEVICE_HANDLE(SimpleFs)     *handle,
                 const SimpleFsSDeviceSector  *sector,
                 uintptr_t                    address,
                 uint64_t                     *value)
 {
+   char *SectorsPtr = GetGlobalSectorsPtr();
+   size_t SectorSize = GetGlobalSectorSize();
    SectorContext *sectorContext = sector->Context;
    char* dataSrcPtr = (SectorsPtr + SectorSize*sectorContext->SectorIndex + address);
    memcpy(value, dataSrcPtr, sizeof(*value));
@@ -19,6 +41,8 @@ void WriteUInt64(SDEVICE_HANDLE(SimpleFs)       *handle,
                  uintptr_t                      address,
                  uint64_t                       value)
 {
+   char *SectorsPtr = GetGlobalSectorsPtr();
+   size_t SectorSize = GetGlobalSectorSize();
    SectorContext *sectorContext = sector->Context;
    char* dataDstPtr = (SectorsPtr + SectorSize*sectorContext->SectorIndex + address);
    memcpy(dataDstPtr, &value, sizeof(value));
@@ -26,6 +50,8 @@ void WriteUInt64(SDEVICE_HANDLE(SimpleFs)       *handle,
 
 void EraseSectorCallback(SDEVICE_HANDLE(SimpleFs) *handle, const SimpleFsSDeviceSector *sector)
 {
+   char *SectorsPtr = GetGlobalSectorsPtr();
+   size_t SectorSize = GetGlobalSectorSize();
    SectorContext *sectorContext = sector->Context;
    memset((SectorsPtr + SectorSize*sectorContext->SectorIndex) , 0x00, SectorSize);
 }

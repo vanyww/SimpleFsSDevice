@@ -8,8 +8,8 @@
 
 #define CREATE_SIMPLE_FS_APPLICATION(sectorSize)                                                                       \
    char memorySectors[2][(sectorSize)] = {0,};                                                                         \
-   SectorsPtr = memorySectors[0];                                                                                      \
-   SectorSize = sectorSize;                                                                                            \
+   SetGlobalSectorSize(sectorSize);                                                                                    \
+   SetGlobalSectorsPtr(memorySectors[0]);                                                                              \
    SimpleFsSDeviceSector sector$0 = { &(SectorContext){ 0 }, (sectorSize) };                                           \
    SimpleFsSDeviceSector sector$1 = { &(SectorContext){ 1 }, (sectorSize) };                                           \
    SDEVICE_INIT_DATA(SimpleFs) init =                                                                                  \
@@ -29,8 +29,13 @@ typedef struct
    size_t SectorIndex;
 } SectorContext;
 
-extern char *SectorsPtr;
-extern size_t SectorSize;
+size_t GetGlobalSectorSize(void);
+
+void SetGlobalSectorSize(size_t size);
+
+char* GetGlobalSectorsPtr(void);
+
+void SetGlobalSectorsPtr(char* ptr);
 
 void ReadUInt64(SDEVICE_HANDLE(SimpleFs)     *handle,
                 const SimpleFsSDeviceSector  *sector,
