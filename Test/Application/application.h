@@ -6,6 +6,11 @@
 #include "../Src/IO/Primitives/Block/Base/Common/Crc/crc.h"
 #include "../Src/IO/Primitives/Block/Base/DataTypes/block.h"
 
+#define memorySectors _memorySectors
+#define sector$0 _sector0
+#define sector$1 _sector1
+#define init _init
+
 #define CREATE_SIMPLE_FS_APPLICATION(sectorSize)                                                                       \
    char memorySectors[2][(sectorSize)] = {0,};                                                                         \
    SetGlobalSectorSize(sectorSize);                                                                                    \
