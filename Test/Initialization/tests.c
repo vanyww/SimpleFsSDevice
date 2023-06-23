@@ -18,10 +18,10 @@ TEST(InitializationTests, HandleInitialization)
 {
    ProcessAssertFailMustBeCalled = false;
 
-   CREATE_SIMPLE_FS_APPLICATION(64); // min size = 64 byte
+   CREATE_SIMPLE_FS_APPLICATION(64, this); // min size = 64 byte
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 }
 
 
@@ -29,10 +29,10 @@ TEST(InitializationTests, InsufficientMemoryInSector)
 {
    ProcessAssertFailMustBeCalled = true;
 
-   CREATE_SIMPLE_FS_APPLICATION(1); // min size = 64 byte
+   CREATE_SIMPLE_FS_APPLICATION(1, this); // min size = 64 byte
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 }
 
 
@@ -40,18 +40,18 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_ONGOING)
 {
    ProcessAssertFailMustBeCalled = false;
 
-   CREATE_SIMPLE_FS_APPLICATION(64);
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
-   WriteUInt64(NULL, &sector$0, 8, headerS0.AsValue);
-   WriteUInt64(NULL, &sector$1, 8, headerS1.AsValue);
+   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
+   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &sector$0));
+   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
 
 
@@ -59,18 +59,18 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ERASED)
 {
    ProcessAssertFailMustBeCalled = false;
 
-   CREATE_SIMPLE_FS_APPLICATION(64);
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
-   WriteUInt64(NULL, &sector$0, 8, headerS0.AsValue);
-   WriteUInt64(NULL, &sector$1, 8, headerS1.AsValue);
+   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
+   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &sector$0));
+   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
 
 
@@ -78,18 +78,18 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_END)
 {
    ProcessAssertFailMustBeCalled = false;
 
-   CREATE_SIMPLE_FS_APPLICATION(64);
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
-   WriteUInt64(NULL, &sector$0, 8, headerS0.AsValue);
-   WriteUInt64(NULL, &sector$1, 8, headerS1.AsValue);
+   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
+   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &sector$1));
+   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
 }
 
 
@@ -97,18 +97,18 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ACTIVE)
 {
    ProcessAssertFailMustBeCalled = false;
 
-   CREATE_SIMPLE_FS_APPLICATION(64);
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
-   WriteUInt64(NULL, &sector$0, 8, headerS0.AsValue);
-   WriteUInt64(NULL, &sector$1, 8, headerS1.AsValue);
+   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
+   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &sector$0));
+   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
 
 
@@ -116,18 +116,18 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_ONGOING)
 {
    ProcessAssertFailMustBeCalled = false;
 
-   CREATE_SIMPLE_FS_APPLICATION(64);
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
 
   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
-   WriteUInt64(NULL, &sector$0, 8, headerS0.AsValue);
-   WriteUInt64(NULL, &sector$1, 8, headerS1.AsValue);
+   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
+   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &sector$0));
+   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
 
 
@@ -135,18 +135,18 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ERASED)
 {
    ProcessAssertFailMustBeCalled = false;
 
-   CREATE_SIMPLE_FS_APPLICATION(64);
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
-   WriteUInt64(NULL, &sector$0, 8, headerS0.AsValue);
-   WriteUInt64(NULL, &sector$1, 8, headerS1.AsValue);
+   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
+   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &sector$0));
+   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
 
 
@@ -154,18 +154,18 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_END)
 {
    ProcessAssertFailMustBeCalled = false;
 
-   CREATE_SIMPLE_FS_APPLICATION(64);
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
-   WriteUInt64(NULL, &sector$0, 8, headerS0.AsValue);
-   WriteUInt64(NULL, &sector$1, 8, headerS1.AsValue);
+   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
+   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &sector$0));
+   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
 
 
@@ -173,18 +173,18 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ACTIVE)
 {
    ProcessAssertFailMustBeCalled = false;
 
-   CREATE_SIMPLE_FS_APPLICATION(64);
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
-   WriteUInt64(NULL, &sector$0, 8, headerS0.AsValue);
-   WriteUInt64(NULL, &sector$1, 8, headerS1.AsValue);
+   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
+   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &sector$1));
+   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
 }
 
 
@@ -192,18 +192,18 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1STATE_TRANSFER_ONGOING)
 {
    ProcessAssertFailMustBeCalled = false;
 
-   CREATE_SIMPLE_FS_APPLICATION(64);
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
-   WriteUInt64(NULL, &sector$0, 8, headerS0.AsValue);
-   WriteUInt64(NULL, &sector$1, 8, headerS1.AsValue);
+   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
+   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &sector$0));
+   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
 
 
@@ -211,18 +211,18 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ERASED)
 {
    ProcessAssertFailMustBeCalled = false;
 
-   CREATE_SIMPLE_FS_APPLICATION(64);
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
-   WriteUInt64(NULL, &sector$0, 8, headerS0.AsValue);
-   WriteUInt64(NULL, &sector$1, 8, headerS1.AsValue);
+   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
+   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &sector$0));
+   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
 
 
@@ -230,18 +230,18 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_TRANSFER_END)
 {
    ProcessAssertFailMustBeCalled = false;
 
-   CREATE_SIMPLE_FS_APPLICATION(64);
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
-   WriteUInt64(NULL, &sector$0, 8, headerS0.AsValue);
-   WriteUInt64(NULL, &sector$1, 8, headerS1.AsValue);
+   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
+   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &sector$0));
+   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
 
 
@@ -249,18 +249,18 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ACTIVE)
 {
    ProcessAssertFailMustBeCalled = false;
 
-   CREATE_SIMPLE_FS_APPLICATION(64);
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
-   WriteUInt64(NULL, &sector$0, 8, headerS0.AsValue);
-   WriteUInt64(NULL, &sector$1, 8, headerS1.AsValue);
+   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
+   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &sector$0));
+   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
 
 
@@ -268,18 +268,18 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_ONGOING)
 {
    ProcessAssertFailMustBeCalled = false;
 
-   CREATE_SIMPLE_FS_APPLICATION(64);
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
-   WriteUInt64(NULL, &sector$0, 8, headerS0.AsValue);
-   WriteUInt64(NULL, &sector$1, 8, headerS1.AsValue);
+   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
+   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &sector$0));
+   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
 
 
@@ -287,18 +287,18 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ERASED)
 {
    ProcessAssertFailMustBeCalled = false;
 
-   CREATE_SIMPLE_FS_APPLICATION(64);
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
-   WriteUInt64(NULL, &sector$0, 8, headerS0.AsValue);
-   WriteUInt64(NULL, &sector$1, 8, headerS1.AsValue);
+   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
+   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &sector$1));
+   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
 }
 
 
@@ -306,18 +306,18 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_END)
 {
    ProcessAssertFailMustBeCalled = false;
 
-   CREATE_SIMPLE_FS_APPLICATION(64);
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
-   WriteUInt64(NULL, &sector$0, 8, headerS0.AsValue);
-   WriteUInt64(NULL, &sector$1, 8, headerS1.AsValue);
+   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
+   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &sector$1));
+   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
 }
 
 
@@ -325,18 +325,18 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ACTIVE)
 {
    ProcessAssertFailMustBeCalled = false;
 
-   CREATE_SIMPLE_FS_APPLICATION(64);
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
-   WriteUInt64(NULL, &sector$0, 8, headerS0.AsValue);
-   WriteUInt64(NULL, &sector$1, 8, headerS1.AsValue);
+   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
+   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&init, NULL, 0, NULL);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &sector$1));
+   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
 }
 
 TEST_GROUP_RUNNER(InitializationTests)
