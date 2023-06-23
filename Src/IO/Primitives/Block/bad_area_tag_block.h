@@ -4,7 +4,7 @@
 
 #define MAX_BAD_AREA_LENGTH UINT8_MAX
 
-static inline BadAreaTagBlock BuildBadAreaTagBlock(ThisHandle *handle, uint16_t badBlocksCount)
+static inline BadAreaTagBlock BuildBadAreaTagBlock(ThisHandle *handle, uint8_t badBlocksCount)
 {
    SDeviceDebugAssert(handle != NULL);
    SDeviceDebugAssert(badBlocksCount > 0);
