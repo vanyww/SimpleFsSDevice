@@ -40,7 +40,7 @@ typedef struct
 #define SELECTION_FILTER_CONTEXT_INIT_FUNCTION_DECLARATION(filter_name, handle_name, parameters_name, context_name)    \
    SELECTION_FILTER_CONTEXT_INIT_FUNCTION_RETURN_VALUE                                                                 \
    SELECTION_FILTER_CONTEXT_INIT_FUNCTION(filter_name)                                                                 \
-   SELECTION_FILTER_CONTEXT_INIT_FUNCTION_ARGUMENTS(handle_name, context_name, parameters_name)
+   SELECTION_FILTER_CONTEXT_INIT_FUNCTION_ARGUMENTS(handle_name, parameters_name, context_name)
 
 typedef struct
 {
