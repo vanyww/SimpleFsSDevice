@@ -48,17 +48,17 @@ void SetGlobalSectorSize(size_t size);
 
 char* GetGlobalSectorsPtr(void);
 
-void SetGlobalSectorsPtr(char* ptr);
+void SetGlobalSectorsPtr(char *ptr);
 
 void ReadUInt64(SDEVICE_HANDLE(SimpleFs)     *handle,
                 const SimpleFsSDeviceSector  *sector,
-                uintptr_t                    address,
+                uintptr_t                     address,
                 uint64_t                     *value);
 
 void WriteUInt64(SDEVICE_HANDLE(SimpleFs)    *handle,
                  const SimpleFsSDeviceSector *sector,
-                 uintptr_t                   address,
-                 uint64_t                    value);
+                 uintptr_t                    address,
+                 uint64_t                     value);
 
 
 void EraseSectorCallback(SDEVICE_HANDLE(SimpleFs) *handle, const SimpleFsSDeviceSector *sector);

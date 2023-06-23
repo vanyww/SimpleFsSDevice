@@ -9,8 +9,8 @@
 #define MAX_FILE_SIZE 17
 #define NUMBER_OF_FILES 2
 
-#define CEIL_DIV_INT(numerator, denominator)                                                                           \
-({                                                                                                                     \
+#define CEIL_DIV_INT(numerator, denominator)(                                                                          \
+{                                                                                                                      \
    __auto_type _numerator = (numerator);                                                                               \
    __auto_type _denominator = (denominator);                                                                           \
    _numerator % _denominator > 0 ? _numerator / _denominator + 1 : _numerator / _denominator;                          \
@@ -59,9 +59,9 @@ static FileDataBlock CreateDataBlock(const void *data, size_t size, bool isMemor
 }
 
 static FileAreaTagBlock CreateFileAreaTagBlock(const void *fileData,
-                                        size_t      fileSize,
-                                        uint16_t    lastBlockDataSize,
-                                        uint16_t    fileId)
+                                               size_t      fileSize,
+                                               uint16_t    lastBlockDataSize,
+                                               uint16_t    fileId)
 {
    FileAreaTagBlock block =
    {
