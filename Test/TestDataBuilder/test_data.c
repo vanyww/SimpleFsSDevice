@@ -9,7 +9,7 @@
 #define MAX_FILE_SIZE 17
 #define NUMBER_OF_FILES 2
 
-#define CEIL_DIV_INT(numerator, denominator)(                                                                          \
+#define CEIL_DIV_UINT(numerator, denominator)(                                                                          \
 {                                                                                                                      \
    __auto_type _numerator = (numerator);                                                                               \
    __auto_type _denominator = (denominator);                                                                           \
@@ -66,7 +66,7 @@ static FileAreaTagBlock CreateFileAreaTagBlock(const void *fileData,
    FileAreaTagBlock block =
    {
       .Type = BLOCK_TYPE_FILE_AREA_TAG,
-      .FileAreaLength = CEIL_DIV_INT(fileSize, SIZEOF_MEMBER(FileDataBlock, Data)),
+      .FileAreaLength = CEIL_DIV_UINT(fileSize, SIZEOF_MEMBER(FileDataBlock, Data)),
       .LastFileBlockDataSize = lastBlockDataSize,
       .FileId = fileId,
       .FileCrc = TableCrc16SDeviceCompute(SimpleFsSDeviceInternalCrc16Handle, fileData, fileSize)
