@@ -22,8 +22,8 @@ typedef struct __attribute__((packed))
 typedef struct __attribute__((packed))
 {
    uint8_t BlockCrc;
-   uint16_t BadAreaLength;
-   uint8_t Padding[sizeof(uint64_t) - (sizeof(uint8_t) + sizeof(uint16_t) + sizeof(BlockType))];
+   uint8_t BadAreaLength;
+   uint8_t Padding[sizeof(uint64_t) - (sizeof(uint8_t) + sizeof(uint8_t) + sizeof(BlockType))];
    BlockType Type;
 } BadAreaTagBlock;
 
@@ -49,8 +49,8 @@ typedef union __attribute__((transparent_union))
    struct __attribute__((packed))
    {
       uint8_t BlockCrc;
-      uint16_t AreaLength;
-      uint8_t BlockData[sizeof(uint64_t) - (sizeof(uint8_t) + sizeof(uint16_t))];
+      uint8_t AreaLength;
+      uint8_t BlockData[sizeof(uint64_t) - (sizeof(uint8_t) + sizeof(uint8_t))];
    };
 
    FileAreaTagBlock AsFileAreaTag;
