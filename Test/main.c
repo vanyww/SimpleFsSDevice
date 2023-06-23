@@ -5,6 +5,7 @@
 static void RunAllTests(void)
 {
    RUN_TEST_GROUP(InitializationTests);
+   RUN_TEST_GROUP(ReadWrite);
 }
 
 int main (int argc, char const *argv[])
