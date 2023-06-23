@@ -36,7 +36,7 @@ static bool TryWriteStreamGoodBlock(ThisHandle *handle, WriteStream *stream, Blo
    SDeviceDebugAssert(stream != NULL);
    SDeviceDebugAssert(stream->IsInBounds);
 
-   uint16_t badAreaBadBlocksCount = 0;
+   uint8_t badAreaBadBlocksCount = 0;
    while(stream->IsInBounds)
    {
       if(badAreaBadBlocksCount == 0)
