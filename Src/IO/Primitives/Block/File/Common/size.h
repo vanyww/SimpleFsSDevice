@@ -13,7 +13,7 @@
 
 static inline uint8_t ComputeFileAreaLength(size_t fileSize)
 {
-   return fileSize / SIZEOF_MEMBER(FileDataBlock, Data);
+   return CEIL_DIV_INT(fileSize, SIZEOF_MEMBER(FileDataBlock, Data));
 }
 
 static inline size_t ComputeTotalFileLength(size_t fileSize)
@@ -32,5 +32,5 @@ static inline uint8_t ComputeFileLastBlockDataSize(size_t fileSize)
 
 static inline size_t ComputeFileSize(uint8_t fileAreaLength, uint8_t fileLastBlockDataSize)
 {
-   return fileAreaLength * SIZEOF_MEMBER(FileDataBlock, Data) + fileLastBlockDataSize;
+   return (fileAreaLength -1) * SIZEOF_MEMBER(FileDataBlock, Data) + fileLastBlockDataSize;
 }
