@@ -2,7 +2,7 @@
 
 #include "Base/area_tag_block.h"
 
-#define MAX_BAD_AREA_LENGTH UINT16_MAX
+#define MAX_BAD_AREA_LENGTH UINT8_MAX
 
 static inline BadAreaTagBlock BuildBadAreaTagBlock(ThisHandle *handle, uint16_t badBlocksCount)
 {
