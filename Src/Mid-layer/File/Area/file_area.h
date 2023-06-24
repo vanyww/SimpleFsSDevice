@@ -38,6 +38,7 @@ static bool TryReadFileAreaData(ThisHandle *handle, FileAreaHandle *area, void *
    const SelectionFilter filters[] = { COMPOSE_SELECTION_FILTER(ExceptBadAreas) };
    BlockSelector selector = CreateBlockSelector(handle, filters, LENGTHOF(filters));
    size_t leftToReadSize = area->AreaInfo->FileSize;
+   void *writeBuffer = buffer;
 
    while(TrySelectNextStreamBlock(handle, &area->FileStream, &selector, &readBlock))
    {
@@ -48,12 +49,12 @@ static bool TryReadFileAreaData(ThisHandle *handle, FileAreaHandle *area, void *
 
       if(leftToReadSize <= SIZEOF_MEMBER(FileDataBlock, Data))
       {
-         memcpy(buffer, blockAsFileData.Data, leftToReadSize);
+         memcpy(writeBuffer, blockAsFileData.Data, leftToReadSize);
          return ComputeFileDataCrc(handle, buffer, area->AreaInfo->FileSize) == area->AreaInfo->FileCrc;
       }
 
-      memcpy(buffer, blockAsFileData.Data, sizeof(blockAsFileData.Data));
-      buffer += sizeof(blockAsFileData.Data);
+      memcpy(writeBuffer, blockAsFileData.Data, sizeof(blockAsFileData.Data));
+      writeBuffer += sizeof(blockAsFileData.Data);
       leftToReadSize -= sizeof(blockAsFileData.Data);
    }
 
