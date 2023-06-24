@@ -58,8 +58,52 @@ TEST(ReadWrite, WriteFileWithSizeNotMultipleOfFileDataBlockDataSize)
    TEST_ASSERT_EQUAL_CHAR_ARRAY(fileImageData, readData, fileImageDataSize);
 }
 
+TEST(ReadWrite, ReadWithSizeNotMultipleOfFileDataBlockDataSize)
+{
+   ProcessAssertFailMustBeCalled = false;
+
+   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   char fileData[fileDataSize];
+   CopyTestFileData(fileData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
+
+   SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   AssertFailhandle = handle;
+
+   SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
+
+   char readData[fileDataSize];
+   SimpleFsSDeviceReadFile(handle, 0, readData, fileDataSize);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(fileData, readData, fileDataSize);
+}
+
+TEST(ReadWrite, ReadWithSizeMultipleOfFileDataBlockDataSize)
+{
+   ProcessAssertFailMustBeCalled = false;
+
+   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   char fileData[fileDataSize];
+   CopyTestFileData(fileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+
+   CREATE_SIMPLE_FS_APPLICATION(64, this);
+
+   SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   AssertFailhandle = handle;
+
+   SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
+
+   char readData[fileDataSize];
+   SimpleFsSDeviceReadFile(handle, 0, readData, fileDataSize);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(fileData, readData, fileDataSize);
+}
+
 TEST_GROUP_RUNNER(ReadWrite)
 {
    RUN_TEST_CASE(ReadWrite, WriteFileWithSizeMultipleOfFileDataBlockDataSize);
    RUN_TEST_CASE(ReadWrite, WriteFileWithSizeNotMultipleOfFileDataBlockDataSize);
+   RUN_TEST_CASE(ReadWrite, ReadWithSizeNotMultipleOfFileDataBlockDataSize);
+   RUN_TEST_CASE(ReadWrite, ReadWithSizeMultipleOfFileDataBlockDataSize);
 }
