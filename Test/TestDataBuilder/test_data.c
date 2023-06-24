@@ -9,8 +9,10 @@
 #define MAX_FILE_SIZE 17
 #define NUMBER_OF_FILES 2
 
-#define CEIL_DIV_UINT(numerator, denominator)(                                                                          \
+#define CEIL_DIV_UINT(numerator, denominator)(                                                                         \
 {                                                                                                                      \
+   SDeviceAssert(numerator > 0);                                                                                       \
+   SDeviceAssert(denominator > 0);                                                                                     \
    __auto_type _numerator = (numerator);                                                                               \
    __auto_type _denominator = (denominator);                                                                           \
    _numerator % _denominator > 0 ? _numerator / _denominator + 1 : _numerator / _denominator;                          \
