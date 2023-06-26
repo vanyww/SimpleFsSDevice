@@ -5,6 +5,7 @@
 
 #include "unity.h"
 #include <stdio.h>
+#define ENUM_TO_STRING(enum) #enum
 
 static bool ProcessAssertFailMustBeCalled;
 static bool ProcessUnhandledThrowMustBeCalled;
@@ -31,19 +32,28 @@ void SDeviceProcessAssertFail(char *file, int line)
 
 void SDeviceProcessUnhandledThrow(const void *_handle)
 {
+   if(AssertFailhandle != NULL)
+         SDeviceFree(AssertFailhandle);
+
    SDeviceHandleHeader *header = (SDeviceHandleHeader *)(_handle);
    SimpleFsSDeviceException e = header->LatestStatus;
 
    switch (e)
    {
       case SIMPLE_FS_SDEVICE_EXCEPTION_OUT_OF_MEMORY:
-         TEST_MESSAGE("EXCEPTION_OUT_OF_MEMORY");
+
+         if(ProcessUnhandledThrowMustBeCalled)
+            TEST_PASS_MESSAGE("Test pass, trown " ENUM_TO_STRING(SIMPLE_FS_SDEVICE_EXCEPTION_OUT_OF_MEMORY));
+         else
+            TEST_FAIL_MESSAGE("Test fail, trown " ENUM_TO_STRING(SIMPLE_FS_SDEVICE_EXCEPTION_OUT_OF_MEMORY));
          break;
 
       case SIMPLE_FS_SDEVICE_EXCEPTION_BAD_AREA_OVERFLOW:
-         TEST_MESSAGE("EXCEPTION_BAD_AREA_OVERFLOW");
 
-      default:
+         if(ProcessUnhandledThrowMustBeCalled)
+            TEST_PASS_MESSAGE("Test pass, trown " ENUM_TO_STRING(SIMPLE_FS_SDEVICE_EXCEPTION_BAD_AREA_OVERFLOW));
+         else
+            TEST_FAIL_MESSAGE("Test fail, trown " ENUM_TO_STRING(SIMPLE_FS_SDEVICE_EXCEPTION_BAD_AREA_OVERFLOW));
          break;
    }
 }
