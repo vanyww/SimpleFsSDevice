@@ -8,26 +8,27 @@ TEST_GROUP(InitializationTests);
 
 TEST_SETUP(InitializationTests) {}
 
-TEST_TEAR_DOWN(InitializationTests)
-{
-   AssertFailhandle = NULL;
-}
+TEST_TEAR_DOWN(InitializationTests) {}
 
 
 TEST(InitializationTests, HandleInitialization)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this); // min size = 64 byte
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 }
 
 
 TEST(InitializationTests, InsufficientMemoryInSector)
 {
-   ProcessAssertFailMustBeCalled = true;
+   SetProcessAssertFailMustBeCalled(true);
+   SetProcessUnhandledThrowMustBeCalled(false);
+   SetAssertFailhandle(NULL);
 
    CREATE_SIMPLE_FS_APPLICATION(1, this); // min size = 64 byte
 
@@ -38,7 +39,8 @@ TEST(InitializationTests, InsufficientMemoryInSector)
 
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_ONGOING)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -49,6 +51,7 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_ONGOING)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
@@ -57,7 +60,8 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_ONGOING)
 
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ERASED)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -68,6 +72,7 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ERASED)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
@@ -76,7 +81,8 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ERASED)
 
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_END)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -87,6 +93,7 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_END)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
@@ -95,7 +102,8 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_END)
 
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ACTIVE)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -106,6 +114,7 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ACTIVE)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
@@ -114,7 +123,8 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ACTIVE)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_ONGOING)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -125,6 +135,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_ONGOING)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
@@ -133,7 +144,8 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_ONGOING)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ERASED)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -144,6 +156,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ERASED)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
@@ -152,7 +165,8 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ERASED)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_END)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -163,6 +177,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_END)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
@@ -171,7 +186,8 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_END)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ACTIVE)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -182,6 +198,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ACTIVE)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
@@ -190,7 +207,8 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ACTIVE)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1STATE_TRANSFER_ONGOING)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -201,6 +219,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1STATE_TRANSFER_ONGOING)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
@@ -209,7 +228,8 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1STATE_TRANSFER_ONGOING)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ERASED)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -220,6 +240,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ERASED)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
@@ -228,7 +249,8 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ERASED)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_TRANSFER_END)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -239,6 +261,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_TRANSFER_END)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
@@ -247,7 +270,8 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_TRANSFER_END)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ACTIVE)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -258,6 +282,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ACTIVE)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
@@ -266,7 +291,8 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ACTIVE)
 
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_ONGOING)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -277,6 +303,7 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_ONGOING)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
@@ -285,7 +312,8 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_ONGOING)
 
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ERASED)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -296,6 +324,7 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ERASED)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
@@ -304,7 +333,8 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ERASED)
 
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_END)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -315,6 +345,7 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_END)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
@@ -323,7 +354,8 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_END)
 
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ACTIVE)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -334,6 +366,7 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ACTIVE)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    WriteStream *stream = handle->Runtime.ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
