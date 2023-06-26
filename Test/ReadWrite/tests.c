@@ -12,7 +12,8 @@ TEST_TEAR_DOWN(ReadWrite) {}
 
 TEST(ReadWrite, WriteFileWithSizeMultipleOfFileDataBlockDataSize)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
    uint16_t fileImageDataSize = GetTestFileImageDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
@@ -25,6 +26,7 @@ TEST(ReadWrite, WriteFileWithSizeMultipleOfFileDataBlockDataSize)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
 
@@ -36,7 +38,8 @@ TEST(ReadWrite, WriteFileWithSizeMultipleOfFileDataBlockDataSize)
 
 TEST(ReadWrite, WriteFileWithSizeNotMultipleOfFileDataBlockDataSize)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
    uint16_t fileImageDataSize = GetTestFileImageDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
@@ -49,6 +52,7 @@ TEST(ReadWrite, WriteFileWithSizeNotMultipleOfFileDataBlockDataSize)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+   SetAssertFailhandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 1, fileData, fileDataSize);
 
@@ -58,9 +62,10 @@ TEST(ReadWrite, WriteFileWithSizeNotMultipleOfFileDataBlockDataSize)
    TEST_ASSERT_EQUAL_CHAR_ARRAY(fileImageData, readData, fileImageDataSize);
 }
 
-TEST(ReadWrite, ReadWithSizeNotMultipleOfFileDataBlockDataSize)
+TEST(ReadWrite, ReadFileWithSizeNotMultipleOfFileDataBlockDataSize)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
    char fileData[fileDataSize];
@@ -70,7 +75,7 @@ TEST(ReadWrite, ReadWithSizeNotMultipleOfFileDataBlockDataSize)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   AssertFailhandle = handle;
+   SetAssertFailhandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
 
@@ -79,9 +84,10 @@ TEST(ReadWrite, ReadWithSizeNotMultipleOfFileDataBlockDataSize)
    TEST_ASSERT_EQUAL_CHAR_ARRAY(fileData, readData, fileDataSize);
 }
 
-TEST(ReadWrite, ReadWithSizeMultipleOfFileDataBlockDataSize)
+TEST(ReadWrite, ReadFileWithSizeMultipleOfFileDataBlockDataSize)
 {
-   ProcessAssertFailMustBeCalled = false;
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
 
    uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
    char fileData[fileDataSize];
@@ -91,7 +97,7 @@ TEST(ReadWrite, ReadWithSizeMultipleOfFileDataBlockDataSize)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   AssertFailhandle = handle;
+   SetAssertFailhandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
 
