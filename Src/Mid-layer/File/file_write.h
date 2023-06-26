@@ -10,7 +10,7 @@ static bool TryWriteStreamFile(ThisHandle *handle, WriteStream *stream, uint16_t
    SDeviceDebugAssert(stream != NULL);
    SDeviceDebugAssert(data != NULL || size == 0);
 
-   if(GetStreamToEndLength(stream) < ComputeTotalFileLength(size))
+   if(!stream->IsInBounds || GetStreamToEndLength(stream) < ComputeTotalFileLength(size))
       return false;
 
    if(size > 0)
