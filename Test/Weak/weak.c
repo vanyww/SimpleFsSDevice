@@ -6,11 +6,9 @@
 #include "unity.h"
 #include <stdio.h>
 
-bool ProcessAssertFailMustBeCalled;
-bool ProcessLogStatusMustBeCalled;
-bool ProcessUnhandledThrowMustBeCalled;
-SDEVICE_HANDLE(SimpleFs) *AssertFailhandle;
-
+static bool ProcessAssertFailMustBeCalled;
+static bool ProcessUnhandledThrowMustBeCalled;
+static SDEVICE_HANDLE(SimpleFs) *AssertFailhandle;
 
 void SDeviceProcessAssertFail(char *file, int line)
 {
