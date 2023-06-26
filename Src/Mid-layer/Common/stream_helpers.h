@@ -48,7 +48,11 @@ static inline ReadStream BuildReadStream(WriteStream *writeStream)
    SDeviceDebugAssert(writeStream != NULL);
 
    ReadStream readStream = CloneStream(writeStream);
-   SeekStream(&readStream, SEEK_STREAM_ORIGIN_CURRENT, -1);
+
+   if(readStream.IsInBounds)
+      SeekStream(&readStream, SEEK_STREAM_ORIGIN_CURRENT, -1);
+   else
+      SeekStream(&readStream, SEEK_STREAM_ORIGIN_ENDING, 0);
 
    return readStream;
 }
