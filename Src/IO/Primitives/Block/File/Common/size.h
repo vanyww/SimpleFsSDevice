@@ -6,7 +6,7 @@
 #define MAX_FILE_SIZE ((MAX_FILE_AREA_LENGTH + 1) * SIZEOF_MEMBER(FileDataBlock, Data))
 #define CEIL_DIV_UINT(numerator, denominator)(                                                                         \
 {                                                                                                                      \
-   SDeviceAssert(numerator > 0);                                                                                       \
+   SDeviceAssert(numerator >= 0);                                                                                      \
    SDeviceAssert(denominator > 0);                                                                                     \
    __auto_type _numerator = (numerator);                                                                               \
    __auto_type _denominator = (denominator);                                                                           \
