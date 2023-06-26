@@ -9,14 +9,6 @@
 #define MAX_FILE_SIZE 17
 #define NUMBER_OF_FILES 2
 
-#define CEIL_DIV_UINT(numerator, denominator)(                                                                         \
-{                                                                                                                      \
-   SDeviceAssert(numerator > 0);                                                                                       \
-   SDeviceAssert(denominator > 0);                                                                                     \
-   __auto_type _numerator = (numerator);                                                                               \
-   __auto_type _denominator = (denominator);                                                                           \
-   _numerator % _denominator > 0 ? _numerator / _denominator + 1 : _numerator / _denominator;                          \
-})
 
 typedef struct
 {
@@ -48,38 +40,6 @@ void CopyTestFileImageData(void *buffer, TestFilesNames file)
    memcpy(buffer, TestFiles[file].FileImageData, TestFiles[file].FileImageDataSize);
 }
 
-static FileDataBlock CreateDataBlock(const void *data, size_t size, bool isMemoryErasingToZero)
-{
-   FileDataBlock block =
-   {
-      .Type = BLOCK_TYPE_FILE_DATA,
-      .Data = { [0 ... SIZEOF_MEMBER(FileDataBlock, Data) - 1] = isMemoryErasingToZero ? 0 : UINT8_MAX }
-   };
-   memcpy(block.Data, data, size);
-
-   return block;
-}
-
-static FileAreaTagBlock CreateFileAreaTagBlock(const void *fileData,
-                                               size_t      fileSize,
-                                               uint16_t    lastBlockDataSize,
-                                               uint16_t    fileId)
-{
-   FileAreaTagBlock block =
-   {
-      .Type = BLOCK_TYPE_FILE_AREA_TAG,
-      .FileAreaLength = CEIL_DIV_UINT(fileSize, SIZEOF_MEMBER(FileDataBlock, Data)),
-      .LastFileBlockDataSize = lastBlockDataSize,
-      .FileId = fileId,
-      .FileCrc = TableCrc16SDeviceCompute(SimpleFsSDeviceInternalCrc16Handle, fileData, fileSize)
-   };
-   uint8_t* blockdata = ((ServiceBlock)block).BlockData;
-   size_t size = sizeof(((ServiceBlock)block).BlockData);
-   block.BlockCrc = TableCrc8SDeviceCompute(SimpleFsSDeviceInternalCrc8Handle, blockdata, size);
-
-   return block;
-}
-
 static void InitializeFileWithSizeMultipleOfFileDataBlockDataSize(void)
 {
    char fileData[] = "1111111111111";
@@ -96,13 +56,26 @@ static void InitializeFileWithSizeMultipleOfFileDataBlockDataSize(void)
    uint16_t file1SizeRemainder = fileSize % SIZEOF_MEMBER(FileDataBlock, Data);    // last block data size = 7 byte
    uint16_t lastBlockDataSize = (file1SizeRemainder != 0) ? file1SizeRemainder : SIZEOF_MEMBER(FileDataBlock, Data);
 
-   FileDataBlock datablock1 = CreateDataBlock(&fileData[SIZEOF_MEMBER(FileDataBlock, Data)], lastBlockDataSize, true);
-   memcpy(file.FileImageData, &datablock1, sizeof(Block));
+   char dataBlock1[sizeof(Block)] = { 0 };
+   memcpy(dataBlock1, &fileData[SIZEOF_MEMBER(FileDataBlock, Data)], lastBlockDataSize);
+   dataBlock1[7] = BLOCK_TYPE_FILE_DATA;
+   memcpy(file.FileImageData, &dataBlock1, sizeof(Block));
 
-   FileDataBlock datablock2 = CreateDataBlock(fileData, SIZEOF_MEMBER(FileDataBlock, Data), true);
-   memcpy(&file.FileImageData[sizeof(Block)], &datablock2, sizeof(Block));
+   char dataBlock2[sizeof(Block)] = { 0 };
+   memcpy(dataBlock2, fileData, SIZEOF_MEMBER(FileDataBlock, Data));
+   dataBlock2[7] = BLOCK_TYPE_FILE_DATA;
+   memcpy(&file.FileImageData[sizeof(Block)], &dataBlock2, sizeof(Block));
 
-   FileAreaTagBlock fileAreaTagBlock = CreateFileAreaTagBlock(fileData, fileSize, lastBlockDataSize, 0);
+   char fileAreaTagBlock[sizeof(Block)] = { 0 };
+   fileAreaTagBlock[1] = 2;   // file area length
+   fileAreaTagBlock[2] = 7;   // last block data size
+   uint16_t fileIdx = 0;
+   memcpy(&fileAreaTagBlock[3], &fileIdx, sizeof(uint16_t));
+   uint16_t fileCrc = TableCrc16SDeviceCompute(SimpleFsSDeviceInternalCrc16Handle, fileData, fileSize);
+   memcpy(&fileAreaTagBlock[5], &fileCrc, sizeof(uint16_t));
+   fileAreaTagBlock[7] = BLOCK_TYPE_FILE_AREA_TAG;
+   fileAreaTagBlock[0] =
+      TableCrc8SDeviceCompute(SimpleFsSDeviceInternalCrc8Handle, &fileAreaTagBlock[1], sizeof(Block) - sizeof(uint8_t));
    memcpy(&file.FileImageData[2*sizeof(Block)], &fileAreaTagBlock, sizeof(Block));
 
    TestFiles[FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE] = file;
@@ -124,17 +97,31 @@ static void InitializeFileWithSizeNotMultipleOfFileDataBlockDataSize(void)
    uint16_t file1SizeRemainder = fileSize % SIZEOF_MEMBER(FileDataBlock, Data);
    uint16_t lastBlockDataSize = (file1SizeRemainder != 0) ? file1SizeRemainder : SIZEOF_MEMBER(FileDataBlock, Data);
 
-   FileDataBlock datablock1 = CreateDataBlock(&fileData[2*SIZEOF_MEMBER(FileDataBlock, Data)], lastBlockDataSize, true);
-   memcpy(file.FileImageData, &datablock1, sizeof(Block));
+   char dataBlock1[sizeof(Block)] = { 0 };
+   memcpy(dataBlock1, &fileData[2*SIZEOF_MEMBER(FileDataBlock, Data)], lastBlockDataSize);
+   dataBlock1[7] = BLOCK_TYPE_FILE_DATA;
+   memcpy(file.FileImageData, &dataBlock1, sizeof(Block));
 
-   FileDataBlock datablock2 =
-         CreateDataBlock(&fileData[SIZEOF_MEMBER(FileDataBlock, Data)], SIZEOF_MEMBER(FileDataBlock, Data), true);
-   memcpy(&file.FileImageData[sizeof(Block)], &datablock2, sizeof(Block));
+   char dataBlock2[sizeof(Block)] = { 0 };
+   memcpy(dataBlock2, &fileData[SIZEOF_MEMBER(FileDataBlock, Data)], SIZEOF_MEMBER(FileDataBlock, Data));
+   dataBlock2[7] = BLOCK_TYPE_FILE_DATA;
+   memcpy(&file.FileImageData[sizeof(Block)], &dataBlock2, sizeof(Block));
 
-   FileDataBlock datablock3 = CreateDataBlock(fileData, SIZEOF_MEMBER(FileDataBlock, Data), true);
-   memcpy(&file.FileImageData[2*sizeof(Block)], &datablock3, sizeof(Block));
+   char dataBlock3[sizeof(Block)] = { 0 };
+   memcpy(dataBlock3, &fileData, SIZEOF_MEMBER(FileDataBlock, Data));
+   dataBlock3[7] = BLOCK_TYPE_FILE_DATA;
+   memcpy(&file.FileImageData[2*sizeof(Block)], &dataBlock3, sizeof(Block));
 
-   FileAreaTagBlock fileAreaTagBlock = CreateFileAreaTagBlock(fileData, fileSize, lastBlockDataSize, 1);
+   char fileAreaTagBlock[sizeof(Block)] = { 0 };
+   fileAreaTagBlock[1] = 3;   // file area length
+   fileAreaTagBlock[2] = 3;   // last block data size
+   uint16_t fileIdx = 1;
+   memcpy(&fileAreaTagBlock[3], &fileIdx, sizeof(uint16_t));
+   uint16_t fileCrc = TableCrc16SDeviceCompute(SimpleFsSDeviceInternalCrc16Handle, fileData, fileSize);
+   memcpy(&fileAreaTagBlock[5], &fileCrc, sizeof(uint16_t));
+   fileAreaTagBlock[7] = BLOCK_TYPE_FILE_AREA_TAG;
+   fileAreaTagBlock[0] =
+      TableCrc8SDeviceCompute(SimpleFsSDeviceInternalCrc8Handle, &fileAreaTagBlock[1], sizeof(Block) - sizeof(uint8_t));
    memcpy(&file.FileImageData[3*sizeof(Block)], &fileAreaTagBlock, sizeof(Block));
 
    TestFiles[FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE] = file;
