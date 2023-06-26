@@ -12,21 +12,17 @@ static SDEVICE_HANDLE(SimpleFs) *AssertFailhandle;
 
 void SDeviceProcessAssertFail(char *file, int line)
 {
+   if(AssertFailhandle != NULL)
+         SDeviceFree(AssertFailhandle);
 
    if(ProcessAssertFailMustBeCalled)
    {
-      if(AssertFailhandle!= NULL)
-            SDeviceFree(AssertFailhandle);
-
       char str[200];
       sprintf(str, "Test pass, assert called on file (%s) line (%d)", file, line);
       TEST_PASS_MESSAGE(str);
    }
    else
    {
-      if(AssertFailhandle!= NULL)
-            SDeviceFree(AssertFailhandle);
-
       char str[200];
       sprintf(str, "Test fail, assert called on file (%s) line (%d)", file,  line);
       TEST_FAIL_MESSAGE(str);
