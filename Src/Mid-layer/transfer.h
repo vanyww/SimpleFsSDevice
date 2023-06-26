@@ -96,7 +96,7 @@ static void TransferActiveStream(ThisHandle *handle, const TransferWriteFileInfo
    }
 
    WriteStreamSectorState(handle, targetStream, SECTOR_STATE_TRANSFER_END);
-   FormatStreamSector(handle, &sourceStream);
+   FormatStreamSector(handle, GetActiveWriteStream(handle));
    WriteStreamSectorState(handle, targetStream, SECTOR_STATE_ACTIVE);
    SwitchWriteStreams(handle);
 }
