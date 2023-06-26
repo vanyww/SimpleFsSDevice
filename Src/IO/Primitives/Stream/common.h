@@ -49,9 +49,9 @@ static inline void SeekStream(Stream *stream, SeekStreamOrigin origin, intptr_t 
       case SEEK_STREAM_ORIGIN_CURRENT:
          SDeviceDebugAssert(stream->IsInBounds);
 
-         stream->Cursor += offset;
          stream->IsInBounds =
                (offset < 0) ? GetStreamToStartLength(stream) > -offset : GetStreamToEndLength(stream) > offset;
+         stream->Cursor += offset;
          return;
 
       case SEEK_STREAM_ORIGIN_BEGINNING:
