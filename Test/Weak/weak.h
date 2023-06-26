@@ -4,10 +4,10 @@
 #include <stdbool.h>
 #include "../Inc/SimpleFsSDevice/public.h"
 
-extern bool ProcessAssertFailMustBeCalled;
-extern bool ProcessLogStatusMustBeCalled;
-extern bool ProcessUnhandledThrowMustBeCalled;
-extern SDEVICE_HANDLE(SimpleFs) *AssertFailhandle;
+
+void SetProcessAssertFailMustBeCalled(bool value);
+void SetProcessUnhandledThrowMustBeCalled(bool value);
+void SetAssertFailhandle(SDEVICE_HANDLE(SimpleFs) *handle);
 
 void SDeviceProcessAssertFail(char *file, int line);
 void SDeviceProcessUnhandledThrow(const void *_handle);

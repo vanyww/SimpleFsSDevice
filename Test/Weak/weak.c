@@ -11,6 +11,21 @@ static bool ProcessAssertFailMustBeCalled;
 static bool ProcessUnhandledThrowMustBeCalled;
 static SDEVICE_HANDLE(SimpleFs) *AssertFailhandle;
 
+void SetProcessAssertFailMustBeCalled(bool value)
+{
+   ProcessAssertFailMustBeCalled = value;
+}
+
+void SetProcessUnhandledThrowMustBeCalled(bool value)
+{
+   ProcessUnhandledThrowMustBeCalled = value;
+}
+
+void SetAssertFailhandle(SDEVICE_HANDLE(SimpleFs) *handle)
+{
+   AssertFailhandle = handle;
+}
+
 void SDeviceProcessAssertFail(char *file, int line)
 {
    if(AssertFailhandle != NULL)
@@ -73,6 +88,9 @@ void SDeviceProcessLogStatus(const void *_handle)
       case SIMPLE_FS_SDEVICE_STATUS_BAD_AREA_DETECTED:
          TEST_MESSAGE(ENUM_TO_STRING(SIMPLE_FS_SDEVICE_STATUS_BAD_AREA_DETECTED));
          break;
+
+      case SIMPLE_FS_SDEVICE_STATUS_OK:
+         TEST_MESSAGE(ENUM_TO_STRING(SIMPLE_FS_SDEVICE_STATUS_OK));
 
       default:
          break;
