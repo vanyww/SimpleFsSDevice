@@ -111,13 +111,13 @@ TEST(ReadWrite, WriteNewFileVersion)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t fileVersion1DataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
-   char fileVersion1Data[fileVersion1DataSize];
-   CopyTestFileData(fileVersion1Data, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   char fileData[fileDataSize];
+   CopyTestFileData(fileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
 
-   uint16_t fileVersion2DataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
-   char fileVersion2Data[fileVersion2DataSize];
-   CopyTestFileData(fileVersion2Data, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileNewVersionDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   char fileNewVersionData[fileNewVersionDataSize];
+   CopyTestFileData(fileNewVersionData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
 
    CREATE_SIMPLE_FS_APPLICATION(100, this);
 
@@ -125,12 +125,12 @@ TEST(ReadWrite, WriteNewFileVersion)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailhandle(handle);
 
-   SimpleFsSDeviceWriteFile(handle, 0, fileVersion1Data, fileVersion1DataSize);
-   SimpleFsSDeviceWriteFile(handle, 0, fileVersion2Data, fileVersion2DataSize);
+   SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
+   SimpleFsSDeviceWriteFile(handle, 0, fileNewVersionData, fileNewVersionDataSize);
 
-   size_t sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, fileVersion2Data, fileVersion2DataSize);
+   size_t sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, fileNewVersionData, fileNewVersionDataSize);
 
-   TEST_ASSERT_EQUAL(fileVersion2DataSize, sizeOfReadFile);
+   TEST_ASSERT_EQUAL(fileNewVersionDataSize, sizeOfReadFile);
 }
 
 TEST(ReadWrite, WriteNewFileVersionWithSmallerSize)
@@ -138,13 +138,13 @@ TEST(ReadWrite, WriteNewFileVersionWithSmallerSize)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t fileVersion1DataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
-   char fileVersion1Data[fileVersion1DataSize];
-   CopyTestFileData(fileVersion1Data, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   char fileData[fileDataSize];
+   CopyTestFileData(fileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
 
-   uint16_t fileVersion2DataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
-   char fileVersion2Data[fileVersion2DataSize];
-   CopyTestFileData(fileVersion2Data, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileNewVersionDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   char fileNewVersionData[fileNewVersionDataSize];
+   CopyTestFileData(fileNewVersionData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
 
    CREATE_SIMPLE_FS_APPLICATION(100, this);
 
@@ -152,12 +152,12 @@ TEST(ReadWrite, WriteNewFileVersionWithSmallerSize)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailhandle(handle);
 
-   SimpleFsSDeviceWriteFile(handle, 0, fileVersion2Data, fileVersion2DataSize);
-   SimpleFsSDeviceWriteFile(handle, 0, fileVersion1Data, fileVersion1DataSize);
+   SimpleFsSDeviceWriteFile(handle, 0, fileNewVersionData, fileNewVersionDataSize);
+   SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
 
-   size_t sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, fileVersion1Data, fileVersion2DataSize);
+   size_t sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, fileNewVersionData, fileDataSize);
 
-   TEST_ASSERT_EQUAL(fileVersion1DataSize, sizeOfReadFile);
+   TEST_ASSERT_EQUAL(fileNewVersionDataSize, sizeOfReadFile);
 }
 
 TEST(ReadWrite, ReadNewFileVersionTwoTimes)
@@ -165,13 +165,13 @@ TEST(ReadWrite, ReadNewFileVersionTwoTimes)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t fileVersion1DataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
-   char fileVersion1Data[fileVersion1DataSize];
-   CopyTestFileData(fileVersion1Data, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   char fileData[fileDataSize];
+   CopyTestFileData(fileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
 
-   uint16_t fileVersion2DataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
-   char fileVersion2Data[fileVersion2DataSize];
-   CopyTestFileData(fileVersion2Data, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileNewVersionDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   char fileNewVersionData[fileNewVersionDataSize];
+   CopyTestFileData(fileNewVersionData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
 
    CREATE_SIMPLE_FS_APPLICATION(100, this);
 
@@ -179,13 +179,13 @@ TEST(ReadWrite, ReadNewFileVersionTwoTimes)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailhandle(handle);
 
-   SimpleFsSDeviceWriteFile(handle, 0, fileVersion2Data, fileVersion2DataSize);
-   SimpleFsSDeviceWriteFile(handle, 0, fileVersion1Data, fileVersion1DataSize);
+   SimpleFsSDeviceWriteFile(handle, 0, fileNewVersionData, fileNewVersionDataSize);
+   SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
 
-   size_t sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, fileVersion1Data, fileVersion2DataSize);
-   TEST_ASSERT_EQUAL(fileVersion1DataSize, sizeOfReadFile);
-   sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, fileVersion1Data, fileVersion2DataSize);
-   TEST_ASSERT_EQUAL(fileVersion1DataSize, sizeOfReadFile);
+   size_t sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, fileData, fileNewVersionDataSize);
+   TEST_ASSERT_EQUAL(fileDataSize, sizeOfReadFile);
+   sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, fileData, fileNewVersionDataSize);
+   TEST_ASSERT_EQUAL(fileDataSize, sizeOfReadFile);
 }
 
 TEST(ReadWrite, WriteFileWithShortageMemory)
@@ -193,13 +193,13 @@ TEST(ReadWrite, WriteFileWithShortageMemory)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(true);
 
-   uint16_t file1DataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
-   char file1Data[file1DataSize];
-   CopyTestFileData(file1Data, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   char firstFileData[firstFileDataSize];
+   CopyTestFileData(firstFileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
 
-   uint16_t file2DataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
-   char file2Data[file2DataSize];
-   CopyTestFileData(file2Data, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   char secondFileData[secondFileDataSize];
+   CopyTestFileData(secondFileData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -207,8 +207,8 @@ TEST(ReadWrite, WriteFileWithShortageMemory)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailhandle(handle);
 
-   SimpleFsSDeviceWriteFile(handle, 0, file1Data, file1DataSize);
-   SimpleFsSDeviceWriteFile(handle, 1, file2Data, file2DataSize);
+   SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
+   SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);
 }
 
 TEST_GROUP_RUNNER(ReadWrite)
