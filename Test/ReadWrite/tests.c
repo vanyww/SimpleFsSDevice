@@ -10,17 +10,17 @@ TEST_GROUP(ReadWrite);
 TEST_SETUP(ReadWrite) {}
 TEST_TEAR_DOWN(ReadWrite) {}
 
-TEST(ReadWrite, WriteFileWithSizeMultipleOfFileDataBlockDataSize)
+TEST(ReadWrite, WriteFileWithFullyFilledDataBlocks)
 {
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
-   uint16_t fileImageDataSize = GetTestFileImageDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   uint16_t fileImageDataSize = GetTestFileImageDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char fileData[fileDataSize];
    char fileImageData[fileImageDataSize];
-   CopyTestFileData(fileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
-   CopyTestFileImageData(fileImageData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(fileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   CopyTestFileImageData(fileImageData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -36,17 +36,17 @@ TEST(ReadWrite, WriteFileWithSizeMultipleOfFileDataBlockDataSize)
    TEST_ASSERT_EQUAL_CHAR_ARRAY(fileImageData, readData, fileImageDataSize);
 }
 
-TEST(ReadWrite, WriteFileWithSizeNotMultipleOfFileDataBlockDataSize)
+TEST(ReadWrite, WriteFileWithIncompleteFilledLastDataBlock)
 {
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
-   uint16_t fileImageDataSize = GetTestFileImageDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   uint16_t fileImageDataSize = GetTestFileImageDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char fileData[fileDataSize];
    char fileImageData[fileImageDataSize];
-   CopyTestFileData(fileData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
-   CopyTestFileImageData(fileImageData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(fileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   CopyTestFileImageData(fileImageData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -62,14 +62,14 @@ TEST(ReadWrite, WriteFileWithSizeNotMultipleOfFileDataBlockDataSize)
    TEST_ASSERT_EQUAL_CHAR_ARRAY(fileImageData, readData, fileImageDataSize);
 }
 
-TEST(ReadWrite, ReadFileWithSizeNotMultipleOfFileDataBlockDataSize)
+TEST(ReadWrite, ReadFileWithIncompleteFilledLastDataBlock)
 {
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char fileData[fileDataSize];
-   CopyTestFileData(fileData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(fileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -84,14 +84,14 @@ TEST(ReadWrite, ReadFileWithSizeNotMultipleOfFileDataBlockDataSize)
    TEST_ASSERT_EQUAL_CHAR_ARRAY(fileData, readData, fileDataSize);
 }
 
-TEST(ReadWrite, ReadFileWithSizeMultipleOfFileDataBlockDataSize)
+TEST(ReadWrite, ReadFileWithFullyFilledDataBlocks)
 {
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char fileData[fileDataSize];
-   CopyTestFileData(fileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(fileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -111,13 +111,13 @@ TEST(ReadWrite, WriteNewFileVersion)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char fileData[fileDataSize];
-   CopyTestFileData(fileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(fileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t fileNewVersionDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileNewVersionDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char fileNewVersionData[fileNewVersionDataSize];
-   CopyTestFileData(fileNewVersionData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(fileNewVersionData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    CREATE_SIMPLE_FS_APPLICATION(100, this);
 
@@ -138,13 +138,13 @@ TEST(ReadWrite, WriteNewFileVersionWithSmallerSize)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char fileData[fileDataSize];
-   CopyTestFileData(fileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(fileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
-   uint16_t fileNewVersionDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileNewVersionDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char fileNewVersionData[fileNewVersionDataSize];
-   CopyTestFileData(fileNewVersionData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(fileNewVersionData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
    CREATE_SIMPLE_FS_APPLICATION(100, this);
 
@@ -152,8 +152,9 @@ TEST(ReadWrite, WriteNewFileVersionWithSmallerSize)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailhandle(handle);
 
-   SimpleFsSDeviceWriteFile(handle, 0, fileNewVersionData, fileNewVersionDataSize);
    SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
+   SimpleFsSDeviceWriteFile(handle, 0, fileNewVersionData, fileNewVersionDataSize);
+
 
    size_t sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, fileNewVersionData, fileDataSize);
 
@@ -165,13 +166,13 @@ TEST(ReadWrite, ReadNewFileVersionTwoTimes)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char fileData[fileDataSize];
-   CopyTestFileData(fileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(fileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t fileNewVersionDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileNewVersionDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char fileNewVersionData[fileNewVersionDataSize];
-   CopyTestFileData(fileNewVersionData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(fileNewVersionData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    CREATE_SIMPLE_FS_APPLICATION(100, this);
 
@@ -193,13 +194,13 @@ TEST(ReadWrite, WriteFileWithShortageMemory)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(true);
 
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
-   CopyTestFileData(firstFileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
-   CopyTestFileData(secondFileData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    CREATE_SIMPLE_FS_APPLICATION(64, this);
 
@@ -213,10 +214,10 @@ TEST(ReadWrite, WriteFileWithShortageMemory)
 
 TEST_GROUP_RUNNER(ReadWrite)
 {
-   RUN_TEST_CASE(ReadWrite, WriteFileWithSizeMultipleOfFileDataBlockDataSize);
-   RUN_TEST_CASE(ReadWrite, WriteFileWithSizeNotMultipleOfFileDataBlockDataSize);
-   RUN_TEST_CASE(ReadWrite, ReadFileWithSizeNotMultipleOfFileDataBlockDataSize);
-   RUN_TEST_CASE(ReadWrite, ReadFileWithSizeMultipleOfFileDataBlockDataSize);
+   RUN_TEST_CASE(ReadWrite, WriteFileWithFullyFilledDataBlocks);
+   RUN_TEST_CASE(ReadWrite, WriteFileWithIncompleteFilledLastDataBlock);
+   RUN_TEST_CASE(ReadWrite, ReadFileWithIncompleteFilledLastDataBlock);
+   RUN_TEST_CASE(ReadWrite, ReadFileWithFullyFilledDataBlocks);
    RUN_TEST_CASE(ReadWrite, WriteNewFileVersion);
    RUN_TEST_CASE(ReadWrite, WriteFileWithShortageMemory);
    RUN_TEST_CASE(ReadWrite, WriteNewFileVersionWithSmallerSize);

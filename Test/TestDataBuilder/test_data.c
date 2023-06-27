@@ -78,7 +78,7 @@ static void InitializeFileWithSizeMultipleOfFileDataBlockDataSize(void)
       TableCrc8SDeviceCompute(SimpleFsSDeviceInternalCrc8Handle, &fileAreaTagBlock[1], sizeof(Block) - sizeof(uint8_t));
    memcpy(&file.FileImageData[2*sizeof(Block)], &fileAreaTagBlock, sizeof(Block));
 
-   TestFiles[FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE] = file;
+   TestFiles[FILE_WITH_FULLY_FILLED_DATA_BLOCKS] = file;
 }
 
 static void InitializeFileWithSizeNotMultipleOfFileDataBlockDataSize(void)
@@ -124,7 +124,7 @@ static void InitializeFileWithSizeNotMultipleOfFileDataBlockDataSize(void)
       TableCrc8SDeviceCompute(SimpleFsSDeviceInternalCrc8Handle, &fileAreaTagBlock[1], sizeof(Block) - sizeof(uint8_t));
    memcpy(&file.FileImageData[3*sizeof(Block)], &fileAreaTagBlock, sizeof(Block));
 
-   TestFiles[FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE] = file;
+   TestFiles[FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK] = file;
 }
 
 void CreateTestData(void)

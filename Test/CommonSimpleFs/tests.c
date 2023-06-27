@@ -15,13 +15,13 @@ TEST(CommonSimpleFs, DeleteFile)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
-   CopyTestFileData(firstFileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
-   CopyTestFileData(secondFileData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    CREATE_SIMPLE_FS_APPLICATION(100, this);
 
@@ -46,13 +46,13 @@ TEST(CommonSimpleFs, GetMaxFileSize)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
-   CopyTestFileData(firstFileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
-   CopyTestFileData(secondFileData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    CREATE_SIMPLE_FS_APPLICATION(100, this);
 
@@ -73,13 +73,13 @@ TEST(CommonSimpleFs, DeleteSomeFileVersion)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char fileData[fileDataSize];
-   CopyTestFileData(fileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(fileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t fileNewVersionDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileNewVersionDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char fileNewVersionData[fileNewVersionDataSize];
-   CopyTestFileData(fileNewVersionData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(fileNewVersionData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    CREATE_SIMPLE_FS_APPLICATION(100, this);
 
@@ -102,13 +102,13 @@ TEST(CommonSimpleFs, DeleteFileWithShortageMemory)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
-   CopyTestFileData(firstFileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
-   CopyTestFileData(secondFileData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    CREATE_SIMPLE_FS_APPLICATION(72, this);
 
@@ -133,13 +133,13 @@ TEST(CommonSimpleFs, FormatMemory)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
-   CopyTestFileData(firstFileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
-   CopyTestFileData(secondFileData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    CREATE_SIMPLE_FS_APPLICATION(100, this);
 
@@ -164,13 +164,13 @@ TEST(CommonSimpleFs, ForceHistoryDeletion)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char fileData[fileDataSize];
-   CopyTestFileData(fileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(fileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t fileNewVersionDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t fileNewVersionDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char fileNewVersionData[fileNewVersionDataSize];
-   CopyTestFileData(fileNewVersionData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(fileNewVersionData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    CREATE_SIMPLE_FS_APPLICATION(100, this);
 

@@ -15,13 +15,13 @@ TEST(Transfer, TransferTwoFiles)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
-   CopyTestFileData(firstFileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
-   CopyTestFileData(secondFileData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    CREATE_SIMPLE_FS_APPLICATION(100, this);
 
@@ -49,13 +49,13 @@ TEST(Transfer, TransferWithRewriteFile)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
-   CopyTestFileData(firstFileData, FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
-   CopyTestFileData(secondFileData, FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE);
+   CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    CREATE_SIMPLE_FS_APPLICATION(100, this);
 
@@ -64,7 +64,6 @@ TEST(Transfer, TransferWithRewriteFile)
    SetAssertFailhandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
-   int temp = 1;
 
    for (uint16_t i = 0; i < 10000; i++)
    {
