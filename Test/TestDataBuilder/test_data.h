@@ -4,8 +4,8 @@
 
 typedef enum
 {
-   FILE_WITH_SIZE_MULTIPLE_OF_FileDataBlock_Data_SIZE,
-   FILE_WITH_SIZE_NOT_MULTIPLE_OF_FileDataBlock_Data_SIZE,
+   FILE_WITH_FULLY_FILLED_DATA_BLOCKS,
+   FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK
 } TestFilesNames;
 
 void CreateTestData(void);
