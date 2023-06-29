@@ -50,6 +50,14 @@ char* GetGlobalSectorsPtr(void);
 
 void SetGlobalSectorsPtr(char *ptr);
 
+void SetGlobalBadBlocksNumbersArrayPtr(uint16_t *ptr, uint8_t sectorNumber);
+
+void SetGlobalBadBlocksNumbersArraySize(size_t size, uint8_t sectorNumber);
+
+uint16_t* GetGlobalBadBlocksNumbersArrayPtr(uint8_t sectorNumber);
+
+size_t GetGlobalBadBlocksNumbersArraySize(uint8_t sectorNumber);
+
 void ReadUInt64(SDEVICE_HANDLE(SimpleFs)     *handle,
                 const SimpleFsSDeviceSector  *sector,
                 uintptr_t                     address,
