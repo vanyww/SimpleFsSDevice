@@ -39,7 +39,7 @@
 
 typedef struct
 {
-   size_t SectorIndex;
+   uint8_t SectorIndex;
 } SectorContext;
 
 size_t GetGlobalSectorSize(void);
