@@ -7,14 +7,16 @@
 
 TEST_GROUP(Transfer);
 
-TEST_SETUP(Transfer) {}
+TEST_SETUP(Transfer)
+{
+   SetProcessAssertFailMustBeCalled(false);
+   SetProcessUnhandledThrowMustBeCalled(false);
+}
+
 TEST_TEAR_DOWN(Transfer) {}
 
 TEST(Transfer, TransferTwoFiles)
 {
-   SetProcessAssertFailMustBeCalled(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
-
    uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
    CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
@@ -46,9 +48,6 @@ TEST(Transfer, TransferTwoFiles)
 
 TEST(Transfer, TransferWithRewriteFile)
 {
-   SetProcessAssertFailMustBeCalled(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
-
    uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
    CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
