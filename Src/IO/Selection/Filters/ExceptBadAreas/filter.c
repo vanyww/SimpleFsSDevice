@@ -16,7 +16,7 @@ static SELECTION_FILTER_FUNCTION_DECLARATION(ExceptBadAreas, handle, _parameters
       if(HasServiceBlockValidCrc(handle, block.AsService))
       {
          BadAreaTagBlock blockAsBadAreaTag = blockAsService.AsBadAreaTag;
-         return (FilteringResult){ -blockAsBadAreaTag.BadAreaLength, false };
+         return (FilteringResult){ -(blockAsBadAreaTag.BadAreaLength + 1), false };
       }
 
       SDeviceLogStatus(handle, SIMPLE_FS_SDEVICE_STATUS_CORRUPTED_BLOCK_DETECTED);

@@ -20,7 +20,7 @@ static SELECTION_FILTER_FUNCTION_DECLARATION(ValidServiceOfType, handle, _parame
       ServiceBlock blockAsService = block.AsService;
       if(HasServiceBlockValidCrc(handle, blockAsService))
       {
-         intptr_t nextOffset = IsAreaTagBlock(block) ? -block.AsAreaTag.AreaLength : -1;
+         intptr_t nextOffset = IsAreaTagBlock(block) ? -(block.AsAreaTag.AreaLength + 1) : -1;
          return (FilteringResult){ nextOffset, IsBlockOfType(block, parameters->Type) };
       }
    }
