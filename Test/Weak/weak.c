@@ -10,6 +10,12 @@
 static bool ProcessAssertFailMustBeCalled;
 static bool ProcessUnhandledThrowMustBeCalled;
 static SDEVICE_HANDLE(SimpleFs) *AssertFailhandle;
+static bool AreLogsShowing = true;
+
+void ShowLog(bool value)
+{
+   AreLogsShowing = value;
+}
 
 void SetProcessAssertFailMustBeCalled(bool value)
 {
@@ -75,6 +81,9 @@ void SDeviceProcessUnhandledThrow(const void *_handle)
 
 void SDeviceProcessLogStatus(const void *_handle)
 {
+   if(!AreLogsShowing)
+      return;
+
    SDeviceHandleHeader *header = (SDeviceHandleHeader *)(_handle);
    SimpleFsSDeviceStatus status = header->LatestStatus;
 
