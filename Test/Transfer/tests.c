@@ -151,6 +151,7 @@ TEST(Transfer, TransferWithRewriteFileAndBadBlocks)
    {
       SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
       SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);
+      SimpleFsSDeviceForceHistoryDeletion(handle);
    }
 
    size_t sizeOfFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstFileData, 14);
@@ -201,6 +202,7 @@ TEST(Transfer, TransferWithRewriteFileAndRandomGenerationBadBlocks)
 
       SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
       SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);
+      SimpleFsSDeviceForceHistoryDeletion(handle);
    }
 
    size_t sizeOfFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstFileData, 14);
