@@ -95,7 +95,7 @@ void WriteUInt64(SDEVICE_HANDLE(SimpleFs)       *handle,
       {
          if(*(ptrToArray + i) == numberOfBlock)
          {
-            memset(dataDstPtr, 0, sizeof(value));
+            memset(dataDstPtr, '*', sizeof(value));
             break;
          }
       }
