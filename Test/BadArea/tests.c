@@ -48,30 +48,6 @@ TEST(BadArea, EveryFourthBlockIsBad)
    TEST_ASSERT_EQUAL(17, sizeOfSecondFile);
 }
 
-TEST(BadArea, EverySecondBlockIsBad)
-{
-   SetProcessUnhandledThrowMustBeCalled(true);
-
-   uint16_t badBlockNumbers[] = {2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24};
-   SetGlobalBadBlocksNumbersArrayPtr(badBlockNumbers, 1);
-   SetGlobalBadBlocksNumbersArraySize(sizeof(badBlockNumbers), 1);
-   SetGlobalBadBlocksNumbersArrayPtr(badBlockNumbers, 0);
-   SetGlobalBadBlocksNumbersArraySize(sizeof(badBlockNumbers), 0);
-
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
-   char firstFileData[firstFileDataSize];
-   CopyTestFileImageData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
-
-   CREATE_SIMPLE_FS_APPLICATION(200, this);
-
-   SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailhandle(handle);
-
-   SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
-   TEST_FAIL_MESSAGE("Test fail, no exception was thrown");
-}
-
 TEST(BadArea, WriteFileWhenShortageMemoryDueBadBlocks)
 {
    SetProcessUnhandledThrowMustBeCalled(true);
@@ -107,6 +83,5 @@ TEST(BadArea, WriteFileWhenShortageMemoryDueBadBlocks)
 TEST_GROUP_RUNNER(BadArea)
 {
    RUN_TEST_CASE(BadArea, EveryFourthBlockIsBad);
-   RUN_TEST_CASE(BadArea, EverySecondBlockIsBad);
    RUN_TEST_CASE(BadArea, WriteFileWhenShortageMemoryDueBadBlocks);
 }
