@@ -27,7 +27,7 @@ TEST(CommonSimpleFs, DeleteFile)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailhandle(handle);
+   SetAssertFailHandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
    SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);
@@ -58,7 +58,7 @@ TEST(CommonSimpleFs, GetMaxFileSize)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailhandle(handle);
+   SetAssertFailHandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
    SimpleFsSDeviceWriteFile(handle, 0, secondFileData, secondFileDataSize);
@@ -85,7 +85,7 @@ TEST(CommonSimpleFs, DeleteSomeFileVersion)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailhandle(handle);
+   SetAssertFailHandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
    SimpleFsSDeviceWriteFile(handle, 0, fileNewVersionData, fileNewVersionDataSize);
@@ -114,7 +114,7 @@ TEST(CommonSimpleFs, DeleteFileWithShortageMemory)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
             SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailhandle(handle);
+   SetAssertFailHandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
    SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);
@@ -145,7 +145,7 @@ TEST(CommonSimpleFs, FormatMemory)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailhandle(handle);
+   SetAssertFailHandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
    SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);
@@ -176,7 +176,7 @@ TEST(CommonSimpleFs, ForceHistoryDeletion)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailhandle(handle);
+   SetAssertFailHandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
    SimpleFsSDeviceWriteFile(handle, 0, fileNewVersionData, fileNewVersionDataSize);

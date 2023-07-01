@@ -36,7 +36,7 @@ TEST(BadArea, EveryFourthBlockIsBad)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailhandle(handle);
+   SetAssertFailHandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
    SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);
@@ -94,7 +94,7 @@ TEST(BadArea, WriteFileWhenShortageMemoryDueBadBlocks)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailhandle(handle);
+   SetAssertFailHandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
    size_t sizeOfFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstFileData, 14);

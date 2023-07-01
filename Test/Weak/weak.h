@@ -7,7 +7,7 @@
 
 void SetProcessAssertFailMustBeCalled(bool value);
 void SetProcessUnhandledThrowMustBeCalled(bool value);
-void SetAssertFailhandle(SDEVICE_HANDLE(SimpleFs) *handle);
+void SetAssertFailHandle(SDEVICE_HANDLE(SimpleFs) *handle);
 void ShowLog(bool value);
 
 void SDeviceProcessAssertFail(char *file, int line);

@@ -26,7 +26,7 @@ TEST(ReadWrite, WriteFileWithFullyFilledDataBlocks)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailhandle(handle);
+   SetAssertFailHandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
 
@@ -52,7 +52,7 @@ TEST(ReadWrite, WriteFileWithIncompleteFilledLastDataBlock)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailhandle(handle);
+   SetAssertFailHandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 1, fileData, fileDataSize);
 
@@ -75,7 +75,7 @@ TEST(ReadWrite, ReadFileWithIncompleteFilledLastDataBlock)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailhandle(handle);
+   SetAssertFailHandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
 
@@ -97,7 +97,7 @@ TEST(ReadWrite, ReadFileWithFullyFilledDataBlocks)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailhandle(handle);
+   SetAssertFailHandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
 
@@ -123,7 +123,7 @@ TEST(ReadWrite, WriteNewFileVersion)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailhandle(handle);
+   SetAssertFailHandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
    SimpleFsSDeviceWriteFile(handle, 0, fileNewVersionData, fileNewVersionDataSize);
@@ -150,7 +150,7 @@ TEST(ReadWrite, WriteNewFileVersionWithSmallerSize)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailhandle(handle);
+   SetAssertFailHandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
    SimpleFsSDeviceWriteFile(handle, 0, fileNewVersionData, fileNewVersionDataSize);
@@ -178,7 +178,7 @@ TEST(ReadWrite, ReadNewFileVersionTwoTimes)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailhandle(handle);
+   SetAssertFailHandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, fileNewVersionData, fileNewVersionDataSize);
    SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
@@ -206,7 +206,7 @@ TEST(ReadWrite, WriteFileWithShortageMemory)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailhandle(handle);
+   SetAssertFailHandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
    SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);

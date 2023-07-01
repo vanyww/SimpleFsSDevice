@@ -27,7 +27,7 @@ void SetProcessUnhandledThrowMustBeCalled(bool value)
    ProcessUnhandledThrowMustBeCalled = value;
 }
 
-void SetAssertFailhandle(SDEVICE_HANDLE(SimpleFs) *handle)
+void SetAssertFailHandle(SDEVICE_HANDLE(SimpleFs) *handle)
 {
    AssertFailhandle = handle;
 }
