@@ -1,64 +1,67 @@
 #include "application.h"
 
-static char *GlobalSectorsPtr;
-static size_t GlobalSectorSize;
-
-static uint16_t *GlobalBadBlocksNumbersArrayPtrSector$0;
-static uint16_t *GlobalBadBlocksNumbersArrayPtrSector$1;
-
-static size_t GlobalBadBlocksNumbersArraySizeSector$0;
-static size_t GlobalBadBlocksNumbersArraySizeSector$1;
-
-void SetGlobalBadBlocksNumbersArrayPtr(uint16_t *ptr, uint8_t sectorNumber)
+typedef struct
 {
-   if(sectorNumber)
-      GlobalBadBlocksNumbersArrayPtrSector$1 = ptr;
+   char *GlobalSectorsPtr;
+   size_t GlobalSectorSize;
+} GlobalSectors;
+
+typedef struct
+{
+   uint16_t *BadBlocksNumbersArrayPtrSector$0;
+   uint16_t *BadBlocksNumbersArrayPtrSector$1;
+   size_t BadBlocksNumbersArraySizeSector$0;
+   size_t BadBlocksNumbersArraySizeSector$1;
+} TestBadBlocksConfig;
+
+static GlobalSectors Sectors;
+static TestBadBlocksConfig BadBlocksConfig;
+
+void SetTestBadBlocksConfig(uint16_t *ptr, size_t size, uint8_t sectorIndex)
+{
+   if(sectorIndex)
+   {
+      BadBlocksConfig.BadBlocksNumbersArrayPtrSector$1 = ptr;
+      BadBlocksConfig.BadBlocksNumbersArraySizeSector$1 = size;
+   }
    else
-      GlobalBadBlocksNumbersArrayPtrSector$0 = ptr;
+   {
+      BadBlocksConfig.BadBlocksNumbersArrayPtrSector$0 = ptr;
+      BadBlocksConfig.BadBlocksNumbersArraySizeSector$0 = size;
+   }
 }
 
-void SetGlobalBadBlocksNumbersArraySize(size_t size, uint8_t sectorNumber)
+void SetGlobalSectors(char *ptr, size_t size)
 {
-   if(sectorNumber)
-      GlobalBadBlocksNumbersArraySizeSector$1 = size;
-   else
-      GlobalBadBlocksNumbersArraySizeSector$0 = size;
+   Sectors.GlobalSectorSize = size;
+   Sectors.GlobalSectorsPtr = ptr;
 }
 
-uint16_t* GetGlobalBadBlocksNumbersArrayPtr(uint8_t sectorNumber)
-{
-   if(sectorNumber)
-      return GlobalBadBlocksNumbersArrayPtrSector$1;
 
-   return GlobalBadBlocksNumbersArrayPtrSector$0;
+uint16_t* GetTestBadBlocksNumbersArrayPtr(uint8_t sectorIndex)
+{
+   if(sectorIndex)
+      return BadBlocksConfig.BadBlocksNumbersArrayPtrSector$1;
+
+   return BadBlocksConfig.BadBlocksNumbersArrayPtrSector$0;
 }
 
-size_t GetGlobalBadBlocksNumbersArraySize(uint8_t sectorNumber)
+size_t GetTestBadBlocksNumbersArraySize(uint8_t sectorIndex)
 {
-   if(sectorNumber)
-      return GlobalBadBlocksNumbersArraySizeSector$1;
+   if(sectorIndex)
+      return BadBlocksConfig.BadBlocksNumbersArraySizeSector$1;
 
-   return GlobalBadBlocksNumbersArraySizeSector$0;
+   return BadBlocksConfig.BadBlocksNumbersArraySizeSector$0;
 }
 
 size_t GetGlobalSectorSize(void)
 {
-   return GlobalSectorSize;
-}
-
-void SetGlobalSectorSize(size_t size)
-{
-   GlobalSectorSize = size;
+   return Sectors.GlobalSectorSize;
 }
 
 char* GetGlobalSectorsPtr(void)
 {
-   return GlobalSectorsPtr;
-}
-
-void SetGlobalSectorsPtr(char *ptr)
-{
-   GlobalSectorsPtr = ptr;
+   return Sectors.GlobalSectorsPtr;
 }
 
 void ReadUInt64(SDEVICE_HANDLE(SimpleFs)     *handle,
@@ -85,10 +88,10 @@ void WriteUInt64(SDEVICE_HANDLE(SimpleFs)       *handle,
    char *dataDstPtr = (SectorsPtr + SectorSize*sectorIndex + address);
    memcpy(dataDstPtr, &value, sizeof(value));
 
-   if(GetGlobalBadBlocksNumbersArrayPtr(sectorIndex) != NULL)
+   if(GetTestBadBlocksNumbersArrayPtr(sectorIndex) != NULL)
    {
-      uint16_t *ptrToArray = GetGlobalBadBlocksNumbersArrayPtr(sectorIndex);
-      uint16_t amountOfElements = GetGlobalBadBlocksNumbersArraySize(sectorIndex) / sizeof(uint16_t);
+      uint16_t *ptrToArray = GetTestBadBlocksNumbersArrayPtr(sectorIndex);
+      uint16_t amountOfElements = GetTestBadBlocksNumbersArraySize(sectorIndex) / sizeof(uint16_t);
       uint16_t numberOfBlock = address / sizeof(Block);
 
       for (uint16_t i = 0; i < amountOfElements; i++)

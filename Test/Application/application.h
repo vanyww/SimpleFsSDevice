@@ -13,8 +13,8 @@
 
 #define CREATE_SIMPLE_FS_APPLICATION(sector_size, name)                                                                \
    char MEMORY_SECTORS(name)[2][(sector_size)] = { {0}, {0} };                                                         \
-   SetGlobalSectorSize(sector_size);                                                                                   \
-   SetGlobalSectorsPtr(MEMORY_SECTORS(name)[0]);                                                                       \
+   SetGlobalSectors(MEMORY_SECTORS(name)[0], sector_size);                                                             \
+                                                                                                                       \
    SimpleFsSDeviceSector SECTOR$0(name) =                                                                              \
    {                                                                                                                   \
       .Context = &(SectorContext){ 0 },                                                                                \
@@ -42,21 +42,17 @@ typedef struct
    uint8_t SectorIndex;
 } SectorContext;
 
-size_t GetGlobalSectorSize(void);
+void SetGlobalSectors(char *ptr, size_t size);
 
-void SetGlobalSectorSize(size_t size);
+size_t GetGlobalSectorSize(void);
 
 char* GetGlobalSectorsPtr(void);
 
-void SetGlobalSectorsPtr(char *ptr);
+void SetTestBadBlocksConfig(uint16_t *ptr, size_t size, uint8_t sectorIndex);
 
-void SetGlobalBadBlocksNumbersArrayPtr(uint16_t *ptr, uint8_t sectorNumber);
+uint16_t* GetTestBadBlocksNumbersArrayPtr(uint8_t sectorNumber);
 
-void SetGlobalBadBlocksNumbersArraySize(size_t size, uint8_t sectorNumber);
-
-uint16_t* GetGlobalBadBlocksNumbersArrayPtr(uint8_t sectorNumber);
-
-size_t GetGlobalBadBlocksNumbersArraySize(uint8_t sectorNumber);
+size_t GetTestBadBlocksNumbersArraySize(uint8_t sectorNumber);
 
 void ReadUInt64(SDEVICE_HANDLE(SimpleFs)     *handle,
                 const SimpleFsSDeviceSector  *sector,
