@@ -94,10 +94,8 @@ TEST(Transfer, TransferWithBadBlocks)
    CopyTestFileImageData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    uint16_t badBlockNumbers[] = {2, 6, 10, 14, 18, 22};
-   SetGlobalBadBlocksNumbersArrayPtr(badBlockNumbers, 1);
-   SetGlobalBadBlocksNumbersArraySize(sizeof(badBlockNumbers), 1);
-   SetGlobalBadBlocksNumbersArrayPtr(badBlockNumbers, 0);
-   SetGlobalBadBlocksNumbersArraySize(sizeof(badBlockNumbers), 0);
+   SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 0);
+   SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 1);
 
    CREATE_SIMPLE_FS_APPLICATION(200, this);
 
@@ -133,10 +131,8 @@ TEST(Transfer, TransferWithRewriteFileAndBadBlocks)
    CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    uint16_t badBlockNumbers[] = {2, 6, 10, 14, 18, 22};
-   SetGlobalBadBlocksNumbersArrayPtr(badBlockNumbers, 1);
-   SetGlobalBadBlocksNumbersArraySize(sizeof(badBlockNumbers), 1);
-   SetGlobalBadBlocksNumbersArrayPtr(badBlockNumbers, 0);
-   SetGlobalBadBlocksNumbersArraySize(sizeof(badBlockNumbers), 0);
+   SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 0);
+   SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 1);
 
    CREATE_SIMPLE_FS_APPLICATION(200, this);
 
