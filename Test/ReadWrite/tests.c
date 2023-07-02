@@ -128,9 +128,11 @@ TEST(ReadWrite, WriteNewFileVersion)
    SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
    SimpleFsSDeviceWriteFile(handle, 0, fileNewVersionData, fileNewVersionDataSize);
 
-   size_t sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, fileNewVersionData, fileNewVersionDataSize);
+   char readFileData[fileNewVersionDataSize];
+   size_t sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, readFileData, fileNewVersionDataSize);
 
    TEST_ASSERT_EQUAL(fileNewVersionDataSize, sizeOfReadFile);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(readFileData, fileNewVersionData, fileNewVersionDataSize);
 }
 
 TEST(ReadWrite, WriteNewFileVersionWithSmallerSize)
@@ -155,10 +157,11 @@ TEST(ReadWrite, WriteNewFileVersionWithSmallerSize)
    SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
    SimpleFsSDeviceWriteFile(handle, 0, fileNewVersionData, fileNewVersionDataSize);
 
-
-   size_t sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, fileNewVersionData, fileDataSize);
+   char readFileData[fileNewVersionDataSize];
+   size_t sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, readFileData, fileDataSize);
 
    TEST_ASSERT_EQUAL(fileNewVersionDataSize, sizeOfReadFile);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(readFileData, fileNewVersionData, fileNewVersionDataSize);
 }
 
 TEST(ReadWrite, ReadNewFileVersionTwoTimes)
@@ -183,10 +186,13 @@ TEST(ReadWrite, ReadNewFileVersionTwoTimes)
    SimpleFsSDeviceWriteFile(handle, 0, fileNewVersionData, fileNewVersionDataSize);
    SimpleFsSDeviceWriteFile(handle, 0, fileData, fileDataSize);
 
-   size_t sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, fileData, fileNewVersionDataSize);
+   char readFileData[fileDataSize];
+   size_t sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, readFileData, fileNewVersionDataSize);
    TEST_ASSERT_EQUAL(fileDataSize, sizeOfReadFile);
-   sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, fileData, fileNewVersionDataSize);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(readFileData, readFileData, fileDataSize);
+   sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, readFileData, fileNewVersionDataSize);
    TEST_ASSERT_EQUAL(fileDataSize, sizeOfReadFile);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(readFileData, readFileData, fileDataSize);
 }
 
 TEST(ReadWrite, WriteFileWithShortageMemory)

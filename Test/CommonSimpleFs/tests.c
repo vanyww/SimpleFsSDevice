@@ -34,11 +34,15 @@ TEST(CommonSimpleFs, DeleteFile)
 
    SimpleFsSDeviceDeleteFile(handle, 0);
 
-   size_t sizeOfReadFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstFileData, firstFileDataSize);
-   size_t sizeOfReadSecondFile = SimpleFsSDeviceReadFile(handle, 1, secondFileData, secondFileDataSize);
+   char firstReadFileData[firstFileDataSize];
+   char secondReadFileData[secondFileDataSize];
+
+   size_t sizeOfReadFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstReadFileData, firstFileDataSize);
+   size_t sizeOfReadSecondFile = SimpleFsSDeviceReadFile(handle, 1, secondReadFileData, secondFileDataSize);
 
    TEST_ASSERT_EQUAL(0, sizeOfReadFirstFile);
    TEST_ASSERT_EQUAL(secondFileDataSize, sizeOfReadSecondFile);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(secondFileData, secondReadFileData, secondFileDataSize);
 }
 
 TEST(CommonSimpleFs, GetMaxFileSize)
@@ -121,11 +125,14 @@ TEST(CommonSimpleFs, DeleteFileWithShortageMemory)
 
    SimpleFsSDeviceDeleteFile(handle, 0);
 
+   char secondReadFileData[secondFileDataSize];
+
    size_t sizeOfReadFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstFileData, firstFileDataSize);
-   size_t sizeOfReadSecondFile = SimpleFsSDeviceReadFile(handle, 1, secondFileData, secondFileDataSize);
+   size_t sizeOfReadSecondFile = SimpleFsSDeviceReadFile(handle, 1, secondReadFileData, secondFileDataSize);
 
    TEST_ASSERT_EQUAL(0, sizeOfReadFirstFile);
    TEST_ASSERT_EQUAL(secondFileDataSize, sizeOfReadSecondFile);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(secondFileData, secondReadFileData, secondFileDataSize);
 }
 
 TEST(CommonSimpleFs, FormatMemory)
@@ -183,9 +190,11 @@ TEST(CommonSimpleFs, ForceHistoryDeletion)
 
    SimpleFsSDeviceForceHistoryDeletion(handle);
 
-   size_t sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, fileNewVersionData, fileNewVersionDataSize);
+   char readFileData[fileNewVersionDataSize];
+   size_t sizeOfReadFile = SimpleFsSDeviceReadFile(handle, 0, readFileData, fileNewVersionDataSize);
 
    TEST_ASSERT_EQUAL(fileNewVersionDataSize, sizeOfReadFile);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(fileNewVersionData, readFileData, fileNewVersionDataSize);
 }
 
 TEST_GROUP_RUNNER(CommonSimpleFs)

@@ -39,11 +39,16 @@ TEST(BadArea, EveryFourthBlockIsBad)
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
    SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);
 
-   size_t sizeOfFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstFileData, 14);
-   size_t sizeOfSecondFile = SimpleFsSDeviceReadFile(handle, 1, secondFileData, 17);
+   char firstReadFileData[firstFileDataSize];
+   char secondReadFileData[secondFileDataSize];
 
-   TEST_ASSERT_EQUAL(14, sizeOfFirstFile);
-   TEST_ASSERT_EQUAL(17, sizeOfSecondFile);
+   size_t sizeOfFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstReadFileData, firstFileDataSize);
+   size_t sizeOfSecondFile = SimpleFsSDeviceReadFile(handle, 1, secondReadFileData, secondFileDataSize);
+
+   TEST_ASSERT_EQUAL(firstFileDataSize, sizeOfFirstFile);
+   TEST_ASSERT_EQUAL(secondFileDataSize, sizeOfSecondFile);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(firstFileData, firstReadFileData, firstFileDataSize);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(secondFileData, secondReadFileData, secondFileDataSize);
 }
 
 TEST(BadArea, WriteFileWhenShortageMemoryDueBadBlocks)
@@ -69,8 +74,10 @@ TEST(BadArea, WriteFileWhenShortageMemoryDueBadBlocks)
    SetAssertFailHandle(handle);
 
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
-   size_t sizeOfFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstFileData, 14);
-   TEST_ASSERT_EQUAL(14, sizeOfFirstFile);
+   char firstReadFileData[firstFileDataSize];
+   size_t sizeOfFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstReadFileData, firstFileDataSize);
+   TEST_ASSERT_EQUAL(firstFileDataSize, sizeOfFirstFile);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(firstFileData, firstReadFileData, firstFileDataSize);
 
    SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);
    TEST_FAIL_MESSAGE("Test fail, no exception was thrown");

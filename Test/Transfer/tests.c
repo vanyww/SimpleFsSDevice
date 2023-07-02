@@ -41,11 +41,16 @@ TEST(Transfer, TransferTwoFiles)
       SimpleFsSDeviceForceHistoryDeletion(handle);
    }
 
-   size_t sizeOfReadFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstFileData, firstFileDataSize);
-   size_t sizeOfReadSecondFile = SimpleFsSDeviceReadFile(handle, 1, secondFileData, secondFileDataSize);
+   char firstReadFileData[firstFileDataSize];
+   char secondReadFileData[secondFileDataSize];
 
-   TEST_ASSERT_EQUAL(sizeOfReadFirstFile, firstFileDataSize);
-   TEST_ASSERT_EQUAL(sizeOfReadSecondFile, secondFileDataSize);
+   size_t sizeOfFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstReadFileData, firstFileDataSize);
+   size_t sizeOfSecondFile = SimpleFsSDeviceReadFile(handle, 1, secondReadFileData, secondFileDataSize);
+
+   TEST_ASSERT_EQUAL(sizeOfFirstFile, firstFileDataSize);
+   TEST_ASSERT_EQUAL(sizeOfSecondFile, secondFileDataSize);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(firstFileData, firstReadFileData, firstFileDataSize);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(secondFileData, secondReadFileData, secondFileDataSize);
 }
 
 TEST(Transfer, TransferWithRewriteFile)
@@ -76,9 +81,12 @@ TEST(Transfer, TransferWithRewriteFile)
       SimpleFsSDeviceForceHistoryDeletion(handle);
    }
 
-   size_t sizeOfReadSecondFile = SimpleFsSDeviceReadFile(handle, 0, secondFileData, secondFileDataSize);
+   char secondReadFileData[secondFileDataSize];
+
+   size_t sizeOfReadSecondFile = SimpleFsSDeviceReadFile(handle, 0, secondReadFileData, secondFileDataSize);
 
    TEST_ASSERT_EQUAL(sizeOfReadSecondFile, secondFileDataSize);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(secondFileData, secondReadFileData, secondFileDataSize);
 }
 
 TEST(Transfer, TransferWithBadBlocks)
@@ -111,11 +119,16 @@ TEST(Transfer, TransferWithBadBlocks)
       SimpleFsSDeviceForceHistoryDeletion(handle);
    }
 
-   size_t sizeOfFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstFileData, 14);
-   size_t sizeOfSecondFile = SimpleFsSDeviceReadFile(handle, 1, secondFileData, 17);
+   char firstReadFileData[firstFileDataSize];
+   char secondReadFileData[secondFileDataSize];
+
+   size_t sizeOfFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstReadFileData, firstFileDataSize);
+   size_t sizeOfSecondFile = SimpleFsSDeviceReadFile(handle, 1, secondReadFileData, secondFileDataSize);
 
    TEST_ASSERT_EQUAL(14, sizeOfFirstFile);
    TEST_ASSERT_EQUAL(17, sizeOfSecondFile);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(firstFileData, firstReadFileData, firstFileDataSize);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(secondFileData, secondReadFileData, secondFileDataSize);
 }
 
 TEST(Transfer, TransferWithRewriteFileAndBadBlocks)
@@ -150,11 +163,16 @@ TEST(Transfer, TransferWithRewriteFileAndBadBlocks)
       SimpleFsSDeviceForceHistoryDeletion(handle);
    }
 
-   size_t sizeOfFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstFileData, 14);
-   size_t sizeOfSecondFile = SimpleFsSDeviceReadFile(handle, 1, secondFileData, 17);
+   char firstReadFileData[firstFileDataSize];
+   char secondReadFileData[secondFileDataSize];
+
+   size_t sizeOfFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstReadFileData, firstFileDataSize);
+   size_t sizeOfSecondFile = SimpleFsSDeviceReadFile(handle, 1, secondReadFileData, secondFileDataSize);
 
    TEST_ASSERT_EQUAL(14, sizeOfFirstFile);
    TEST_ASSERT_EQUAL(17, sizeOfSecondFile);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(firstFileData, firstReadFileData, firstFileDataSize);
+   TEST_ASSERT_EQUAL_CHAR_ARRAY(secondFileData, secondReadFileData, secondFileDataSize);
 }
 
 TEST(Transfer, TransferWithRewriteFileAndRandomGenerationBadBlocks)
