@@ -227,8 +227,8 @@ TEST(Transfer, TransferWithRewriteFileAndRandomGenerationBadBlocks)
    char firstReadFileData[firstFileDataSize];
    char secondReadFileData[secondFileDataSize];
 
-   size_t sizeOfFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstReadFileData, 14);
-   size_t sizeOfSecondFile = SimpleFsSDeviceReadFile(handle, 1, secondReadFileData, 17);
+   size_t sizeOfFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstReadFileData, firstFileDataSize);
+   size_t sizeOfSecondFile = SimpleFsSDeviceReadFile(handle, 1, secondReadFileData, secondFileDataSize);
 
    TEST_ASSERT_EQUAL(14, sizeOfFirstFile);
    TEST_ASSERT_EQUAL(17, sizeOfSecondFile);
