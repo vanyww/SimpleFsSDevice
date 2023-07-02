@@ -5,7 +5,7 @@
 
 #include "SDeviceCore/errors.h"
 
-#define SIMPLE_FS_SDEVICE_MIN_SECTOR_SIZE (8U * sizeof(uint64_t)) /* 8 blocks: 4 headers, 1 data, 1 data tag */
+#define SIMPLE_FS_SDEVICE_MIN_SECTOR_SIZE (6U * sizeof(uint64_t)) /* 6 blocks: 4 headers, 1 data, 1 data tag */
 
 static inline bool HasSectorValidSize(const Sector *sector)
 {
