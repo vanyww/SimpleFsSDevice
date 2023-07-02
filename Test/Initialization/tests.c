@@ -16,7 +16,7 @@ TEST(InitializationTests, HandleInitialization)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this); // min size = 64 byte
+   CREATE_SIMPLE_FS_APPLICATION(48, this); // min size = 48 byte
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
@@ -30,7 +30,7 @@ TEST(InitializationTests, InsufficientMemoryInSector)
    SetProcessUnhandledThrowMustBeCalled(false);
    SetAssertFailHandle(NULL);
 
-   CREATE_SIMPLE_FS_APPLICATION(1, this); // min size = 64 byte
+   CREATE_SIMPLE_FS_APPLICATION(1, this); // min size = 48 byte
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
@@ -44,7 +44,7 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_ONGOING)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
@@ -65,7 +65,7 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ERASED)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
@@ -86,7 +86,7 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_END)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
@@ -107,7 +107,7 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ACTIVE)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
@@ -128,7 +128,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_ONGOING)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
@@ -149,7 +149,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ERASED)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
@@ -170,7 +170,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_END)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
@@ -191,7 +191,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ACTIVE)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
@@ -212,7 +212,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1STATE_TRANSFER_ONGOING)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
@@ -233,7 +233,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ERASED)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
@@ -254,7 +254,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_TRANSFER_END)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
@@ -275,7 +275,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ACTIVE)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
@@ -296,7 +296,7 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_ONGOING)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
@@ -317,7 +317,7 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ERASED)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
@@ -338,7 +338,7 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_END)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
@@ -359,7 +359,7 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ACTIVE)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
    Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);

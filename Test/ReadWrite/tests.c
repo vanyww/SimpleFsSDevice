@@ -22,7 +22,7 @@ TEST(ReadWrite, WriteFileWithFullyFilledDataBlocks)
    CopyTestFileData(fileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    CopyTestFileImageData(fileImageData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
@@ -48,7 +48,7 @@ TEST(ReadWrite, WriteFileWithIncompleteFilledLastDataBlock)
    CopyTestFileData(fileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    CopyTestFileImageData(fileImageData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
@@ -71,7 +71,7 @@ TEST(ReadWrite, ReadFileWithIncompleteFilledLastDataBlock)
    char fileData[fileDataSize];
    CopyTestFileData(fileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
@@ -93,7 +93,7 @@ TEST(ReadWrite, ReadFileWithFullyFilledDataBlocks)
    char fileData[fileDataSize];
    CopyTestFileData(fileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
@@ -208,7 +208,7 @@ TEST(ReadWrite, WriteFileWithShortageMemory)
    char secondFileData[secondFileDataSize];
    CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
-   CREATE_SIMPLE_FS_APPLICATION(64, this);
+   CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
