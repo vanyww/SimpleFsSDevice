@@ -34,6 +34,8 @@ TEST(InitializationTests, InsufficientMemoryInSector)
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
+
+   TEST_FAIL_MESSAGE("Test fail, assert was not called");
 }
 
 

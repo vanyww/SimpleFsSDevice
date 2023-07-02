@@ -216,6 +216,7 @@ TEST(ReadWrite, WriteFileWithShortageMemory)
 
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
    SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);
+   TEST_FAIL_MESSAGE("Test fail, no exception was thrown");
 }
 
 TEST_GROUP_RUNNER(ReadWrite)
