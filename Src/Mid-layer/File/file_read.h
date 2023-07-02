@@ -24,13 +24,13 @@ static bool TryReadStreamFileIdsRange(ThisHandle *handle, ReadStream *stream, Fi
    while(TrySelectNextStreamBlock(handle, stream, &selector, &readBlock))
    {
       FileAreaTagBlock blockAsfileAreaTag = readBlock.AsFileAreaTag;
-      uint16_t fileId = blockAsfileAreaTag.FileId;
+      uint16_t fileIdx = blockAsfileAreaTag.FileIdx;
 
-      if(idsRange.Lowest > fileId)
-         idsRange.Lowest = fileId;
+      if(idsRange.Lowest > fileIdx)
+         idsRange.Lowest = fileIdx;
 
-      if(idsRange.Highest < fileId)
-         idsRange.Highest = fileId;
+      if(idsRange.Highest < fileIdx)
+         idsRange.Highest = fileIdx;
    }
 
    /* initially (lowest > highest) (1 > 0), if at least one file area tag found, (lowest <= highest) always */
@@ -43,7 +43,7 @@ static bool TryReadStreamFileIdsRange(ThisHandle *handle, ReadStream *stream, Fi
    return false;
 }
 
-static size_t ReadStreamMaxFileSize(ThisHandle *handle, ReadStream *stream, uint16_t fileId)
+static size_t ReadStreamMaxFileSize(ThisHandle *handle, ReadStream *stream, uint16_t fileIdx)
 {
    SDeviceDebugAssert(handle != NULL);
    SDeviceDebugAssert(stream != NULL);
@@ -53,7 +53,7 @@ static size_t ReadStreamMaxFileSize(ThisHandle *handle, ReadStream *stream, uint
    const SelectionFilter filters[] =
    {
       COMPOSE_SELECTION_FILTER(ValidServiceOfType, BLOCK_TYPE_FILE_AREA_TAG),
-      COMPOSE_SELECTION_FILTER(FileAreaTagWithFileId, fileId),
+      COMPOSE_SELECTION_FILTER(FileAreaTagWithFileId, fileIdx),
    };
    BlockSelector selector = CreateBlockSelector(handle, filters, LENGTHOF(filters));
 
@@ -71,7 +71,7 @@ static size_t ReadStreamMaxFileSize(ThisHandle *handle, ReadStream *stream, uint
    return maxFileSize;
 }
 
-static size_t ReadStreamFile(ThisHandle *handle, ReadStream *stream, uint16_t fileId, void *buffer, size_t maxFileSize)
+static size_t ReadStreamFile(ThisHandle *handle, ReadStream *stream, uint16_t fileIdx, void *buffer, size_t maxFileSize)
 {
    SDeviceDebugAssert(buffer != NULL);
    SDeviceDebugAssert(handle != NULL);
@@ -82,7 +82,7 @@ static size_t ReadStreamFile(ThisHandle *handle, ReadStream *stream, uint16_t fi
    const SelectionFilter filters[] =
    {
       COMPOSE_SELECTION_FILTER(ValidServiceOfType, BLOCK_TYPE_FILE_AREA_TAG),
-      COMPOSE_SELECTION_FILTER(FileAreaTagWithFileId, fileId),
+      COMPOSE_SELECTION_FILTER(FileAreaTagWithFileId, fileIdx),
    };
    BlockSelector selector = CreateBlockSelector(handle, filters, LENGTHOF(filters));
 

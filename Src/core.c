@@ -90,44 +90,44 @@ void SimpleFsSDeviceForceHistoryDeletion(ThisHandle *handle)
    TransferActiveStream(handle, NULL);
 }
 
-void SimpleFsSDeviceWriteFile(ThisHandle *handle, uint16_t fileId, const void *data, size_t size)
+void SimpleFsSDeviceWriteFile(ThisHandle *handle, uint16_t fileIdx, const void *data, size_t size)
 {
    SDeviceAssert(data != NULL);
    SDeviceAssert(handle != NULL);
    SDeviceAssert(size != 0 && size <= MAX_FILE_SIZE);
 
-   if(!TryWriteStreamFile(handle, GetActiveWriteStream(handle), fileId, data, size))
+   if(!TryWriteStreamFile(handle, GetActiveWriteStream(handle), fileIdx, data, size))
    {
-      TransferWriteFileInfo transferFileInfo = { fileId, data, size };
+      TransferWriteFileInfo transferFileInfo = { fileIdx, data, size };
       TransferActiveStream(handle, &transferFileInfo);
    }
 }
 
-void SimpleFsSDeviceDeleteFile(ThisHandle *handle, uint16_t fileId)
+void SimpleFsSDeviceDeleteFile(ThisHandle *handle, uint16_t fileIdx)
 {
    SDeviceAssert(handle != NULL);
 
-   if(!TryWriteStreamFile(handle, GetActiveWriteStream(handle), fileId, NULL, 0))
+   if(!TryWriteStreamFile(handle, GetActiveWriteStream(handle), fileIdx, NULL, 0))
    {
-      TransferWriteFileInfo transferFileInfo = { fileId, NULL, 0 };
+      TransferWriteFileInfo transferFileInfo = { fileIdx, NULL, 0 };
       TransferActiveStream(handle, &transferFileInfo);
    }
 }
 
-size_t SimpleFsSDeviceGetMaxFileSize(ThisHandle *handle, uint16_t fileId)
+size_t SimpleFsSDeviceGetMaxFileSize(ThisHandle *handle, uint16_t fileIdx)
 {
    SDeviceAssert(handle != NULL);
 
    ReadStream stream = BuildActiveReadStream(handle);
-   return ReadStreamMaxFileSize(handle, &stream, fileId);
+   return ReadStreamMaxFileSize(handle, &stream, fileIdx);
 }
 
-size_t SimpleFsSDeviceReadFile(ThisHandle *handle, uint16_t fileId, void *buffer, size_t maxFileSize)
+size_t SimpleFsSDeviceReadFile(ThisHandle *handle, uint16_t fileIdx, void *buffer, size_t maxFileSize)
 {
    SDeviceAssert(handle != NULL);
    SDeviceAssert(buffer != NULL);
    SDeviceAssert(maxFileSize > 0);
 
    ReadStream stream = BuildActiveReadStream(handle);
-   return ReadStreamFile(handle, &stream, fileId, buffer, maxFileSize);
+   return ReadStreamFile(handle, &stream, fileIdx, buffer, maxFileSize);
 }

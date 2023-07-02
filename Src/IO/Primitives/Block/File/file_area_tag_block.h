@@ -4,7 +4,7 @@
 #include "Common/size.h"
 #include "Common/crc.h"
 
-static inline FileAreaTagBlock BuildFileAreaTagBlock(ThisHandle *handle, uint16_t fileId, const void *data, size_t size)
+static inline FileAreaTagBlock BuildFileAreaTagBlock(ThisHandle *handle, uint16_t FileIdx, const void *data, size_t size)
 {
    SDeviceDebugAssert(handle != NULL);
    SDeviceDebugAssert(size <= MAX_FILE_SIZE);
@@ -15,7 +15,7 @@ static inline FileAreaTagBlock BuildFileAreaTagBlock(ThisHandle *handle, uint16_
       .Type = BLOCK_TYPE_FILE_AREA_TAG,
       .FileAreaLength = ComputeFileAreaLength(size),
       .LastFileBlockDataSize = ComputeFileLastBlockDataSize(size),
-      .FileId = fileId,
+      .FileIdx = FileIdx,
       .FileCrc = ComputeFileDataCrc(handle, data, size)
    };
    block.BlockCrc = ComputeServiceBlockCrc(handle, block);

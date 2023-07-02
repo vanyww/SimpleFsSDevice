@@ -299,37 +299,37 @@ void SimpleFsSDeviceForceHistoryDeletion(SDEVICE_HANDLE(SimpleFs) *handle);
  * @note Фактическое стирание значения файла (и всей его истории) произойдет только при переносе на другой сектор.
  * Это можно форсировать функцией @ref SimpleFsSDeviceForceHistoryDeletion.
  * @param handle Дескриптор.
- * @param fileId Идентификатор файла.
+ * @param fileIdx Идентификатор файла.
  */
-void SimpleFsSDeviceDeleteFile(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileId);
+void SimpleFsSDeviceDeleteFile(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileIdx);
 
 /**
  * @brief Функция чтения максимального размера значения файла.
  * @details Под "максимальным" размером понимается наибольший размер значения среди всех записанных версий файла.
  * @param handle Дескриптор.
- * @param fileId Идентификатор файла.
- * @returns Максимальный размер значения файла с идентификатором @p fileId.
+ * @param fileIdx Идентификатор файла.
+ * @returns Максимальный размер значения файла с идентификатором @p fileIdx.
  */
-size_t SimpleFsSDeviceGetMaxFileSize(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileId);
+size_t SimpleFsSDeviceGetMaxFileSize(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileIdx);
 
 /**
  * @brief Функция чтения значения файла.
  * @details Читает значение первой найденой консистентной версии файла, имеющей размер меньший или равный @p size.
  * @param handle Дескриптор.
- * @param fileId Идентификатор файла.
+ * @param fileIdx Идентификатор файла.
  * @param data Буфер для чтения значения файла.
  * @param size Максимальный размер читаемого файла.
  * @returns Фактический размер прочитанного в @p data значения файла (меньше или равен @p size).
  */
-size_t SimpleFsSDeviceReadFile(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileId, void *data, size_t size);
+size_t SimpleFsSDeviceReadFile(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileIdx, void *data, size_t size);
 
 /**
  * @brief Функция записи значения файла.
  * @param handle Дескриптор.
- * @param fileId Идентификатор файла.
+ * @param fileIdx Идентификатор файла.
  * @param data Значение файла.
  * @param size Размер значения файла @p data.
  */
-void SimpleFsSDeviceWriteFile(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileId, const void *data, size_t size);
+void SimpleFsSDeviceWriteFile(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileIdx, const void *data, size_t size);
 
 /** @} */

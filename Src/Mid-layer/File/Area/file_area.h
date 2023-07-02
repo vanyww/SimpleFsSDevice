@@ -12,7 +12,7 @@ static inline FileAreaInfo BuildFileAreaInfo(FileAreaTagBlock tagBlock)
 
    return (FileAreaInfo)
    {
-      .FileId = tagBlock.FileId,
+      .FileIdx = tagBlock.FileIdx,
       .FileCrc = tagBlock.FileCrc,
       .FileSize = ComputeFileAreaFileSize(tagBlock)
    };

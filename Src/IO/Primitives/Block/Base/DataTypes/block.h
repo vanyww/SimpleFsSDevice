@@ -14,7 +14,7 @@ typedef struct __attribute__((packed))
    uint8_t BlockCrc;
    uint8_t FileAreaLength;
    uint8_t LastFileBlockDataSize;
-   uint16_t FileId;
+   uint16_t FileIdx;
    uint16_t FileCrc;
    BlockType Type;
 } FileAreaTagBlock;

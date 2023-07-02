@@ -7,7 +7,7 @@
 
 typedef struct
 {
-   uint16_t FileId;
+   uint16_t FileIdx;
    const void *Data;
    size_t Size;
 } TransferWriteFileInfo;
@@ -15,7 +15,7 @@ typedef struct
 typedef struct
 {
    bool DoExclude;
-   uint16_t FileId;
+   uint16_t FileIdx;
 } CopyFileExclusion;
 
 static void CopyStreamFiles(ThisHandle *handle, ReadStream *from, WriteStream *to, CopyFileExclusion exclusion)
@@ -42,13 +42,13 @@ static void CopyStreamFiles(ThisHandle *handle, ReadStream *from, WriteStream *t
       {
          FileAreaInfo fileInfo = BuildFileAreaInfo(readBlock.AsFileAreaTag);
 
-         if(fileInfo.FileId < idOffset || fileInfo.FileId >= idOffset + BIT_SIZEOF(transferedIdsBits))
+         if(fileInfo.FileIdx < idOffset || fileInfo.FileIdx >= idOffset + BIT_SIZEOF(transferedIdsBits))
             continue;
 
-         if(exclusion.DoExclude && exclusion.FileId == fileInfo.FileId)
+         if(exclusion.DoExclude && exclusion.FileIdx == fileInfo.FileIdx)
             continue;
 
-         uint32_t fileIdBit = fileInfo.FileId - idOffset;
+         uint32_t fileIdBit = fileInfo.FileIdx - idOffset;
 
          if(READ_NTH_BIT(transferedIdsBits, fileIdBit) != 0)
             continue;
@@ -64,7 +64,7 @@ static void CopyStreamFiles(ThisHandle *handle, ReadStream *from, WriteStream *t
 
          if(TryReadFileAreaData(handle, &areaHandle, buffer))
          {
-            if(!TryWriteStreamFile(handle, to, fileInfo.FileId, buffer, fileInfo.FileSize))
+            if(!TryWriteStreamFile(handle, to, fileInfo.FileIdx, buffer, fileInfo.FileSize))
                SDeviceThrow(handle, SIMPLE_FS_SDEVICE_EXCEPTION_OUT_OF_MEMORY);
 
             SET_NTH_BIT(transferedIdsBits, fileIdBit);
@@ -86,12 +86,12 @@ static void TransferActiveStream(ThisHandle *handle, const TransferWriteFileInfo
    WriteStreamSectorState(handle, targetStream, SECTOR_STATE_TRANSFER_ONGOING);
 
    CopyFileExclusion exclusion =
-         (fileInfo != NULL) ? (CopyFileExclusion){ true, fileInfo->FileId } : (CopyFileExclusion){ false };
+         (fileInfo != NULL) ? (CopyFileExclusion){ true, fileInfo->FileIdx } : (CopyFileExclusion){ false };
    CopyStreamFiles(handle, &sourceStream, targetStream, exclusion);
 
    if(fileInfo != NULL && fileInfo->Size != 0)
    {
-      if(!TryWriteStreamFile(handle, targetStream, fileInfo->FileId, fileInfo->Data, fileInfo->Size))
+      if(!TryWriteStreamFile(handle, targetStream, fileInfo->FileIdx, fileInfo->Data, fileInfo->Size))
          SDeviceThrow(handle, SIMPLE_FS_SDEVICE_EXCEPTION_OUT_OF_MEMORY);
    }
 

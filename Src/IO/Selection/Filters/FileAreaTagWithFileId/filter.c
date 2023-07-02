@@ -12,7 +12,7 @@ static SELECTION_FILTER_FUNCTION_DECLARATION(FileAreaTagWithFileId, handle, _par
    const ThisSelectorFilterParameters *parameters = (ThisSelectorFilterParameters *)_parameters;
 
    FileAreaTagBlock blockAsFileAreaTag = block.AsFileAreaTag;
-   return (FilteringResult){ -1, blockAsFileAreaTag.FileId == parameters->FileId };
+   return (FilteringResult){ -1, blockAsFileAreaTag.FileIdx == parameters->FileIdx };
 }
 
 const SelectionFilterInterface SELECTION_FILTER_INTERFACE(FileAreaTagWithFileId) =
