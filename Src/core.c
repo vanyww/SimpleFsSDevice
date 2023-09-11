@@ -16,7 +16,7 @@ SDEVICE_IDENTITY_BLOCK_DEFINITION(SimpleFs,
                                      .Patch = SIMPLE_FS_SDEVICE_VERSION_PATCH
                                   }));
 
-SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFs, init, parent, identifier, context)
+SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFs, init, owner, identifier, context)
 {
    SDeviceAssert(init != NULL);
 
@@ -43,7 +43,7 @@ SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFs, init, parent, identifier, context)
    handle->Header = (SDeviceHandleHeader)
    {
       .Context = context,
-      .OwnerHandle = parent,
+      .OwnerHandle = owner,
       .IdentityBlock = &SDEVICE_IDENTITY_BLOCK(SimpleFs),
       .LatestStatus = SIMPLE_FS_SDEVICE_STATUS_OK,
       .Identifier = identifier
