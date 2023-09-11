@@ -13,7 +13,7 @@ SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFs, init, parent, identifier, context)
    SDeviceAssert(_init->WriteUInt64 != NULL);
    SDeviceAssert(_init->EraseSector != NULL);
 
-#ifdef SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
+#if SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
    SDeviceAssert(_init->UpdateCrc8 != NULL);
    SDeviceAssert(_init->ComputeCrc8 != NULL);
    SDeviceAssert(_init->UpdateCrc16 != NULL);

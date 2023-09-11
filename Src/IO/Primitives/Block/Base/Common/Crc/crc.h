@@ -4,29 +4,14 @@
 
 #include "SDeviceCore/errors.h"
 
-#ifndef SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
-#include "TableCrcSDevice/public_crc16.h"
-#include "TableCrcSDevice/public_crc8.h"
-
-#if (TABLE_CRC_SDEVICE_VERSION_MAJOR != 4) || (TABLE_CRC_SDEVICE_VERSION_MINOR < 0)
-#error Table CRC SDevice version is incorrect.
-#endif
-
-#ifndef SIMPLE_FS_SDEVICE_TABLE_CRC8_INTERNAL_SDEVICE_IDENTIFIER
-#define SIMPLE_FS_SDEVICE_TABLE_CRC8_INTERNAL_SDEVICE_IDENTIFIER 0
-#endif
-
-#ifndef SIMPLE_FS_SDEVICE_TABLE_CRC16_INTERNAL_SDEVICE_IDENTIFIER
-#define SIMPLE_FS_SDEVICE_TABLE_CRC16_INTERNAL_SDEVICE_IDENTIFIER 0
-#endif
-
-extern SDEVICE_HANDLE(TableCrc8) *SimpleFsSDeviceInternalCrc8Handle;
-extern SDEVICE_HANDLE(TableCrc16) *SimpleFsSDeviceInternalCrc16Handle;
+#if !SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
+   extern SDEVICE_HANDLE(TableCrc8) *SimpleFsSDeviceInternalCrc8Handle;
+   extern SDEVICE_HANDLE(TableCrc16) *SimpleFsSDeviceInternalCrc16Handle;
 #endif
 
 static inline void InitializeCrc8(void)
 {
-#ifndef SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
+#if !SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
    if(SimpleFsSDeviceInternalCrc8Handle != NULL)
       return;
 
@@ -48,7 +33,7 @@ static inline void InitializeCrc8(void)
 
 static inline void InitializeCrc16(void)
 {
-#ifndef SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
+#if !SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
    if(SimpleFsSDeviceInternalCrc16Handle != NULL)
       return;
 
@@ -73,7 +58,7 @@ static inline uint8_t UpdateCrc8(ThisHandle *handle, uint8_t crc, const void *da
    SDeviceDebugAssert(handle != NULL);
    SDeviceDebugAssert(data != NULL || size == 0);
 
-#ifndef SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
+#if !SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
    SDeviceDebugAssert(SimpleFsSDeviceInternalCrc8Handle != NULL);
 
    return TableCrc8SDeviceUpdate(SimpleFsSDeviceInternalCrc8Handle, crc, data, size);
@@ -87,7 +72,7 @@ static inline uint8_t ComputeCrc8(ThisHandle *handle, const void *data, size_t s
    SDeviceDebugAssert(handle != NULL);
    SDeviceDebugAssert(data != NULL || size == 0);
 
-#ifndef SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
+#if !SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
    SDeviceDebugAssert(SimpleFsSDeviceInternalCrc8Handle != NULL);
 
    return TableCrc8SDeviceCompute(SimpleFsSDeviceInternalCrc8Handle, data, size);
@@ -101,7 +86,7 @@ static inline uint16_t UpdateCrc16(ThisHandle *handle, uint16_t crc, const void 
    SDeviceDebugAssert(handle != NULL);
    SDeviceDebugAssert(data != NULL || size == 0);
 
-#ifndef SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
+#if !SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
    SDeviceDebugAssert(SimpleFsSDeviceInternalCrc16Handle != NULL);
 
    return TableCrc16SDeviceUpdate(SimpleFsSDeviceInternalCrc16Handle, crc, data, size);
@@ -115,7 +100,7 @@ static inline uint16_t ComputeCrc16(ThisHandle *handle, const void *data, size_t
    SDeviceDebugAssert(handle != NULL);
    SDeviceDebugAssert(data != NULL || size == 0);
 
-#ifndef SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
+#if !SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
    SDeviceDebugAssert(SimpleFsSDeviceInternalCrc16Handle != NULL);
 
    return TableCrc16SDeviceCompute(SimpleFsSDeviceInternalCrc16Handle, data, size);
