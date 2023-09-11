@@ -21,39 +21,9 @@
 #include "dependensies.h"
 
 #include <stdbool.h>
-#ifdef DOXYGEN
-
-/**
- * @brief **[Опция]** Флаг использования внешних функций для расчета CRC8 и CRC16.
- * @details Определение флага добавляет соответствующие функции обратного вызова в параметры инициализации модуля:
- * - @ref _SimpleFsSDeviceInitData::UpdateCrc8
- * - @ref _SimpleFsSDeviceInitData::ComputeCrc8
- * - @ref _SimpleFsSDeviceInitData::UpdateCrc16
- * - @ref _SimpleFsSDeviceInitData::ComputeCrc16
- *
- * @note Может быть объявлен пользователем.
- */
-#define SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
-
-
-/**
- * @brief **[Опция]** Идентифиактор дескриптора модуля расчета CRC8.
- * @details Значение этого макроса будет использовано в качестве идентификатора дескриптора модуля расчета CRC8.
- * Используется только в случае отсутствия объявления флага #SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC.
- * @note Значение по умолчанию - 0.
- * @note Может быть объявлен пользователем.
- */
-#define SIMPLE_FS_SDEVICE_TABLE_CRC8_INTERNAL_SDEVICE_IDENTIFIER 0
-
-/**
- * @brief **[Опция]** Идентифиактор дескриптора модуля расчета CRC16.
- * @details Значение этого макроса будет использовано в качестве идентификатора дескриптора модуля расчета CRC16.
- * Используется только в случае отсутствия объявления флага #SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC.
- * @note Значение по умолчанию - 0.
- * @note Может быть объявлен пользователем.
- */
-#define SIMPLE_FS_SDEVICE_TABLE_CRC16_INTERNAL_SDEVICE_IDENTIFIER 0
-
+#if !SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
+   #define SIMPLE_FS_SDEVICE_TABLE_CRC8_INTERNAL_SDEVICE_IDENTIFIER 0
+   #define SIMPLE_FS_SDEVICE_TABLE_CRC16_INTERNAL_SDEVICE_IDENTIFIER 0
 #endif
 
 /**
