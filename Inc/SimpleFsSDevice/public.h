@@ -26,6 +26,10 @@
    #define SIMPLE_FS_SDEVICE_TABLE_CRC16_INTERNAL_SDEVICE_IDENTIFIER 0
 #endif
 
+/* 627b20bc-4ff1-11ee-94db-fa9c802f1f89 */
+#define SIMPLE_FS_SDEVICE_UUID_HIGH 0x627b20bc4ff111ee
+#define SIMPLE_FS_SDEVICE_UUID_LOW  0x94dbfa9c802f1f89
+
 /**
  * @brief Старшая компонента версии модуля файловой системы SimpleFsSDevice.
  */
@@ -200,6 +204,8 @@ SDEVICE_INIT_DATA_DECLARATION(SimpleFs)
     */
    bool IsMemoryErasingToZero;
 };
+
+SDEVICE_IDENTITY_BLOCK_DECLARATION(SimpleFs);
 
 /**
  * @brief Функция создания дескриптора модуля файловой системы SimpleFsSDevice.

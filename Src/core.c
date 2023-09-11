@@ -3,6 +3,19 @@
 
 #include "SDeviceCore/heap.h"
 
+SDEVICE_IDENTITY_BLOCK_DEFINITION(SimpleFs,
+                                  ((const SDeviceUuid)
+                                  {
+                                     .High = SIMPLE_FS_SDEVICE_UUID_HIGH,
+                                     .Low  = SIMPLE_FS_SDEVICE_UUID_LOW
+                                  }),
+                                  ((const SDeviceVersion)
+                                  {
+                                     .Major = SIMPLE_FS_SDEVICE_VERSION_MAJOR,
+                                     .Minor = SIMPLE_FS_SDEVICE_VERSION_MINOR,
+                                     .Patch = SIMPLE_FS_SDEVICE_VERSION_PATCH
+                                  }));
+
 SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFs, init, parent, identifier, context)
 {
    SDeviceAssert(init != NULL);
@@ -31,8 +44,9 @@ SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFs, init, parent, identifier, context)
    {
       .Context = context,
       .OwnerHandle = parent,
-      .Identifier = identifier,
-      .LatestStatus = SIMPLE_FS_SDEVICE_STATUS_OK
+      .IdentityBlock = &SDEVICE_IDENTITY_BLOCK(SimpleFs),
+      .LatestStatus = SIMPLE_FS_SDEVICE_STATUS_OK,
+      .Identifier = identifier
    };
 
    handle->Init = *_init;
