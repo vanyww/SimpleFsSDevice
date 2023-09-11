@@ -68,19 +68,14 @@ typedef struct
  */
 
 /**
- * @brief Состояния дескрипторов модуля файловой системы SimpleFsSDevice.
- * @details Значения используются для логирования состояний дескрипторов модуля.
- */
-typedef enum
-{
-   SIMPLE_FS_SDEVICE_EXCEPTION_OUT_OF_MEMORY, /**< Недостаток файловой памяти. */
-   SIMPLE_FS_SDEVICE_EXCEPTION_BAD_AREA_OVERFLOW /**< Обнаружена слишком большая область "плохих" блоков. */
-} SimpleFsSDeviceException;
-
-/**
  * @brief Исключения дескрипторов модуля файловой системы SimpleFsSDevice.
  * @details Значения используются для выбрасывания исключений дескрипторов модуля.
  */
+typedef enum
+{
+   SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY, /**< Недостаток файловой памяти. */
+   SIMPLE_FS_SDEVICE_PANIC_BAD_AREA_OVERFLOW /**< Обнаружена слишком большая область "плохих" блоков. */
+} SimpleFsSDevicePanic;
 
 /** @} */
 
