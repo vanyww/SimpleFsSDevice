@@ -73,7 +73,7 @@ SDEVICE_GET_PROPERTY_DECLARATION(SimpleFs, TotalBadBlocksCount, handle, value)
    size_t totalBadBlocksCount = ComputeTotalBadBlocksCount(handle);
    memcpy(value, &totalBadBlocksCount, sizeof(totalBadBlocksCount));
 
-   return SDEVICE_PROPERTY_OPERATION_STATUS_OK;
+   return SDEVICE_PROPERTY_STATUS_OK;
 }
 
 void SimpleFsSDeviceFormatMemory(ThisHandle *handle)
