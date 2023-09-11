@@ -55,7 +55,7 @@ static bool TryWriteStreamGoodBlock(ThisHandle *handle, WriteStream *stream, Blo
       }
       else if(++badAreaBadBlocksCount == MAX_BAD_AREA_LENGTH)
       {
-         SDeviceThrow(handle, SIMPLE_FS_SDEVICE_EXCEPTION_BAD_AREA_OVERFLOW);
+         SDevicePanic(handle, SIMPLE_FS_SDEVICE_PANIC_BAD_AREA_OVERFLOW);
       }
    }
 

@@ -35,5 +35,5 @@ static inline void WriteStreamSectorState(ThisHandle *handle, WriteStream *strea
    SDeviceDebugAssert(stream != NULL);
 
    if(!TryWriteStreamGoodBlock(handle, stream, BuildHeaderBlock(handle, state)))
-      SDeviceThrow(handle, SIMPLE_FS_SDEVICE_EXCEPTION_OUT_OF_MEMORY);
+      SDevicePanic(handle, SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY);
 }
