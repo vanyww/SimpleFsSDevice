@@ -16,7 +16,9 @@
  * @{
  */
 
-#include "SDeviceCore/core.h"
+#include "log.h"
+#include "config.h"
+#include "dependensies.h"
 
 #include <stdbool.h>
 
