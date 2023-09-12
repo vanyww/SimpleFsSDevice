@@ -1,5 +1,9 @@
 #include "application.h"
 
+#include "../Src/IO/Primitives/Block/Base/Common/Crc/crc.h"
+
+#include <memory.h>
+
 typedef struct
 {
    char *GlobalSectorsPtr;
