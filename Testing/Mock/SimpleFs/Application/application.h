@@ -1,9 +1,7 @@
 #pragma once
 
-#include <memory.h>
-
-#include "../Src/private.h"
-#include "../Src/IO/Primitives/Block/Base/Common/Crc/crc.h"
+#include "SimpleFsSDevice/public.h"
+#include "../Src/IO/Primitives/Block/Base/DataTypes/Enumerations/sector_state.h"
 #include "../Src/IO/Primitives/Block/Base/DataTypes/block.h"
 
 #define MEMORY_SECTORS(name) _##name##MemorySectors
