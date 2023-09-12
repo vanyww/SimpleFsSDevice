@@ -1,10 +1,11 @@
-#include "weak.h"
-#include "SDeviceCore/heap.h"
+#include "errors.h"
+
 #include "SDeviceCore/errors.h"
-#include "SDeviceCore/global.h"
+#include "SDeviceCore/heap.h"
 
 #include "unity.h"
-#include <stdio.h>
+#include <stdlib.h>
+
 #define ENUM_TO_STRING(enum) #enum
 
 static bool ProcessAssertFailMustBeCalled;
@@ -51,40 +52,40 @@ void SDeviceProcessAssertFail(char *file, int line)
    }
 }
 
-void SDeviceProcessUnhandledThrow(const void *_handle)
+void SDeviceProcessPanic(const void *_handle)
 {
    if(AssertFailhandle != NULL)
          SDeviceFree(AssertFailhandle);
 
    SDeviceHandleHeader *header = (SDeviceHandleHeader *)(_handle);
-   SimpleFsSDeviceException e = header->LatestStatus;
+   SimpleFsSDevicePanic panic = header->LatestStatus;
 
-   switch (e)
+   switch (panic)
    {
-      case SIMPLE_FS_SDEVICE_EXCEPTION_OUT_OF_MEMORY:
+      case SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY:
 
          if(ProcessUnhandledThrowMustBeCalled)
-            TEST_PASS_MESSAGE("Test pass, trown " ENUM_TO_STRING(SIMPLE_FS_SDEVICE_EXCEPTION_OUT_OF_MEMORY));
+            TEST_PASS_MESSAGE("Test pass, trown " ENUM_TO_STRING(SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY));
          else
-            TEST_FAIL_MESSAGE("Test fail, trown " ENUM_TO_STRING(SIMPLE_FS_SDEVICE_EXCEPTION_OUT_OF_MEMORY));
+            TEST_FAIL_MESSAGE("Test fail, trown " ENUM_TO_STRING(SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY));
          break;
 
-      case SIMPLE_FS_SDEVICE_EXCEPTION_BAD_AREA_OVERFLOW:
+      case SIMPLE_FS_SDEVICE_PANIC_BAD_AREA_OVERFLOW:
 
          if(ProcessUnhandledThrowMustBeCalled)
-            TEST_PASS_MESSAGE("Test pass, trown " ENUM_TO_STRING(SIMPLE_FS_SDEVICE_EXCEPTION_BAD_AREA_OVERFLOW));
+            TEST_PASS_MESSAGE("Test pass, trown " ENUM_TO_STRING(SIMPLE_FS_SDEVICE_PANIC_BAD_AREA_OVERFLOW));
          else
-            TEST_FAIL_MESSAGE("Test fail, trown " ENUM_TO_STRING(SIMPLE_FS_SDEVICE_EXCEPTION_BAD_AREA_OVERFLOW));
+            TEST_FAIL_MESSAGE("Test fail, trown " ENUM_TO_STRING(SIMPLE_FS_SDEVICE_PANIC_BAD_AREA_OVERFLOW));
          break;
    }
 }
 
-void SDeviceProcessLogStatus(const void *_handle)
+void SDeviceProcessLogStatus(const void *handle, const void *extras, size_t extrasSize)
 {
    if(!AreLogsShowing)
       return;
 
-   SDeviceHandleHeader *header = (SDeviceHandleHeader *)(_handle);
+   SDeviceHandleHeader *header = (SDeviceHandleHeader *)(handle);
    SimpleFsSDeviceStatus status = header->LatestStatus;
 
    switch (status)
@@ -104,19 +105,4 @@ void SDeviceProcessLogStatus(const void *_handle)
       default:
          break;
    }
-}
-
-void* SDeviceMalloc(size_t size)
-{
-   void *memory = malloc(size);
-
-   if (memory == NULL)
-      SDeviceThrow(CoreGlobalSDeviceHandle, CORE_GLOBAL_SDEVICE_EXCEPTION_OUT_OF_MEMORY);
-
-   return memory;
-}
-
-void SDeviceFree(void *_handle)
-{
-   free(_handle);
 }

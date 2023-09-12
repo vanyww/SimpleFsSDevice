@@ -1,14 +1,13 @@
-#include <memory.h>
+#include "test_data_builder.h"
 
-#include "test_data.h"
-#include "../Src/private.h"
 #include "../Src/IO/Primitives/Block/Base/Common/Crc/crc.h"
 #include "../Src/IO/Primitives/Block/Base/DataTypes/block.h"
+
+#include <memory.h>
 
 #define MAX_FILE_IMAGE_SIZE 32
 #define MAX_FILE_SIZE 17
 #define NUMBER_OF_FILES 2
-
 
 typedef struct
 {
