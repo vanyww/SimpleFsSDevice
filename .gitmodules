@@ -8,5 +8,5 @@
 	path = Doxygen/Style/doxygen-awesome-css
 	url = ../forks/doxygen-awesome-css.git
 [submodule "unity"]
-	path = Test/Unity
+	path = Testing/Unity
 	url = ../forks/unity.git
