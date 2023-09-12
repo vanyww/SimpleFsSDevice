@@ -1,9 +1,9 @@
-#include "../Application/application.h"
-#include "../TestDataBuilder/test_data.h"
-#include "../Weak/weak.h"
-
+#include <memory.h>
 #include "unity_fixture.h"
 
+#include "../../Mock/Error/errors.h"
+#include "../../Mock/SimpleFs/Data/test_data_builder.h"
+#include "../../Mock/SimpleFs/Application/application.h"
 
 TEST_GROUP(ReadWrite);
 
