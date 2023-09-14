@@ -17,26 +17,26 @@ typedef struct
    char FileImageData[MAX_FILE_IMAGE_SIZE];
 }TestFile;
 
-static TestFile TestFiles[NUMBER_OF_FILES];
+static TestFile Files[NUMBER_OF_FILES];
 
 size_t GetTestFileDataSize(TestFilesNames file)
 {
-   return TestFiles[file].FileDataSize;
+   return Files[file].FileDataSize;
 }
 
 size_t GetTestFileImageDataSize(TestFilesNames file)
 {
-   return TestFiles[file].FileImageDataSize;
+   return Files[file].FileImageDataSize;
 }
 
 void CopyTestFileData(void *buffer, TestFilesNames file)
 {
-   memcpy(buffer, TestFiles[file].FileData, TestFiles[file].FileDataSize);
+   memcpy(buffer, Files[file].FileData, Files[file].FileDataSize);
 }
 
 void CopyTestFileImageData(void *buffer, TestFilesNames file)
 {
-   memcpy(buffer, TestFiles[file].FileImageData, TestFiles[file].FileImageDataSize);
+   memcpy(buffer, Files[file].FileImageData, Files[file].FileImageDataSize);
 }
 
 static void InitializeFileWithSizeMultipleOfFileDataBlockDataSize(void)
@@ -77,7 +77,7 @@ static void InitializeFileWithSizeMultipleOfFileDataBlockDataSize(void)
       TableCrc8SDeviceCompute(SimpleFsSDeviceInternalCrc8Handle, &fileAreaTagBlock[1], sizeof(Block) - sizeof(uint8_t));
    memcpy(&file.FileImageData[2*sizeof(Block)], &fileAreaTagBlock, sizeof(Block));
 
-   TestFiles[FILE_WITH_FULLY_FILLED_DATA_BLOCKS] = file;
+   Files[FILE_WITH_FULLY_FILLED_DATA_BLOCKS] = file;
 }
 
 static void InitializeFileWithSizeNotMultipleOfFileDataBlockDataSize(void)
@@ -123,7 +123,7 @@ static void InitializeFileWithSizeNotMultipleOfFileDataBlockDataSize(void)
       TableCrc8SDeviceCompute(SimpleFsSDeviceInternalCrc8Handle, &fileAreaTagBlock[1], sizeof(Block) - sizeof(uint8_t));
    memcpy(&file.FileImageData[3*sizeof(Block)], &fileAreaTagBlock, sizeof(Block));
 
-   TestFiles[FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK] = file;
+   Files[FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK] = file;
 }
 
 void CreateTestData(void)
