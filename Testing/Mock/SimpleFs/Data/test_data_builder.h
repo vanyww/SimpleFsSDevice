@@ -10,11 +10,7 @@ typedef enum
 } TestFilesNames;
 
 void CreateTestData(void);
-
-void CopyTestFileData(void *buffer, TestFilesNames file);
-
-void CopyTestFileImageData(void *buffer, TestFilesNames file);
-
-size_t GetTestFileImageDataSize(TestFilesNames file);
-
 size_t GetTestFileDataSize(TestFilesNames file);
+size_t GetTestFileImageDataSize(TestFilesNames file);
+void CopyTestFileData(void *buffer, TestFilesNames file);
+void CopyTestFileImageData(void *buffer, TestFilesNames file);

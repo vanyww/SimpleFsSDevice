@@ -14,9 +14,9 @@ typedef struct
 {
    size_t FileDataSize;
    size_t FileImageDataSize;
-   char FileData[MAX_FILE_SIZE];
-   char FileImageData[MAX_FILE_IMAGE_SIZE];
-}TestFile;
+   char   FileData[MAX_FILE_SIZE];
+   char   FileImageData[MAX_FILE_IMAGE_SIZE];
+} TestFile;
 
 static TestFile Files[NUMBER_OF_FILES];
 
