@@ -46,11 +46,8 @@ size_t GetGlobalSectorSize(void);
 
 char* GetGlobalSectorsPtr(void);
 
-void SetTestBadBlocksConfig(uint16_t *ptr, size_t size, uint8_t sectorIndex);
 
-uint16_t* GetTestBadBlocksNumbersArrayPtr(uint8_t sectorNumber);
 
-size_t GetTestBadBlocksNumbersArraySize(uint8_t sectorNumber);
 
 void ReadUInt64(SDEVICE_HANDLE(SimpleFs)     *handle,
                 const SimpleFsSDeviceSector  *sector,

@@ -10,52 +10,12 @@ typedef struct
    size_t GlobalSectorSize;
 } GlobalSectors;
 
-typedef struct
-{
-   uint16_t *BadBlocksNumbersArrayPtrSector$0;
-   uint16_t *BadBlocksNumbersArrayPtrSector$1;
-   size_t BadBlocksNumbersArraySizeSector$0;
-   size_t BadBlocksNumbersArraySizeSector$1;
-} TestBadBlocksConfig;
-
 static GlobalSectors Sectors;
-static TestBadBlocksConfig BadBlocksConfig;
-
-void SetTestBadBlocksConfig(uint16_t *ptr, size_t size, uint8_t sectorIndex)
-{
-   if(sectorIndex)
-   {
-      BadBlocksConfig.BadBlocksNumbersArrayPtrSector$1 = ptr;
-      BadBlocksConfig.BadBlocksNumbersArraySizeSector$1 = size;
-   }
-   else
-   {
-      BadBlocksConfig.BadBlocksNumbersArrayPtrSector$0 = ptr;
-      BadBlocksConfig.BadBlocksNumbersArraySizeSector$0 = size;
-   }
-}
 
 void SetGlobalSectors(char *ptr, size_t size)
 {
    Sectors.GlobalSectorSize = size;
    Sectors.GlobalSectorsPtr = ptr;
-}
-
-
-uint16_t* GetTestBadBlocksNumbersArrayPtr(uint8_t sectorIndex)
-{
-   if(sectorIndex)
-      return BadBlocksConfig.BadBlocksNumbersArrayPtrSector$1;
-
-   return BadBlocksConfig.BadBlocksNumbersArrayPtrSector$0;
-}
-
-size_t GetTestBadBlocksNumbersArraySize(uint8_t sectorIndex)
-{
-   if(sectorIndex)
-      return BadBlocksConfig.BadBlocksNumbersArraySizeSector$1;
-
-   return BadBlocksConfig.BadBlocksNumbersArraySizeSector$0;
 }
 
 size_t GetGlobalSectorSize(void)
