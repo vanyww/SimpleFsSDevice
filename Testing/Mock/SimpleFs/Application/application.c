@@ -88,17 +88,17 @@ void WriteUInt64(SDEVICE_HANDLE(SimpleFs)       *handle,
 {
    char *SectorsPtr = GetGlobalSectorsPtr();
    size_t SectorSize = GetGlobalSectorSize();
-   uint8_t sectorIndex = ((SectorContext*)sector->Context)->SectorIndex;
+   size_t sectorIndex = ((SectorContext*)sector->Context)->SectorIndex;
    char *dataDstPtr = (SectorsPtr + SectorSize*sectorIndex + address);
    memcpy(dataDstPtr, &value, sizeof(value));
 
    if(GetTestBadBlocksNumbersArrayPtr(sectorIndex) != NULL)
    {
-      uint16_t *ptrToArray = GetTestBadBlocksNumbersArrayPtr(sectorIndex);
-      uint16_t amountOfElements = GetTestBadBlocksNumbersArraySize(sectorIndex) / sizeof(uint16_t);
-      uint16_t numberOfBlock = address / sizeof(Block);
+      size_t *ptrToArray = GetTestBadBlocksNumbersArrayPtr(sectorIndex);
+      size_t amountOfElements = GetTestBadBlocksNumbersArraySize(sectorIndex) / sizeof(size_t);
+      size_t numberOfBlock = address / sizeof(Block);
 
-      for (uint16_t i = 0; i < amountOfElements; i++)
+      for (size_t i = 0; i < amountOfElements; i++)
       {
          if(*(ptrToArray + i) == numberOfBlock)
          {

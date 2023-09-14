@@ -37,7 +37,7 @@
 
 typedef struct
 {
-   uint8_t SectorIndex;
+   size_t SectorIndex;
 } SectorContext;
 
 void SetGlobalSectors(char *ptr, size_t size);
