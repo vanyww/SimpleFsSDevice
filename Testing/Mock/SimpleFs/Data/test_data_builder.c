@@ -39,7 +39,7 @@ void CopyTestFileImageData(void *buffer, TestFilesNames file)
    memcpy(buffer, Files[file].FileImageData, Files[file].FileImageDataSize);
 }
 
-static void InitializeFileWithSizeMultipleOfFileDataBlockDataSize(void)
+static void InitializeFileWithFullyFilledDataBlocks(void)
 {
    char fileData[] = "1111111111111";
    size_t fileSize = 14;
@@ -80,7 +80,7 @@ static void InitializeFileWithSizeMultipleOfFileDataBlockDataSize(void)
    Files[FILE_WITH_FULLY_FILLED_DATA_BLOCKS] = file;
 }
 
-static void InitializeFileWithSizeNotMultipleOfFileDataBlockDataSize(void)
+static void InitializeFileWithIncompleteFilledLastDataBlock(void)
 {
    char fileData[] = "029750-185223854";
    size_t fileSize = 17;
@@ -130,6 +130,6 @@ void CreateTestData(void)
 {
    InitializeCrc16();
    InitializeCrc8();
-   InitializeFileWithSizeMultipleOfFileDataBlockDataSize();
-   InitializeFileWithSizeNotMultipleOfFileDataBlockDataSize();
+   InitializeFileWithFullyFilledDataBlocks();
+   InitializeFileWithIncompleteFilledLastDataBlock();
 }
