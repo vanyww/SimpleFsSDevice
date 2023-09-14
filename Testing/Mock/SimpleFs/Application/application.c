@@ -81,20 +81,3 @@ bool IsSectorEquial(const SimpleFsSDeviceSector *sector1, const SimpleFsSDeviceS
 {
    return (sector1->Context == sector2->Context && sector1->Size == sector2->Size);
 }
-
-Block CreateHeaderBlock(SectorState state, bool isMemoryErasingToZero)
-{
-   HeaderBlock block =
-   {
-      .Type = BLOCK_TYPE_HEADER,
-      .SectorState = state,
-      .FsVersion = SIMPLE_FS_SDEVICE_CORE_VERSION,
-      .Padding = isMemoryErasingToZero ? 0 : UINT8_MAX,
-   };
-
-   uint8_t *blockdata = ((ServiceBlock)block).BlockData;
-   size_t size = sizeof(((ServiceBlock)block).BlockData);
-   block.BlockCrc = TableCrc8SDeviceCompute(SimpleFsSDeviceInternalCrc8Handle, blockdata, size);
-
-   return (Block)block;
-}

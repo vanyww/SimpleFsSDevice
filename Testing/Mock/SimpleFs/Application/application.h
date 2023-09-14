@@ -64,4 +64,3 @@ void EraseSectorCallback(SDEVICE_HANDLE(SimpleFs) *handle, const SimpleFsSDevice
 
 bool IsSectorEquial(const SimpleFsSDeviceSector *sector1, const SimpleFsSDeviceSector *sector2);
 
-Block CreateHeaderBlock(SectorState state, bool isMemoryErasingToZero);
