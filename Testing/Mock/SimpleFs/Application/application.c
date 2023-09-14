@@ -7,7 +7,7 @@
 
 typedef struct
 {
-   char *GlobalSectorsPtr;
+   char  *GlobalSectorsPtr;
    size_t GlobalSectorSize;
 } GlobalSectors;
 
@@ -40,7 +40,6 @@ void ReadUInt64(SDEVICE_HANDLE(SimpleFs)     *handle,
    char *dataSrcPtr = (SectorsPtr + SectorSize*sectorContext->SectorIndex + address);
    memcpy(value, dataSrcPtr, sizeof(*value));
 }
-
 
 void WriteUInt64(SDEVICE_HANDLE(SimpleFs)       *handle,
                  const SimpleFsSDeviceSector    *sector,

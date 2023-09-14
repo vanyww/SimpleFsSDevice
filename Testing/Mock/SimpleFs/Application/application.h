@@ -2,6 +2,7 @@
 
 #include "SimpleFsSDevice/public.h"
 
+#define SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE __attribute__((cleanup(SDEVICE_DISPOSE_HANDLE(SimpleFs))))
 #define MEMORY_SECTORS(name) _##name##MemorySectors
 #define SECTOR$0(name) _##name##Sector0
 #define SECTOR$1(name) _##name##Sector1
@@ -31,21 +32,15 @@
       .IsMemoryErasingToZero = true                                                                                    \
    };
 
-#define SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE __attribute__((cleanup(SDEVICE_DISPOSE_HANDLE(SimpleFs))))
-
 typedef struct
 {
    size_t SectorIndex;
 } SectorContext;
 
-void SetGlobalSectors(char *ptr, size_t size);
-
-size_t GetGlobalSectorSize(void);
-
 char* GetGlobalSectorsPtr(void);
-
-
-
+size_t GetGlobalSectorSize(void);
+void SetGlobalSectors(char *ptr, size_t size);
+bool IsSectorEquial(const SimpleFsSDeviceSector *sector1, const SimpleFsSDeviceSector *sector2);
 
 void ReadUInt64(SDEVICE_HANDLE(SimpleFs)     *handle,
                 const SimpleFsSDeviceSector  *sector,
@@ -57,8 +52,4 @@ void WriteUInt64(SDEVICE_HANDLE(SimpleFs)    *handle,
                  uintptr_t                    address,
                  uint64_t                     value);
 
-
 void EraseSectorCallback(SDEVICE_HANDLE(SimpleFs) *handle, const SimpleFsSDeviceSector *sector);
-
-bool IsSectorEquial(const SimpleFsSDeviceSector *sector1, const SimpleFsSDeviceSector *sector2);
-
