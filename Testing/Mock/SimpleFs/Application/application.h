@@ -1,8 +1,6 @@
 #pragma once
 
 #include "SimpleFsSDevice/public.h"
-#include "../Src/IO/Primitives/Block/Base/DataTypes/Enumerations/sector_state.h"
-#include "../Src/IO/Primitives/Block/Base/DataTypes/block.h"
 
 #define MEMORY_SECTORS(name) _##name##MemorySectors
 #define SECTOR$0(name) _##name##Sector0
