@@ -14,6 +14,6 @@ void CopyTestFileData(void *buffer, TestFilesNames file);
 
 void CopyTestFileImageData(void *buffer, TestFilesNames file);
 
-uint16_t GetTestFileImageDataSize(TestFilesNames file);
+size_t GetTestFileImageDataSize(TestFilesNames file);
 
-uint16_t GetTestFileDataSize(TestFilesNames file);
+size_t GetTestFileDataSize(TestFilesNames file);

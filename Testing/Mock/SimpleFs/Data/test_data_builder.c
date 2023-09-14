@@ -11,20 +11,20 @@
 
 typedef struct
 {
-   uint16_t FileDataSize;
-   uint16_t FileImageDataSize;
+   size_t FileDataSize;
+   size_t FileImageDataSize;
    char FileData[MAX_FILE_SIZE];
    char FileImageData[MAX_FILE_IMAGE_SIZE];
 }TestFile;
 
 static TestFile TestFiles[NUMBER_OF_FILES];
 
-uint16_t GetTestFileDataSize(TestFilesNames file)
+size_t GetTestFileDataSize(TestFilesNames file)
 {
    return TestFiles[file].FileDataSize;
 }
 
-uint16_t GetTestFileImageDataSize(TestFilesNames file)
+size_t GetTestFileImageDataSize(TestFilesNames file)
 {
    return TestFiles[file].FileImageDataSize;
 }
@@ -42,8 +42,8 @@ void CopyTestFileImageData(void *buffer, TestFilesNames file)
 static void InitializeFileWithSizeMultipleOfFileDataBlockDataSize(void)
 {
    char fileData[] = "1111111111111";
-   uint16_t fileSize = 14;
-   uint16_t fileImageSize = 24;
+   size_t fileSize = 14;
+   size_t fileImageSize = 24;
 
    TestFile file =
    {
@@ -52,8 +52,8 @@ static void InitializeFileWithSizeMultipleOfFileDataBlockDataSize(void)
    };
    memcpy(file.FileData, fileData, fileSize);
 
-   uint16_t file1SizeRemainder = fileSize % SIZEOF_MEMBER(FileDataBlock, Data);    // last block data size = 7 byte
-   uint16_t lastBlockDataSize = (file1SizeRemainder != 0) ? file1SizeRemainder : SIZEOF_MEMBER(FileDataBlock, Data);
+   uint8_t file1SizeRemainder = fileSize % SIZEOF_MEMBER(FileDataBlock, Data);    // last block data size = 7 byte
+   uint8_t lastBlockDataSize = (file1SizeRemainder != 0) ? file1SizeRemainder : SIZEOF_MEMBER(FileDataBlock, Data);
 
    char dataBlock1[sizeof(Block)] = { 0 };
    memcpy(dataBlock1, &fileData[SIZEOF_MEMBER(FileDataBlock, Data)], lastBlockDataSize);
@@ -83,8 +83,8 @@ static void InitializeFileWithSizeMultipleOfFileDataBlockDataSize(void)
 static void InitializeFileWithSizeNotMultipleOfFileDataBlockDataSize(void)
 {
    char fileData[] = "029750-185223854";
-   uint16_t fileSize = 17;
-   uint16_t fileImageSize = 32;
+   size_t fileSize = 17;
+   size_t fileImageSize = 32;
 
    TestFile file =
    {
@@ -93,8 +93,8 @@ static void InitializeFileWithSizeNotMultipleOfFileDataBlockDataSize(void)
    };
    memcpy(file.FileData, fileData, fileSize);
 
-   uint16_t file1SizeRemainder = fileSize % SIZEOF_MEMBER(FileDataBlock, Data);
-   uint16_t lastBlockDataSize = (file1SizeRemainder != 0) ? file1SizeRemainder : SIZEOF_MEMBER(FileDataBlock, Data);
+   uint8_t file1SizeRemainder = fileSize % SIZEOF_MEMBER(FileDataBlock, Data);
+   uint8_t lastBlockDataSize = (file1SizeRemainder != 0) ? file1SizeRemainder : SIZEOF_MEMBER(FileDataBlock, Data);
 
    char dataBlock1[sizeof(Block)] = { 0 };
    memcpy(dataBlock1, &fileData[2*SIZEOF_MEMBER(FileDataBlock, Data)], lastBlockDataSize);
