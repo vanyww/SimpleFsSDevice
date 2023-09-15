@@ -4,18 +4,10 @@
 
 #define MAX_FILE_AREA_LENGTH UINT8_MAX
 #define MAX_FILE_SIZE ((MAX_FILE_AREA_LENGTH + 1) * SIZEOF_MEMBER(FileDataBlock, Data))
-#define CEIL_DIV_UINT(numerator, denominator)(                                                                         \
-{                                                                                                                      \
-   SDeviceAssert(numerator >= 0);                                                                                      \
-   SDeviceAssert(denominator > 0);                                                                                     \
-   __auto_type _numerator = (numerator);                                                                               \
-   __auto_type _denominator = (denominator);                                                                           \
-   _numerator % _denominator > 0 ? _numerator / _denominator + 1 : _numerator / _denominator;                          \
-})
 
 static inline uint8_t ComputeFileAreaLength(size_t fileSize)
 {
-   return CEIL_DIV_UINT(fileSize, SIZEOF_MEMBER(FileDataBlock, Data));
+   return CEIL_UINT_DIV(fileSize, SIZEOF_MEMBER(FileDataBlock, Data));
 }
 
 static inline size_t ComputeTotalFileLength(size_t fileSize)
