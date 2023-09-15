@@ -1,4 +1,4 @@
-#include "../../Mock/Error/errors.h"
+#include "../../Mock/Errors/errors.h"
 #include "../../Mock/SimpleFs/Data/HeaderBlock/block.h"
 #include "../../Mock/SimpleFs/Application/application.h"
 
