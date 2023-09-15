@@ -1,9 +1,10 @@
+#include "../../Mock/Error/errors.h"
+#include "../../Mock/SimpleFs/Data/HeaderBlock/block.h"
+#include "../../Mock/SimpleFs/Application/application.h"
+
 #include "../../../Src/private.h"
 
 #include "unity_fixture.h"
-
-#include "../../Mock/Error/errors.h"
-#include "../../Mock/SimpleFs/Application/application.h"
 
 TEST_GROUP(InitializationTests);
 
