@@ -23,7 +23,7 @@ void AssertionMustBeFail(bool value)
    ProcessAssertFailMustBeCalled = value;
 }
 
-void SetProcessUnhandledThrowMustBeCalled(bool value)
+void PanicMustBeThrown(bool value)
 {
    ProcessUnhandledThrowMustBeCalled = value;
 }

@@ -12,7 +12,7 @@ TEST_TEAR_DOWN(CommonSimpleFs) {}
 TEST(CommonSimpleFs, DeleteFile)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
@@ -47,7 +47,7 @@ TEST(CommonSimpleFs, DeleteFile)
 TEST(CommonSimpleFs, GetMaxFileSize)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
@@ -74,7 +74,7 @@ TEST(CommonSimpleFs, GetMaxFileSize)
 TEST(CommonSimpleFs, DeleteSomeFileVersion)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char fileData[fileDataSize];
@@ -103,7 +103,7 @@ TEST(CommonSimpleFs, DeleteSomeFileVersion)
 TEST(CommonSimpleFs, DeleteFileWithShortageMemory)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
@@ -137,7 +137,7 @@ TEST(CommonSimpleFs, DeleteFileWithShortageMemory)
 TEST(CommonSimpleFs, FormatMemory)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
@@ -168,7 +168,7 @@ TEST(CommonSimpleFs, FormatMemory)
 TEST(CommonSimpleFs, ForceHistoryDeletion)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char fileData[fileDataSize];

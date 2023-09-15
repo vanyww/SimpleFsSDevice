@@ -5,6 +5,6 @@
 #include <stdbool.h>
 
 void AssertionMustBeFail(bool value);
-void SetProcessUnhandledThrowMustBeCalled(bool value);
+void PanicMustBeThrown(bool value);
 void SetAssertFailHandle(SDEVICE_HANDLE(SimpleFs) *handle);
 void ShowLog(bool value);

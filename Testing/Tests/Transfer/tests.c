@@ -12,7 +12,7 @@ TEST_GROUP(Transfer);
 TEST_SETUP(Transfer)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 }
 
 TEST_TEAR_DOWN(Transfer) {}

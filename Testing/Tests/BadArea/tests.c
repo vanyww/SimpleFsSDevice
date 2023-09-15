@@ -10,7 +10,7 @@ TEST_GROUP(BadArea);
 TEST_SETUP(BadArea)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
    ShowLog(false);
 }
 
@@ -53,7 +53,7 @@ TEST(BadArea, EveryFourthBlockIsBad)
 
 TEST(BadArea, WriteFileWhenShortageMemoryDueBadBlocks)
 {
-   SetProcessUnhandledThrowMustBeCalled(true);
+   PanicMustBeThrown(true);
 
    size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];

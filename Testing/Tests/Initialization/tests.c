@@ -14,7 +14,7 @@ TEST_TEAR_DOWN(InitializationTests) {}
 TEST(InitializationTests, HandleInitialization)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this); // min size = 48 byte
 
@@ -27,7 +27,7 @@ TEST(InitializationTests, HandleInitialization)
 TEST(InitializationTests, InsufficientMemoryInSector)
 {
    AssertionMustBeFail(true);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
    SetAssertFailHandle(NULL);
 
    CREATE_SIMPLE_FS_APPLICATION(1, this); // min size = 48 byte
@@ -42,7 +42,7 @@ TEST(InitializationTests, InsufficientMemoryInSector)
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_ONGOING)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
@@ -63,7 +63,7 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_ONGOING)
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ERASED)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
@@ -84,7 +84,7 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ERASED)
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_END)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
@@ -105,7 +105,7 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_END)
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ACTIVE)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
@@ -126,7 +126,7 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ACTIVE)
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_ONGOING)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
@@ -147,7 +147,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_ONGOING)
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ERASED)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
@@ -168,7 +168,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ERASED)
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_END)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
@@ -189,7 +189,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_END)
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ACTIVE)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
@@ -210,7 +210,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ACTIVE)
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1STATE_TRANSFER_ONGOING)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
@@ -231,7 +231,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1STATE_TRANSFER_ONGOING)
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ERASED)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
@@ -252,7 +252,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ERASED)
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_TRANSFER_END)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
@@ -273,7 +273,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_TRANSFER_END)
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ACTIVE)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
@@ -294,7 +294,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ACTIVE)
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_ONGOING)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
@@ -315,7 +315,7 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_ONGOING)
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ERASED)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
@@ -336,7 +336,7 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ERASED)
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_END)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
@@ -357,7 +357,7 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_END)
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ACTIVE)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 

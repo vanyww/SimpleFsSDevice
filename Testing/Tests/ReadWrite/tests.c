@@ -15,7 +15,7 @@ TEST_TEAR_DOWN(ReadWrite) {}
 TEST(ReadWrite, WriteFileWithFullyFilledDataBlocks)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    size_t fileImageDataSize = GetTestFileImageDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
@@ -41,7 +41,7 @@ TEST(ReadWrite, WriteFileWithFullyFilledDataBlocks)
 TEST(ReadWrite, WriteFileWithIncompleteFilledLastDataBlock)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    size_t fileImageDataSize = GetTestFileImageDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
@@ -67,7 +67,7 @@ TEST(ReadWrite, WriteFileWithIncompleteFilledLastDataBlock)
 TEST(ReadWrite, ReadFileWithIncompleteFilledLastDataBlock)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char fileData[fileDataSize];
@@ -89,7 +89,7 @@ TEST(ReadWrite, ReadFileWithIncompleteFilledLastDataBlock)
 TEST(ReadWrite, ReadFileWithFullyFilledDataBlocks)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char fileData[fileDataSize];
@@ -111,7 +111,7 @@ TEST(ReadWrite, ReadFileWithFullyFilledDataBlocks)
 TEST(ReadWrite, WriteNewFileVersion)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char fileData[fileDataSize];
@@ -140,7 +140,7 @@ TEST(ReadWrite, WriteNewFileVersion)
 TEST(ReadWrite, WriteNewFileVersionWithSmallerSize)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char fileData[fileDataSize];
@@ -169,7 +169,7 @@ TEST(ReadWrite, WriteNewFileVersionWithSmallerSize)
 TEST(ReadWrite, ReadNewFileVersionTwoTimes)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(false);
+   PanicMustBeThrown(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char fileData[fileDataSize];
@@ -200,7 +200,7 @@ TEST(ReadWrite, ReadNewFileVersionTwoTimes)
 TEST(ReadWrite, WriteFileWithShortageMemory)
 {
    AssertionMustBeFail(false);
-   SetProcessUnhandledThrowMustBeCalled(true);
+   PanicMustBeThrown(true);
 
    size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
