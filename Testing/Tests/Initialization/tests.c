@@ -9,9 +9,7 @@
 TEST_GROUP(InitializationTests);
 
 TEST_SETUP(InitializationTests) {}
-
 TEST_TEAR_DOWN(InitializationTests) {}
-
 
 TEST(InitializationTests, HandleInitialization)
 {

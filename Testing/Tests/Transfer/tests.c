@@ -74,9 +74,13 @@ TEST(Transfer, TransferWithRewriteFile)
    for (size_t i = 0; i < 10000; i++)
    {
       if(i % 2)
+      {
          SimpleFsSDeviceWriteFile(handle, 0, secondFileData, secondFileDataSize);
+      }
       else
+      {
          SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
+      }
 
       SimpleFsSDeviceForceHistoryDeletion(handle);
    }

@@ -13,6 +13,7 @@ TEST_SETUP(BadArea)
    SetProcessUnhandledThrowMustBeCalled(false);
    ShowLog(false);
 }
+
 TEST_TEAR_DOWN(BadArea) {}
 
 TEST(BadArea, EveryFourthBlockIsBad)
