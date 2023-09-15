@@ -8,14 +8,16 @@
 
 TEST_GROUP(InitializationTests);
 
-TEST_SETUP(InitializationTests) {}
+TEST_SETUP(InitializationTests)
+{
+   AssertionMustBeFail(false);
+   PanicMustBeThrown(false);
+}
+
 TEST_TEAR_DOWN(InitializationTests) {}
 
 TEST(InitializationTests, HandleInitialization)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    CREATE_SIMPLE_FS_APPLICATION(48, this); // min size = 48 byte
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
@@ -27,7 +29,6 @@ TEST(InitializationTests, HandleInitialization)
 TEST(InitializationTests, InsufficientMemoryInSector)
 {
    AssertionMustBeFail(true);
-   PanicMustBeThrown(false);
    SetAssertFailHandle(NULL);
 
    CREATE_SIMPLE_FS_APPLICATION(1, this); // min size = 48 byte
@@ -41,9 +42,6 @@ TEST(InitializationTests, InsufficientMemoryInSector)
 
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_ONGOING)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
@@ -62,9 +60,6 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_ONGOING)
 
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ERASED)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
@@ -83,9 +78,6 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ERASED)
 
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_END)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
@@ -104,9 +96,6 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_END)
 
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ACTIVE)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
@@ -125,9 +114,6 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ACTIVE)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_ONGOING)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
@@ -146,9 +132,6 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_ONGOING)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ERASED)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
@@ -167,9 +150,6 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ERASED)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_END)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
@@ -188,9 +168,6 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_END)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ACTIVE)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
@@ -209,9 +186,6 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ACTIVE)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1STATE_TRANSFER_ONGOING)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
@@ -230,9 +204,6 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1STATE_TRANSFER_ONGOING)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ERASED)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
@@ -251,9 +222,6 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ERASED)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_TRANSFER_END)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
@@ -272,9 +240,6 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_TRANSFER_END)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ACTIVE)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
@@ -293,9 +258,6 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ACTIVE)
 
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_ONGOING)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
@@ -314,9 +276,6 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_ONGOING)
 
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ERASED)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
@@ -335,9 +294,6 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ERASED)
 
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_END)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
@@ -356,9 +312,6 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_END)
 
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ACTIVE)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    CREATE_SIMPLE_FS_APPLICATION(48, this);
 
    Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);

@@ -6,14 +6,15 @@
 
 TEST_GROUP(CommonSimpleFs);
 
-TEST_SETUP(CommonSimpleFs) {}
+TEST_SETUP(CommonSimpleFs)
+{
+   AssertionMustBeFail(false);
+   PanicMustBeThrown(false);
+}
 TEST_TEAR_DOWN(CommonSimpleFs) {}
 
 TEST(CommonSimpleFs, DeleteFile)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
    CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
@@ -46,9 +47,6 @@ TEST(CommonSimpleFs, DeleteFile)
 
 TEST(CommonSimpleFs, GetMaxFileSize)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
    CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
@@ -73,9 +71,6 @@ TEST(CommonSimpleFs, GetMaxFileSize)
 
 TEST(CommonSimpleFs, DeleteSomeFileVersion)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char fileData[fileDataSize];
    CopyTestFileData(fileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
@@ -102,9 +97,6 @@ TEST(CommonSimpleFs, DeleteSomeFileVersion)
 
 TEST(CommonSimpleFs, DeleteFileWithShortageMemory)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
    CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
@@ -136,9 +128,6 @@ TEST(CommonSimpleFs, DeleteFileWithShortageMemory)
 
 TEST(CommonSimpleFs, FormatMemory)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
    CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
@@ -167,9 +156,6 @@ TEST(CommonSimpleFs, FormatMemory)
 
 TEST(CommonSimpleFs, ForceHistoryDeletion)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char fileData[fileDataSize];
    CopyTestFileData(fileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
