@@ -52,10 +52,10 @@ void WriteUInt64(SDEVICE_HANDLE(SimpleFs)       *handle,
    char *dataDstPtr = (SectorsPtr + SectorSize*sectorIndex + address);
    memcpy(dataDstPtr, &value, sizeof(value));
 
-   if(GetTestBadBlocksNumbersArrayPtr(sectorIndex) != NULL)
+   if(GetBadBlocksNumbersArrayPtr(sectorIndex) != NULL)
    {
-      size_t *ptrToArray = GetTestBadBlocksNumbersArrayPtr(sectorIndex);
-      size_t amountOfElements = GetTestBadBlocksNumbersArraySize(sectorIndex) / sizeof(size_t);
+      size_t *ptrToArray = GetBadBlocksNumbersArrayPtr(sectorIndex);
+      size_t amountOfElements = GetBadBlocksNumbersArraySize(sectorIndex) / sizeof(size_t);
       size_t numberOfBlock = address / sizeof(Block);
 
       for (size_t i = 0; i < amountOfElements; i++)

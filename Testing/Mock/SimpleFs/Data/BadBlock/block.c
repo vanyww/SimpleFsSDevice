@@ -8,7 +8,7 @@ static struct
    size_t  BadBlocksNumbersArraySizeSector$1;
 } BadBlocksConfig;
 
-void SetTestBadBlocksConfig(size_t *ptr, size_t size, size_t sectorIndex)
+void SetBadBlocksNumbers(size_t *ptr, size_t size, size_t sectorIndex)
 {
    if(sectorIndex)
    {
@@ -22,7 +22,7 @@ void SetTestBadBlocksConfig(size_t *ptr, size_t size, size_t sectorIndex)
    }
 }
 
-size_t* GetTestBadBlocksNumbersArrayPtr(size_t sectorIndex)
+size_t* GetBadBlocksNumbersArrayPtr(size_t sectorIndex)
 {
    if(sectorIndex)
       return BadBlocksConfig.BadBlocksNumbersArrayPtrSector$1;
@@ -30,7 +30,7 @@ size_t* GetTestBadBlocksNumbersArrayPtr(size_t sectorIndex)
    return BadBlocksConfig.BadBlocksNumbersArrayPtrSector$0;
 }
 
-size_t GetTestBadBlocksNumbersArraySize(size_t sectorIndex)
+size_t GetBadBlocksNumbersArraySize(size_t sectorIndex)
 {
    if(sectorIndex)
       return BadBlocksConfig.BadBlocksNumbersArraySizeSector$1;

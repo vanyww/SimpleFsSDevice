@@ -106,8 +106,8 @@ TEST(Transfer, TransferWithBadBlocks)
    CopyTestFileImageData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    size_t badBlockNumbers[] = {2, 6, 10, 14, 18, 22};
-   SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 0);
-   SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 1);
+   SetBadBlocksNumbers(badBlockNumbers, sizeof(badBlockNumbers), 0);
+   SetBadBlocksNumbers(badBlockNumbers, sizeof(badBlockNumbers), 1);
 
    CREATE_SIMPLE_FS_APPLICATION(200, this);
 
@@ -148,8 +148,8 @@ TEST(Transfer, TransferWithRewriteFileAndBadBlocks)
    CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    size_t badBlockNumbers[] = {2, 6, 10, 14, 18, 22};
-   SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 0);
-   SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 1);
+   SetBadBlocksNumbers(badBlockNumbers, sizeof(badBlockNumbers), 0);
+   SetBadBlocksNumbers(badBlockNumbers, sizeof(badBlockNumbers), 1);
 
    CREATE_SIMPLE_FS_APPLICATION(200, this);
 
@@ -203,8 +203,8 @@ TEST(Transfer, TransferWithRewriteFileAndRandomGenerationBadBlocks)
    for (size_t i = 0; i < amountOfBadBlocks; ++i)
       badBlockNumbersSector$2[i] = 2 + rand()%amountBlocksInSector;
 
-   SetTestBadBlocksConfig(badBlockNumbersSector$1, sizeof(badBlockNumbersSector$1), 0);
-   SetTestBadBlocksConfig(badBlockNumbersSector$2, sizeof(badBlockNumbersSector$2), 1);
+   SetBadBlocksNumbers(badBlockNumbersSector$1, sizeof(badBlockNumbersSector$1), 0);
+   SetBadBlocksNumbers(badBlockNumbersSector$2, sizeof(badBlockNumbersSector$2), 1);
 
    CREATE_SIMPLE_FS_APPLICATION(200, this);
 

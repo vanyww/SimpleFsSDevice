@@ -27,8 +27,8 @@ TEST(BadArea, EveryFourthBlockIsBad)
    CopyTestFileImageData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    size_t badBlockNumbers[] = {0, 4, 8, 12, 16, 20, 24};
-   SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 0);
-   SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 1);
+   SetBadBlocksNumbers(badBlockNumbers, sizeof(badBlockNumbers), 0);
+   SetBadBlocksNumbers(badBlockNumbers, sizeof(badBlockNumbers), 1);
 
    CREATE_SIMPLE_FS_APPLICATION(200, this);
 
@@ -64,8 +64,8 @@ TEST(BadArea, WriteFileWhenShortageMemoryDueBadBlocks)
    CopyTestFileImageData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
    size_t badBlockNumbers[] = {2, 6, 10, 14, 16, 18, 20, 22, 24};
-   SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 0);
-   SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 1);
+   SetBadBlocksNumbers(badBlockNumbers, sizeof(badBlockNumbers), 0);
+   SetBadBlocksNumbers(badBlockNumbers, sizeof(badBlockNumbers), 1);
 
    CREATE_SIMPLE_FS_APPLICATION(200, this);
 
