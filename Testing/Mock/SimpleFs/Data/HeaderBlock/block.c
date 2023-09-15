@@ -9,7 +9,7 @@ Block CreateHeaderBlock(SectorState state, bool isMemoryErasingToZero)
    {
       .Type = BLOCK_TYPE_HEADER,
       .SectorState = state,
-      .FsVersion = SIMPLE_FS_SDEVICE_CORE_VERSION,
+      .FsVersion = SDEVICE_IDENTITY_BLOCK(SimpleFs).Version,
       .Padding = isMemoryErasingToZero ? 0 : UINT8_MAX,
    };
 

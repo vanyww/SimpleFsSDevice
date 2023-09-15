@@ -46,16 +46,6 @@
 #define SIMPLE_FS_SDEVICE_VERSION_PATCH 2
 
 /**
- * @brief Версия модуля файловой системы SimpleFsSDevice в виде составного литерала структуры SDeviceVersion.
- */
-#define SIMPLE_FS_SDEVICE_CORE_VERSION ((SDeviceVersion)                                                               \
-{                                                                                                                      \
-   .Major = SIMPLE_FS_SDEVICE_VERSION_MAJOR,                                                                           \
-   .Minor = SIMPLE_FS_SDEVICE_VERSION_MINOR,                                                                           \
-   .Patch = SIMPLE_FS_SDEVICE_VERSION_PATCH                                                                            \
-})
-
-/**
  * @brief Сектор файловой памяти.
  * @details Тип данных сектора памяти, используемого для хранения файлов.
  */
