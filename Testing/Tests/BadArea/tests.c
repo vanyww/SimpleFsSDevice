@@ -14,7 +14,10 @@ TEST_SETUP(BadArea)
    ShowLog(false);
 }
 
-TEST_TEAR_DOWN(BadArea) {}
+TEST_TEAR_DOWN(BadArea)
+{
+   ShowLog(true);
+}
 
 TEST(BadArea, EveryFourthBlockIsBad)
 {
