@@ -9,7 +9,7 @@ TEST_GROUP(BadArea);
 
 TEST_SETUP(BadArea)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
    ShowLog(false);
 }

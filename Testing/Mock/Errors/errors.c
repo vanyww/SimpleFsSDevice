@@ -18,7 +18,7 @@ void ShowLog(bool value)
    AreLogsShowing = value;
 }
 
-void SetProcessAssertFailMustBeCalled(bool value)
+void AssertionMustBeFail(bool value)
 {
    ProcessAssertFailMustBeCalled = value;
 }

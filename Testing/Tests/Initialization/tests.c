@@ -13,7 +13,7 @@ TEST_TEAR_DOWN(InitializationTests) {}
 
 TEST(InitializationTests, HandleInitialization)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this); // min size = 48 byte
@@ -26,7 +26,7 @@ TEST(InitializationTests, HandleInitialization)
 
 TEST(InitializationTests, InsufficientMemoryInSector)
 {
-   SetProcessAssertFailMustBeCalled(true);
+   AssertionMustBeFail(true);
    SetProcessUnhandledThrowMustBeCalled(false);
    SetAssertFailHandle(NULL);
 
@@ -41,7 +41,7 @@ TEST(InitializationTests, InsufficientMemoryInSector)
 
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_ONGOING)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
@@ -62,7 +62,7 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_ONGOING)
 
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ERASED)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
@@ -83,7 +83,7 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ERASED)
 
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_END)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
@@ -104,7 +104,7 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_END)
 
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ACTIVE)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
@@ -125,7 +125,7 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ACTIVE)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_ONGOING)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
@@ -146,7 +146,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_ONGOING)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ERASED)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
@@ -167,7 +167,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ERASED)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_END)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
@@ -188,7 +188,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_END)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ACTIVE)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
@@ -209,7 +209,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ACTIVE)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1STATE_TRANSFER_ONGOING)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
@@ -230,7 +230,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1STATE_TRANSFER_ONGOING)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ERASED)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
@@ -251,7 +251,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ERASED)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_TRANSFER_END)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
@@ -272,7 +272,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_TRANSFER_END)
 
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ACTIVE)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
@@ -293,7 +293,7 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ACTIVE)
 
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_ONGOING)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
@@ -314,7 +314,7 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_ONGOING)
 
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ERASED)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
@@ -335,7 +335,7 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ERASED)
 
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_END)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);
@@ -356,7 +356,7 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_END)
 
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ACTIVE)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    CREATE_SIMPLE_FS_APPLICATION(48, this);

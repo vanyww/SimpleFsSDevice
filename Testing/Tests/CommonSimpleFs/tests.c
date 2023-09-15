@@ -11,7 +11,7 @@ TEST_TEAR_DOWN(CommonSimpleFs) {}
 
 TEST(CommonSimpleFs, DeleteFile)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
@@ -46,7 +46,7 @@ TEST(CommonSimpleFs, DeleteFile)
 
 TEST(CommonSimpleFs, GetMaxFileSize)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
@@ -73,7 +73,7 @@ TEST(CommonSimpleFs, GetMaxFileSize)
 
 TEST(CommonSimpleFs, DeleteSomeFileVersion)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
@@ -102,7 +102,7 @@ TEST(CommonSimpleFs, DeleteSomeFileVersion)
 
 TEST(CommonSimpleFs, DeleteFileWithShortageMemory)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
@@ -136,7 +136,7 @@ TEST(CommonSimpleFs, DeleteFileWithShortageMemory)
 
 TEST(CommonSimpleFs, FormatMemory)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
@@ -167,7 +167,7 @@ TEST(CommonSimpleFs, FormatMemory)
 
 TEST(CommonSimpleFs, ForceHistoryDeletion)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);

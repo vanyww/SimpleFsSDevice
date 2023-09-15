@@ -14,7 +14,7 @@ TEST_TEAR_DOWN(ReadWrite) {}
 
 TEST(ReadWrite, WriteFileWithFullyFilledDataBlocks)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
@@ -40,7 +40,7 @@ TEST(ReadWrite, WriteFileWithFullyFilledDataBlocks)
 
 TEST(ReadWrite, WriteFileWithIncompleteFilledLastDataBlock)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
@@ -66,7 +66,7 @@ TEST(ReadWrite, WriteFileWithIncompleteFilledLastDataBlock)
 
 TEST(ReadWrite, ReadFileWithIncompleteFilledLastDataBlock)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
@@ -88,7 +88,7 @@ TEST(ReadWrite, ReadFileWithIncompleteFilledLastDataBlock)
 
 TEST(ReadWrite, ReadFileWithFullyFilledDataBlocks)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
@@ -110,7 +110,7 @@ TEST(ReadWrite, ReadFileWithFullyFilledDataBlocks)
 
 TEST(ReadWrite, WriteNewFileVersion)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
@@ -139,7 +139,7 @@ TEST(ReadWrite, WriteNewFileVersion)
 
 TEST(ReadWrite, WriteNewFileVersionWithSmallerSize)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
@@ -168,7 +168,7 @@ TEST(ReadWrite, WriteNewFileVersionWithSmallerSize)
 
 TEST(ReadWrite, ReadNewFileVersionTwoTimes)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
    size_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
@@ -199,7 +199,7 @@ TEST(ReadWrite, ReadNewFileVersionTwoTimes)
 
 TEST(ReadWrite, WriteFileWithShortageMemory)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(true);
 
    size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);

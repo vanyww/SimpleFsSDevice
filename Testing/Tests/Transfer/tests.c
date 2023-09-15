@@ -11,7 +11,7 @@ TEST_GROUP(Transfer);
 
 TEST_SETUP(Transfer)
 {
-   SetProcessAssertFailMustBeCalled(false);
+   AssertionMustBeFail(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 }
 
