@@ -14,11 +14,11 @@ TEST(CommonSimpleFs, DeleteFile)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
    CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   size_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
    CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
@@ -49,11 +49,11 @@ TEST(CommonSimpleFs, GetMaxFileSize)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
    CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   size_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
    CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
@@ -76,11 +76,11 @@ TEST(CommonSimpleFs, DeleteSomeFileVersion)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   size_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char fileData[fileDataSize];
    CopyTestFileData(fileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t fileNewVersionDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   size_t fileNewVersionDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char fileNewVersionData[fileNewVersionDataSize];
    CopyTestFileData(fileNewVersionData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
@@ -105,11 +105,11 @@ TEST(CommonSimpleFs, DeleteFileWithShortageMemory)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
    CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   size_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
    CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
@@ -139,11 +139,11 @@ TEST(CommonSimpleFs, FormatMemory)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
    CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   size_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
    CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
@@ -170,11 +170,11 @@ TEST(CommonSimpleFs, ForceHistoryDeletion)
    SetProcessAssertFailMustBeCalled(false);
    SetProcessUnhandledThrowMustBeCalled(false);
 
-   uint16_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   size_t fileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char fileData[fileDataSize];
    CopyTestFileData(fileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t fileNewVersionDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   size_t fileNewVersionDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char fileNewVersionData[fileNewVersionDataSize];
    CopyTestFileData(fileNewVersionData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 

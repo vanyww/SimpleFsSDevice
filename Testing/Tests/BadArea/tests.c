@@ -17,15 +17,15 @@ TEST_TEAR_DOWN(BadArea) {}
 
 TEST(BadArea, EveryFourthBlockIsBad)
 {
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
    CopyTestFileImageData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   size_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
    CopyTestFileImageData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
-   uint16_t badBlockNumbers[] = {0, 4, 8, 12, 16, 20, 24};
+   size_t badBlockNumbers[] = {0, 4, 8, 12, 16, 20, 24};
    SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 0);
    SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 1);
 
@@ -54,15 +54,15 @@ TEST(BadArea, WriteFileWhenShortageMemoryDueBadBlocks)
 {
    SetProcessUnhandledThrowMustBeCalled(true);
 
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
    CopyTestFileImageData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   size_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
    CopyTestFileImageData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
-   uint16_t badBlockNumbers[] = {2, 6, 10, 14, 16, 18, 20, 22, 24};
+   size_t badBlockNumbers[] = {2, 6, 10, 14, 16, 18, 20, 22, 24};
    SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 0);
    SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 1);
 

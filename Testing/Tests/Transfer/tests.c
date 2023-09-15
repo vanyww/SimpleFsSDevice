@@ -19,11 +19,11 @@ TEST_TEAR_DOWN(Transfer) {}
 
 TEST(Transfer, TransferTwoFiles)
 {
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
    CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   size_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
    CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
@@ -36,7 +36,7 @@ TEST(Transfer, TransferTwoFiles)
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
    SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);
 
-   for (uint16_t i = 0; i < 10000; i++)
+   for (size_t i = 0; i < 10000; i++)
    {
       SimpleFsSDeviceForceHistoryDeletion(handle);
    }
@@ -55,11 +55,11 @@ TEST(Transfer, TransferTwoFiles)
 
 TEST(Transfer, TransferWithRewriteFile)
 {
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
    CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   size_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
    CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
@@ -71,7 +71,7 @@ TEST(Transfer, TransferWithRewriteFile)
 
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
 
-   for (uint16_t i = 0; i < 10000; i++)
+   for (size_t i = 0; i < 10000; i++)
    {
       if(i % 2)
          SimpleFsSDeviceWriteFile(handle, 0, secondFileData, secondFileDataSize);
@@ -93,15 +93,15 @@ TEST(Transfer, TransferWithBadBlocks)
 {
    ShowLog(false);
 
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
    CopyTestFileImageData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   size_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
    CopyTestFileImageData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
-   uint16_t badBlockNumbers[] = {2, 6, 10, 14, 18, 22};
+   size_t badBlockNumbers[] = {2, 6, 10, 14, 18, 22};
    SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 0);
    SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 1);
 
@@ -114,7 +114,7 @@ TEST(Transfer, TransferWithBadBlocks)
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
    SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);
 
-   for (uint16_t i = 0; i < 10000; i++)
+   for (size_t i = 0; i < 10000; i++)
    {
       SimpleFsSDeviceForceHistoryDeletion(handle);
    }
@@ -135,15 +135,15 @@ TEST(Transfer, TransferWithRewriteFileAndBadBlocks)
 {
    ShowLog(false);
 
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
    CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   size_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
    CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
-   uint16_t badBlockNumbers[] = {2, 6, 10, 14, 18, 22};
+   size_t badBlockNumbers[] = {2, 6, 10, 14, 18, 22};
    SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 0);
    SetTestBadBlocksConfig(badBlockNumbers, sizeof(badBlockNumbers), 1);
 
@@ -156,7 +156,7 @@ TEST(Transfer, TransferWithRewriteFileAndBadBlocks)
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
    SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);
 
-   for (uint16_t i = 0; i < 10000; i++)
+   for (size_t i = 0; i < 10000; i++)
    {
       SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
       SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);
@@ -179,24 +179,24 @@ TEST(Transfer, TransferWithRewriteFileAndRandomGenerationBadBlocks)
 {
    ShowLog(false);
 
-   uint16_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
    CopyTestFileData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
 
-   uint16_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   size_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
    CopyTestFileData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
 
-   uint16_t amountOfBadBlocks = 7;
-   uint16_t amountBlocksInSector = 22;
-   uint16_t badBlockNumbersSector$1[amountOfBadBlocks];
-   uint16_t badBlockNumbersSector$2[amountOfBadBlocks];
+   size_t amountOfBadBlocks = 7;
+   size_t amountBlocksInSector = 22;
+   size_t badBlockNumbersSector$1[amountOfBadBlocks];
+   size_t badBlockNumbersSector$2[amountOfBadBlocks];
 
    srand(time(NULL));
-   for (uint16_t i = 0; i < amountOfBadBlocks; ++i)
+   for (size_t i = 0; i < amountOfBadBlocks; ++i)
       badBlockNumbersSector$1[i] = 2 + rand()%amountBlocksInSector;
 
-   for (uint16_t i = 0; i < amountOfBadBlocks; ++i)
+   for (size_t i = 0; i < amountOfBadBlocks; ++i)
       badBlockNumbersSector$2[i] = 2 + rand()%amountBlocksInSector;
 
    SetTestBadBlocksConfig(badBlockNumbersSector$1, sizeof(badBlockNumbersSector$1), 0);
@@ -211,12 +211,12 @@ TEST(Transfer, TransferWithRewriteFileAndRandomGenerationBadBlocks)
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
    SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);
 
-   for (uint16_t i = 0; i < 10000; i++)
+   for (size_t i = 0; i < 10000; i++)
    {
-      for (uint16_t j = 0; j < amountOfBadBlocks; ++j)
+      for (size_t j = 0; j < amountOfBadBlocks; ++j)
          badBlockNumbersSector$1[j] = 2 + rand()%amountBlocksInSector;
 
-      for (uint16_t j = 0; j < amountOfBadBlocks; ++j)
+      for (size_t j = 0; j < amountOfBadBlocks; ++j)
          badBlockNumbersSector$1[j] = 2 + rand()%amountBlocksInSector;
 
       SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
