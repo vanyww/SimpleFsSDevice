@@ -5,12 +5,7 @@ SELECTION_FILTER_INTERNAL_ALIASES_DECLARATION(ValidServiceOfType);
 
 static SELECTION_FILTER_FUNCTION_DECLARATION(ValidServiceOfType, handle, _parameters, _context, block)
 {
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(_parameters != NULL);
-
    const ThisSelectorFilterParameters *parameters = (ThisSelectorFilterParameters *)_parameters;
-
-   SDeviceDebugAssert(IS_VALID_SERVICE_BLOCK_TYPE(parameters->Type));
 
    if(HasBlockValidType(block))
    {
@@ -31,6 +26,6 @@ static SELECTION_FILTER_FUNCTION_DECLARATION(ValidServiceOfType, handle, _parame
 
 const SelectionFilterInterface SELECTION_FILTER_INTERFACE(ValidServiceOfType) =
 {
-   .FilterFunction = SELECTION_FILTER_FUNCTION(ValidServiceOfType),
+   .FilterFunction      = SELECTION_FILTER_FUNCTION(ValidServiceOfType),
    .ContextInitFunction = NULL
 };

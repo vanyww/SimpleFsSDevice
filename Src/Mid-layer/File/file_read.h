@@ -12,10 +12,6 @@ typedef struct
 
 static bool TryReadStreamFileIdsRange(ThisHandle *handle, ReadStream *stream, FileIdsRange *range)
 {
-   SDeviceDebugAssert(range != NULL);
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(stream != NULL);
-
    Block readBlock;
    FileIdsRange idsRange = { .Lowest = 1, .Highest = 0 };
    const SelectionFilter filters[] = { COMPOSE_SELECTION_FILTER(ValidServiceOfType, BLOCK_TYPE_FILE_AREA_TAG) };
@@ -45,9 +41,6 @@ static bool TryReadStreamFileIdsRange(ThisHandle *handle, ReadStream *stream, Fi
 
 static size_t ReadStreamMaxFileSize(ThisHandle *handle, ReadStream *stream, uint16_t fileIdx)
 {
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(stream != NULL);
-
    Block readBlock;
    size_t maxFileSize = 0;
    const SelectionFilter filters[] =
@@ -73,11 +66,6 @@ static size_t ReadStreamMaxFileSize(ThisHandle *handle, ReadStream *stream, uint
 
 static size_t ReadStreamFile(ThisHandle *handle, ReadStream *stream, uint16_t fileIdx, void *buffer, size_t maxFileSize)
 {
-   SDeviceDebugAssert(buffer != NULL);
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(stream != NULL);
-   SDeviceDebugAssert(maxFileSize > 0);
-
    Block readBlock;
    const SelectionFilter filters[] =
    {

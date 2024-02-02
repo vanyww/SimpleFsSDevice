@@ -13,6 +13,6 @@
 
 #define IS_VALID_DOUBLE_BIT_FIELD(value) (                                                                             \
 {                                                                                                                      \
-   __auto_type $value = (value);                                                                                       \
-   GET_VALUE_HIGH_HALF($value) == GET_VALUE_LOW_HALF(value);                                                           \
+   __auto_type _value = (value);                                                                                       \
+   GET_VALUE_HIGH_HALF(_value) == GET_VALUE_LOW_HALF(value);                                                           \
 })

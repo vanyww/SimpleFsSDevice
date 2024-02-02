@@ -5,9 +5,6 @@ SELECTION_FILTER_INTERNAL_ALIASES_DECLARATION(ExceptBadAreas);
 
 static SELECTION_FILTER_FUNCTION_DECLARATION(ExceptBadAreas, handle, _parameters, _context, block)
 {
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(_context != NULL);
-
    ThisSelectorFilterContext *context = (ThisSelectorFilterContext *)_context;
 
    if(HasBlockValidType(block) && IsBadAreaTagBlock(block))
@@ -40,11 +37,12 @@ static SELECTION_FILTER_FUNCTION_DECLARATION(ExceptBadAreas, handle, _parameters
 static SELECTION_FILTER_CONTEXT_INIT_FUNCTION_DECLARATION(ExceptBadAreas, handle, _parameters, _context)
 {
    ThisSelectorFilterContext *context = (ThisSelectorFilterContext *)_context;
+
    context->IsBadBlockSkipOngoing = false;
 }
 
 const SelectionFilterInterface SELECTION_FILTER_INTERFACE(ExceptBadAreas) =
 {
-   .FilterFunction = SELECTION_FILTER_FUNCTION(ExceptBadAreas),
+   .FilterFunction      = SELECTION_FILTER_FUNCTION(ExceptBadAreas),
    .ContextInitFunction = SELECTION_FILTER_CONTEXT_INIT_FUNCTION(ExceptBadAreas)
 };

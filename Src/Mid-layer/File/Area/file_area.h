@@ -8,21 +8,16 @@
 
 static inline FileAreaInfo BuildFileAreaInfo(FileAreaTagBlock tagBlock)
 {
-   SDeviceDebugAssert(IsFileAreaTagBlock(tagBlock));
-
    return (FileAreaInfo)
    {
-      .FileIdx = tagBlock.FileIdx,
-      .FileCrc = tagBlock.FileCrc,
+      .FileIdx  = tagBlock.FileIdx,
+      .FileCrc  = tagBlock.FileCrc,
       .FileSize = ComputeFileAreaFileSize(tagBlock)
    };
 }
 
 static inline FileAreaHandle CreateFileAreaHandle(FileAreaInfo *fileInfo, ReadStream *fileStream)
 {
-   SDeviceDebugAssert(fileInfo != NULL);
-   SDeviceDebugAssert(fileStream != NULL);
-
    FileAreaHandle area = { .AreaInfo = fileInfo, .FileStream = CloneStream(fileStream) };
    SeekStream(&area.FileStream, SEEK_STREAM_ORIGIN_CURRENT, -1);
    return area;
@@ -30,10 +25,6 @@ static inline FileAreaHandle CreateFileAreaHandle(FileAreaInfo *fileInfo, ReadSt
 
 static bool TryReadFileAreaData(ThisHandle *handle, FileAreaHandle *area, void *buffer)
 {
-   SDeviceDebugAssert(buffer != NULL);
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(area != NULL);
-
    Block readBlock;
    const SelectionFilter filters[] = { COMPOSE_SELECTION_FILTER(ExceptBadAreas) };
    BlockSelector selector = CreateBlockSelector(handle, filters, LENGTHOF(filters));

@@ -16,16 +16,9 @@
  * @{
  */
 
-#include "log.h"
-#include "config.h"
 #include "dependensies.h"
-
-#include <stdbool.h>
-
-#if !SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
-   #define SIMPLE_FS_SDEVICE_TABLE_CRC8_INTERNAL_SDEVICE_IDENTIFIER 0
-   #define SIMPLE_FS_SDEVICE_TABLE_CRC16_INTERNAL_SDEVICE_IDENTIFIER 0
-#endif
+#include "config.h"
+#include "log.h"
 
 /* 627b20bc-4ff1-11ee-94db-fa9c802f1f89 */
 #define SIMPLE_FS_SDEVICE_UUID_HIGH 0x627b20bc4ff111ee
@@ -52,8 +45,8 @@
  */
 typedef struct
 {
-   void *Context; /**< Пользовательский контекст. */
-   size_t Size; /**< Размер (в байтах) сектора. */
+   void  *Context; /**< Пользовательский контекст. */
+   size_t Size;    /**< Размер (в байтах) сектора. */
 } SimpleFsSDeviceSector;
 
 /**
@@ -68,7 +61,7 @@ typedef struct
  */
 typedef enum
 {
-   SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY, /**< Недостаток файловой памяти. */
+   SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY,    /**< Недостаток файловой памяти. */
    SIMPLE_FS_SDEVICE_PANIC_BAD_AREA_OVERFLOW /**< Обнаружена слишком большая область "плохих" блоков. */
 } SimpleFsSDevicePanic;
 
@@ -102,10 +95,10 @@ SDEVICE_INIT_DATA_DECLARATION(SimpleFs)
     * @param address Относительный адрес в секторе @p sector, по которому необходимо произвести чтение.
     * @param value Буфер для читаемого значения.
     */
-   void (* ReadUInt64)(SDEVICE_HANDLE(SimpleFs) *handle,
+   void (* ReadUInt64)(SDEVICE_HANDLE(SimpleFs)    *handle,
                        const SimpleFsSDeviceSector *sector,
-                       uintptr_t address,
-                       uint64_t *value);
+                       uintptr_t                    address,
+                       uint64_t                    *value);
 
    /**
     * @brief Функция записи значения типа `uint64_t` в файловую память.
@@ -117,10 +110,10 @@ SDEVICE_INIT_DATA_DECLARATION(SimpleFs)
     * @param address Относительный адрес в секторе @p sector, по которому необходимо произвести запись.
     * @param value Записываемое значение.
     */
-   void (* WriteUInt64)(SDEVICE_HANDLE(SimpleFs) *handle,
+   void (* WriteUInt64)(SDEVICE_HANDLE(SimpleFs)    *handle,
                         const SimpleFsSDeviceSector *sector,
-                        uintptr_t address,
-                        uint64_t value);
+                        uintptr_t                    address,
+                        uint64_t                     value);
 
    /**
     * @brief Функция стирания сектора файловой памяти.
@@ -193,7 +186,7 @@ SDEVICE_INIT_DATA_DECLARATION(SimpleFs)
     * - `true` - `0b0` (`0x00` для байта)
     * - `false` - `0b1` (`0xFF` для байта)
     */
-   bool IsMemoryErasingToZero;
+   bool                  IsMemoryErasingToZero;
 };
 
 SDEVICE_IDENTITY_BLOCK_DECLARATION(SimpleFs);

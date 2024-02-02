@@ -36,24 +36,20 @@ SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFs, init, owner, identifier, context)
    SDeviceAssert(HasSectorValidSize(&_init->Sector$0));
    SDeviceAssert(HasSectorValidSize(&_init->Sector$1));
 
-   ThisHandle *handle = SDeviceMalloc(sizeof(ThisHandle));
-
-   SDeviceAssert(handle != NULL);
-
+   ThisHandle *handle = SDeviceAllocHandle(sizeof(ThisInitData), sizeof(ThisRuntimeData));
    handle->Header = (SDeviceHandleHeader)
    {
-      .Context = context,
-      .OwnerHandle = owner,
+      .Context       = context,
+      .OwnerHandle   = owner,
       .IdentityBlock = &SDEVICE_IDENTITY_BLOCK(SimpleFs),
-      .LatestStatus = SIMPLE_FS_SDEVICE_STATUS_OK,
-      .Identifier = identifier
+      .LatestStatus  = SIMPLE_FS_SDEVICE_STATUS_OK,
+      .Identifier    = identifier
    };
-
-   handle->Init = *_init;
-   handle->Runtime = (ThisRuntimeData)
+   *handle->Init = *_init;
+   *handle->Runtime = (ThisRuntimeData)
    {
-      .Sector$0WriteStream = { .Sector = &handle->Init.Sector$0, .IsInBounds = false },
-      .Sector$1WriteStream = { .Sector = &handle->Init.Sector$1, .IsInBounds = false },
+      .Sector$0WriteStream = { .Sector = &handle->Init->Sector$0, .IsInBounds = false },
+      .Sector$1WriteStream = { .Sector = &handle->Init->Sector$1, .IsInBounds = false },
       .InactiveWriteStream = NULL,
       .ActiveWriteStream = NULL
    };
@@ -73,9 +69,9 @@ SDEVICE_DISPOSE_HANDLE_DECLARATION(SimpleFs, handlePointer)
    ThisHandle **_handlePointer = handlePointer;
    ThisHandle *handle = *_handlePointer;
 
-   SDeviceAssert(handle != NULL);
+   SDeviceAssert(IS_VALID_THIS_HANDLE(handle));
 
-   SDeviceFree(handle);
+   SDeviceFreeHandle(handle);
    *_handlePointer = NULL;
 }
 

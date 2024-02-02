@@ -5,15 +5,11 @@
 
 static inline Block GetEmptyBlock(ThisHandle *handle)
 {
-   SDeviceDebugAssert(handle != NULL);
-
    return (Block){ .AsValue = GetEmptyUInt64MemoryValue(handle) };
 }
 
 static inline Block GetFilledBlock(ThisHandle *handle)
 {
-   SDeviceDebugAssert(handle != NULL);
-
    return (Block){ .AsValue = GetFilledUInt64MemoryValue(handle) };
 }
 
@@ -24,8 +20,6 @@ static inline bool AreBlocksEqual(Block block$0, Block block$1)
 
 static inline bool IsBlockEmpty(ThisHandle *handle, Block block)
 {
-   SDeviceDebugAssert(handle != NULL);
-
    return AreBlocksEqual(GetEmptyBlock(handle), block);
 }
 
@@ -36,8 +30,5 @@ static inline bool HasBlockValidType(Block block)
 
 static inline bool IsBlockOfType(Block block, BlockType type)
 {
-   SDeviceDebugAssert(IS_VALID_DOUBLE_BIT_FIELD(type));
-   SDeviceDebugAssert(HasBlockValidType(block));
-
    return READ_BITS(block.Type, type) != 0;
 }

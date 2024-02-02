@@ -2,10 +2,10 @@
 
 #define IS_VALID_SEEK_STREAM_ORIGIN(value) (                                                                           \
 {                                                                                                                      \
-   __auto_type $value = (value);                                                                                       \
-   $value == SEEK_STREAM_ORIGIN_BEGINNING ||                                                                           \
-   $value == SEEK_STREAM_ORIGIN_ENDING    ||                                                                           \
-   $value == SEEK_STREAM_ORIGIN_CURRENT;                                                                               \
+   __auto_type _value = (value);                                                                                       \
+   _value == SEEK_STREAM_ORIGIN_BEGINNING ||                                                                           \
+   _value == SEEK_STREAM_ORIGIN_ENDING    ||                                                                           \
+   _value == SEEK_STREAM_ORIGIN_CURRENT;                                                                               \
 })
 
 typedef enum

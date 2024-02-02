@@ -26,10 +26,7 @@ static inline uint8_t ComputeFileLastBlockDataSize(size_t fileSize)
 
 static inline size_t ComputeFileSize(uint8_t fileAreaLength, uint8_t fileLastBlockDataSize)
 {
-   SDeviceAssert(fileAreaLength >= 0);
-
-   if (fileAreaLength > 0)
-      return (fileAreaLength - 1) * SIZEOF_MEMBER(FileDataBlock, Data) + fileLastBlockDataSize;
-
-   return 0;
+   return (fileAreaLength > 0) ?
+          (fileAreaLength - 1) * SIZEOF_MEMBER(FileDataBlock, Data) + fileLastBlockDataSize :
+          0;
 }

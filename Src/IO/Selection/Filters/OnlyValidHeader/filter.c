@@ -5,9 +5,6 @@ SELECTION_FILTER_INTERNAL_ALIASES_DECLARATION(OnlyValidHeader);
 
 static SELECTION_FILTER_FUNCTION_DECLARATION(OnlyValidHeader, handle, _parameters, _context, block)
 {
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(IsHeaderBlock(block));
-
    HeaderBlock blockAsHeader = block.AsHeader;
    if(HasHeaderValidSectorState(blockAsHeader) && HasHeaderCompatibleVersion(blockAsHeader))
       return (FilteringResult){ -1, true };
@@ -19,6 +16,6 @@ static SELECTION_FILTER_FUNCTION_DECLARATION(OnlyValidHeader, handle, _parameter
 
 const SelectionFilterInterface SELECTION_FILTER_INTERFACE(OnlyValidHeader) =
 {
-   .FilterFunction = SELECTION_FILTER_FUNCTION(OnlyValidHeader),
+   .FilterFunction      = SELECTION_FILTER_FUNCTION(OnlyValidHeader),
    .ContextInitFunction = NULL
 };

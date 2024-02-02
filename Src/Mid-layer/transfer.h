@@ -7,23 +7,19 @@
 
 typedef struct
 {
-   uint16_t FileIdx;
+   uint16_t    FileIdx;
    const void *Data;
-   size_t Size;
+   size_t      Size;
 } TransferWriteFileInfo;
 
 typedef struct
 {
-   bool DoExclude;
+   bool     DoExclude;
    uint16_t FileIdx;
 } CopyFileExclusion;
 
 static void CopyStreamFiles(ThisHandle *handle, ReadStream *from, WriteStream *to, CopyFileExclusion exclusion)
 {
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(from != NULL);
-   SDeviceDebugAssert(to != NULL);
-
    FileIdsRange idsRange;
    ReadStream idsRangeReadStream = CloneStream(from);
    if(!TryReadStreamFileIdsRange(handle, &idsRangeReadStream, &idsRange))
@@ -78,8 +74,6 @@ static void CopyStreamFiles(ThisHandle *handle, ReadStream *from, WriteStream *t
 
 static void TransferActiveStream(ThisHandle *handle, const TransferWriteFileInfo *fileInfo)
 {
-   SDeviceDebugAssert(handle != NULL);
-
    ReadStream sourceStream = BuildActiveReadStream(handle);
    WriteStream *targetStream = GetInactiveWriteStream(handle);
 
