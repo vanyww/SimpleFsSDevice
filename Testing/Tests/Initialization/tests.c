@@ -14,7 +14,7 @@ TEST_SETUP(InitializationTests)
    PanicMustBeThrown(false);
 }
 
-TEST_TEAR_DOWN(InitializationTests) {}
+TEST_TEAR_DOWN(InitializationTests) { }
 
 TEST(InitializationTests, HandleInitialization)
 {
@@ -24,7 +24,6 @@ TEST(InitializationTests, HandleInitialization)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailHandle(handle);
 }
-
 
 TEST(InitializationTests, InsufficientMemoryInSector)
 {
@@ -39,7 +38,6 @@ TEST(InitializationTests, InsufficientMemoryInSector)
    TEST_FAIL_MESSAGE("Test fail, assert was not called");
 }
 
-
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_ONGOING)
 {
    CREATE_SIMPLE_FS_APPLICATION(48, this);
@@ -53,10 +51,9 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_ONGOING)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailHandle(handle);
 
-   WriteStream *stream = handle->Runtime.ActiveWriteStream;
+   WriteStream *stream = handle->Runtime->ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
-
 
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ERASED)
 {
@@ -71,10 +68,9 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ERASED)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailHandle(handle);
 
-   WriteStream *stream = handle->Runtime.ActiveWriteStream;
+   WriteStream *stream = handle->Runtime->ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
-
 
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_END)
 {
@@ -89,10 +85,9 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_END)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailHandle(handle);
 
-   WriteStream *stream = handle->Runtime.ActiveWriteStream;
+   WriteStream *stream = handle->Runtime->ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
 }
-
 
 TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ACTIVE)
 {
@@ -107,10 +102,9 @@ TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ACTIVE)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailHandle(handle);
 
-   WriteStream *stream = handle->Runtime.ActiveWriteStream;
+   WriteStream *stream = handle->Runtime->ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
-
 
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_ONGOING)
 {
@@ -125,10 +119,9 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_ONGOING)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailHandle(handle);
 
-   WriteStream *stream = handle->Runtime.ActiveWriteStream;
+   WriteStream *stream = handle->Runtime->ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
-
 
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ERASED)
 {
@@ -143,10 +136,9 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ERASED)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailHandle(handle);
 
-   WriteStream *stream = handle->Runtime.ActiveWriteStream;
+   WriteStream *stream = handle->Runtime->ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
-
 
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_END)
 {
@@ -161,10 +153,9 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_END)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailHandle(handle);
 
-   WriteStream *stream = handle->Runtime.ActiveWriteStream;
+   WriteStream *stream = handle->Runtime->ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
-
 
 TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ACTIVE)
 {
@@ -179,10 +170,9 @@ TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ACTIVE)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailHandle(handle);
 
-   WriteStream *stream = handle->Runtime.ActiveWriteStream;
+   WriteStream *stream = handle->Runtime->ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
 }
-
 
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1STATE_TRANSFER_ONGOING)
 {
@@ -197,10 +187,9 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1STATE_TRANSFER_ONGOING)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailHandle(handle);
 
-   WriteStream *stream = handle->Runtime.ActiveWriteStream;
+   WriteStream *stream = handle->Runtime->ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
-
 
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ERASED)
 {
@@ -215,10 +204,9 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ERASED)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailHandle(handle);
 
-   WriteStream *stream = handle->Runtime.ActiveWriteStream;
+   WriteStream *stream = handle->Runtime->ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
-
 
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_TRANSFER_END)
 {
@@ -233,10 +221,9 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_TRANSFER_END)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailHandle(handle);
 
-   WriteStream *stream = handle->Runtime.ActiveWriteStream;
+   WriteStream *stream = handle->Runtime->ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
-
 
 TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ACTIVE)
 {
@@ -251,10 +238,9 @@ TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ACTIVE)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailHandle(handle);
 
-   WriteStream *stream = handle->Runtime.ActiveWriteStream;
+   WriteStream *stream = handle->Runtime->ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
-
 
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_ONGOING)
 {
@@ -269,10 +255,9 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_ONGOING)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailHandle(handle);
 
-   WriteStream *stream = handle->Runtime.ActiveWriteStream;
+   WriteStream *stream = handle->Runtime->ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
 }
-
 
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ERASED)
 {
@@ -287,10 +272,9 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ERASED)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailHandle(handle);
 
-   WriteStream *stream = handle->Runtime.ActiveWriteStream;
+   WriteStream *stream = handle->Runtime->ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
 }
-
 
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_END)
 {
@@ -305,10 +289,9 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_END)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailHandle(handle);
 
-   WriteStream *stream = handle->Runtime.ActiveWriteStream;
+   WriteStream *stream = handle->Runtime->ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
 }
-
 
 TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ACTIVE)
 {
@@ -323,7 +306,7 @@ TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ACTIVE)
          SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
    SetAssertFailHandle(handle);
 
-   WriteStream *stream = handle->Runtime.ActiveWriteStream;
+   WriteStream *stream = handle->Runtime->ActiveWriteStream;
    TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
 }
 
