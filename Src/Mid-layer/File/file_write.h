@@ -20,6 +20,7 @@ static bool TryWriteStreamFile(ThisHandle *handle, WriteStream *stream, uint16_t
          data -= blockDataSize;
 
          FileDataBlock fileDataBlock = BuildFileDataBlock(handle, data, blockDataSize);
+
          if(!TryWriteStreamGoodBlock(handle, stream, fileDataBlock))
             return false;
 

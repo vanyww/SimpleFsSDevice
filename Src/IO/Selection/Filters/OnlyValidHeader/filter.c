@@ -3,9 +3,10 @@
 
 SELECTION_FILTER_INTERNAL_ALIASES_DECLARATION(OnlyValidHeader);
 
-static SELECTION_FILTER_FUNCTION_DECLARATION(OnlyValidHeader, handle, _parameters, _context, block)
+static SELECTION_FILTER_FUNCTION_DECLARATION(OnlyValidHeader, handle, parameters, context, block)
 {
    HeaderBlock blockAsHeader = block.AsHeader;
+
    if(HasHeaderValidSectorState(blockAsHeader) && HasHeaderCompatibleVersion(blockAsHeader))
       return (FilteringResult){ -1, true };
 

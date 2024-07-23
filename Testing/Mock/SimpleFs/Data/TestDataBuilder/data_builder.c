@@ -71,11 +71,11 @@ static void InitializeFileWithFullyFilledDataBlocks(void)
    fileAreaTagBlock[2] = 7;   // last block data size
    uint16_t fileIdx = 0;
    memcpy(&fileAreaTagBlock[3], &fileIdx, sizeof(uint16_t));
-   uint16_t fileCrc = TableCrc16SDeviceCompute(SimpleFsSDeviceInternalCrc16Handle, fileData, fileSize);
+   uint16_t fileCrc = TableCrc16SDeviceCompute($SimpleFsSDeviceCrc16Handle, fileData, fileSize);
    memcpy(&fileAreaTagBlock[5], &fileCrc, sizeof(uint16_t));
    fileAreaTagBlock[7] = BLOCK_TYPE_FILE_AREA_TAG;
    fileAreaTagBlock[0] =
-      TableCrc8SDeviceCompute(SimpleFsSDeviceInternalCrc8Handle, &fileAreaTagBlock[1], sizeof(Block) - sizeof(uint8_t));
+      TableCrc8SDeviceCompute($SimpleFsSDeviceCrc8Handle, &fileAreaTagBlock[1], sizeof(Block) - sizeof(uint8_t));
    memcpy(&file.FileImageData[2*sizeof(Block)], &fileAreaTagBlock, sizeof(Block));
 
    Files[FILE_WITH_FULLY_FILLED_DATA_BLOCKS] = file;
@@ -117,11 +117,11 @@ static void InitializeFileWithIncompleteFilledLastDataBlock(void)
    fileAreaTagBlock[2] = 3;   // last block data size
    uint16_t fileIdx = 1;
    memcpy(&fileAreaTagBlock[3], &fileIdx, sizeof(uint16_t));
-   uint16_t fileCrc = TableCrc16SDeviceCompute(SimpleFsSDeviceInternalCrc16Handle, fileData, fileSize);
+   uint16_t fileCrc = TableCrc16SDeviceCompute($SimpleFsSDeviceCrc16Handle, fileData, fileSize);
    memcpy(&fileAreaTagBlock[5], &fileCrc, sizeof(uint16_t));
    fileAreaTagBlock[7] = BLOCK_TYPE_FILE_AREA_TAG;
    fileAreaTagBlock[0] =
-      TableCrc8SDeviceCompute(SimpleFsSDeviceInternalCrc8Handle, &fileAreaTagBlock[1], sizeof(Block) - sizeof(uint8_t));
+      TableCrc8SDeviceCompute($SimpleFsSDeviceCrc8Handle, &fileAreaTagBlock[1], sizeof(Block) - sizeof(uint8_t));
    memcpy(&file.FileImageData[3*sizeof(Block)], &fileAreaTagBlock, sizeof(Block));
 
    Files[FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK] = file;

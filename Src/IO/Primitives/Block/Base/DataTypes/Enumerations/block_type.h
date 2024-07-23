@@ -6,29 +6,29 @@
 
 #define IS_VALID_BLOCK_TYPE(type) (                                                                                    \
 {                                                                                                                      \
-   __auto_type _type = (type);                                                                                         \
+   __auto_type $$type = (type);                                                                                        \
                                                                                                                        \
-   _type == BLOCK_TYPE_HEADER        ||                                                                                \
-   _type == BLOCK_TYPE_FILE_AREA_TAG ||                                                                                \
-   _type == BLOCK_TYPE_FILE_DATA     ||                                                                                \
-   _type == BLOCK_TYPE_BAD_AREA_TAG;                                                                                   \
+   $$type == BLOCK_TYPE_HEADER        ||                                                                               \
+   $$type == BLOCK_TYPE_FILE_AREA_TAG ||                                                                               \
+   $$type == BLOCK_TYPE_FILE_DATA     ||                                                                               \
+   $$type == BLOCK_TYPE_BAD_AREA_TAG;                                                                                  \
 })
 
 #define IS_VALID_SERVICE_BLOCK_TYPE(type) (                                                                            \
 {                                                                                                                      \
-   __auto_type _type = (type);                                                                                         \
+   __auto_type $$type = (type);                                                                                        \
                                                                                                                        \
-   _type == BLOCK_TYPE_HEADER        ||                                                                                \
-   _type == BLOCK_TYPE_FILE_AREA_TAG ||                                                                                \
-   _type == BLOCK_TYPE_BAD_AREA_TAG;                                                                                   \
+   $$type == BLOCK_TYPE_HEADER        ||                                                                               \
+   $$type == BLOCK_TYPE_FILE_AREA_TAG ||                                                                               \
+   $$type == BLOCK_TYPE_BAD_AREA_TAG;                                                                                  \
 })
 
 #define IS_VALID_AREA_TAG_BLOCK_TYPE(type) (                                                                           \
 {                                                                                                                      \
-   __auto_type _type = (type);                                                                                         \
+   __auto_type $$type = (type);                                                                                        \
                                                                                                                        \
-   _type == BLOCK_TYPE_FILE_AREA_TAG ||                                                                                \
-   _type == BLOCK_TYPE_BAD_AREA_TAG;                                                                                   \
+   $$type == BLOCK_TYPE_FILE_AREA_TAG ||                                                                               \
+   $$type == BLOCK_TYPE_BAD_AREA_TAG;                                                                                  \
 })
 
 typedef enum __attribute__((packed))

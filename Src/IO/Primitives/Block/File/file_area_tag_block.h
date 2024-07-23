@@ -4,10 +4,11 @@
 #include "Common/size.h"
 #include "Common/crc.h"
 
-static inline FileAreaTagBlock BuildFileAreaTagBlock(ThisHandle *handle,
-                                                     uint16_t    fileIdx,
-                                                     const void *data,
-                                                     size_t      size)
+static inline FileAreaTagBlock BuildFileAreaTagBlock(
+      ThisHandle *handle,
+      uint16_t    fileIdx,
+      const void *data,
+      size_t      size)
 {
    FileAreaTagBlock block =
    {

@@ -4,12 +4,12 @@
 
 static inline uint8_t GetEmptyUInt8MemoryValue(ThisHandle *handle)
 {
-   return handle->Init->IsMemoryErasingToZero ? 0 : UINT8_MAX;
+   return (handle->Init->IsMemoryErasingToZero) ? 0 : UINT8_MAX;
 }
 
 static inline uint64_t GetEmptyUInt64MemoryValue(ThisHandle *handle)
 {
-   return handle->Init->IsMemoryErasingToZero ? 0ULL : UINT64_MAX;
+   return (handle->Init->IsMemoryErasingToZero) ? 0ULL : UINT64_MAX;
 }
 
 static inline uint8_t GetFilledUInt8MemoryValue(ThisHandle *handle)

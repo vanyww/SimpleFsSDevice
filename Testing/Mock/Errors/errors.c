@@ -36,7 +36,7 @@ void SetAssertFailHandle(SDEVICE_HANDLE(SimpleFs) *handle)
 void SDeviceProcessAssertFail(char *file, int line)
 {
    if(AssertFailhandle != NULL)
-         SDeviceFree(AssertFailhandle);
+         SDeviceFreeMemory(AssertFailhandle);
 
    if(ProcessAssertFailMustBeCalled)
    {
@@ -55,7 +55,7 @@ void SDeviceProcessAssertFail(char *file, int line)
 void SDeviceProcessPanic(const void *_handle)
 {
    if(AssertFailhandle != NULL)
-         SDeviceFree(AssertFailhandle);
+         SDeviceFreeMemory(AssertFailhandle);
 
    SDeviceHandleHeader *header = (SDeviceHandleHeader *)(_handle);
    SimpleFsSDevicePanic panic = header->LatestStatus;

@@ -44,7 +44,7 @@ typedef struct __attribute__((packed))
 
 /* abstract blocks ****************************************************************************************************/
 
-typedef union __attribute__((transparent_union))
+typedef union
 {
    struct __attribute__((packed))
    {
@@ -55,9 +55,9 @@ typedef union __attribute__((transparent_union))
 
    FileAreaTagBlock AsFileAreaTag;
    BadAreaTagBlock  AsBadAreaTag;
-} AreaTagBlock;
+} __attribute__((transparent_union)) AreaTagBlock;
 
-typedef union __attribute__((transparent_union))
+typedef union
 {
    struct __attribute__((packed))
    {
@@ -70,9 +70,9 @@ typedef union __attribute__((transparent_union))
    HeaderBlock      AsHeader;
 
    AreaTagBlock     AsAreaTag;
-} ServiceBlock;
+} __attribute__((transparent_union)) ServiceBlock;
 
-typedef union __attribute__((transparent_union))
+typedef union
 {
    struct __attribute__((packed))
    {
@@ -89,7 +89,7 @@ typedef union __attribute__((transparent_union))
    ServiceBlock     AsService;
 
    uint64_t         AsValue;
-} Block;
+} __attribute__((transparent_union)) Block;
 
 /**********************************************************************************************************************/
 

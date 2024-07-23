@@ -3,7 +3,7 @@
 
 SELECTION_FILTER_INTERNAL_ALIASES_DECLARATION(ExceptEmpty);
 
-static SELECTION_FILTER_FUNCTION_DECLARATION(ExceptEmpty, handle, _parameters, _context, block)
+static SELECTION_FILTER_FUNCTION_DECLARATION(ExceptEmpty, handle, parameters, context, block)
 {
    return (FilteringResult){ -1, !IsBlockEmpty(handle, block) };
 }

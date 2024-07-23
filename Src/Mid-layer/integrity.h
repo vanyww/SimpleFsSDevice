@@ -6,7 +6,7 @@ static size_t ComputeEmptyStreamBadBlocksCount(ThisHandle *handle, WriteStream *
 {
    /* "empty" stream sector must have one header block written, which can also cause single bad block tag to appear */
    size_t writtenBlocksCount = GetStreamToStartLength(stream) - 1;
-   size_t badBlocksCount = (writtenBlocksCount <= 1) ? 0 : writtenBlocksCount - 2;
+   size_t badBlocksCount     = (writtenBlocksCount <= 1) ? 0 : writtenBlocksCount - 2;
 
    while(stream->IsInBounds)
    {

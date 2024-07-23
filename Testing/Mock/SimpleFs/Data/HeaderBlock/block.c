@@ -15,7 +15,7 @@ Block CreateHeaderBlock(SectorState state, bool isMemoryErasingToZero)
 
    uint8_t *blockdata = ((ServiceBlock)block).BlockData;
    size_t size = sizeof(((ServiceBlock)block).BlockData);
-   block.BlockCrc = TableCrc8SDeviceCompute(SimpleFsSDeviceInternalCrc8Handle, blockdata, size);
+   block.BlockCrc = TableCrc8SDeviceCompute($SimpleFsSDeviceCrc8Handle, blockdata, size);
 
    return (Block)block;
 }

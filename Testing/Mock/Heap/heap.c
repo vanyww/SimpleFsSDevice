@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 
-void* SDeviceMalloc(size_t size)
+void* SDeviceAllocateMemory(size_t size)
 {
    void *memory = malloc(size);
 
@@ -12,7 +12,7 @@ void* SDeviceMalloc(size_t size)
    return memory;
 }
 
-void SDeviceFree(void *_handle)
+void SDeviceFreeMemory(void *_handle)
 {
    free(_handle);
 }

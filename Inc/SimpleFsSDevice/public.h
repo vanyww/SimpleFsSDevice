@@ -16,13 +16,13 @@
  * @{
  */
 
-#include "dependensies.h"
 #include "config.h"
+#include "dependensies.h"
 #include "log.h"
 
-/* 627b20bc-4ff1-11ee-94db-fa9c802f1f89 */
-#define SIMPLE_FS_SDEVICE_UUID_HIGH 0x627b20bc4ff111ee
-#define SIMPLE_FS_SDEVICE_UUID_LOW  0x94dbfa9c802f1f89
+/* 627B20BC-4FF1-11EE-94DB-FA9C802F1F89 */
+#define SIMPLE_FS_SDEVICE_UUID_HIGH 0x627B20BC4FF111EE
+#define SIMPLE_FS_SDEVICE_UUID_LOW  0x94DBFA9C802F1F89
 
 /**
  * @brief Старшая компонента версии модуля файловой системы SimpleFsSDevice.
@@ -95,10 +95,11 @@ SDEVICE_INIT_DATA_DECLARATION(SimpleFs)
     * @param address Относительный адрес в секторе @p sector, по которому необходимо произвести чтение.
     * @param value Буфер для читаемого значения.
     */
-   void (* ReadUInt64)(SDEVICE_HANDLE(SimpleFs)    *handle,
-                       const SimpleFsSDeviceSector *sector,
-                       uintptr_t                    address,
-                       uint64_t                    *value);
+   void (* ReadUInt64)(
+         SDEVICE_HANDLE(SimpleFs)    *handle,
+         const SimpleFsSDeviceSector *sector,
+         uintptr_t                    address,
+         uint64_t                    *value);
 
    /**
     * @brief Функция записи значения типа `uint64_t` в файловую память.
@@ -110,10 +111,11 @@ SDEVICE_INIT_DATA_DECLARATION(SimpleFs)
     * @param address Относительный адрес в секторе @p sector, по которому необходимо произвести запись.
     * @param value Записываемое значение.
     */
-   void (* WriteUInt64)(SDEVICE_HANDLE(SimpleFs)    *handle,
-                        const SimpleFsSDeviceSector *sector,
-                        uintptr_t                    address,
-                        uint64_t                     value);
+   void (* WriteUInt64)(
+         SDEVICE_HANDLE(SimpleFs)    *handle,
+         const SimpleFsSDeviceSector *sector,
+         uintptr_t                    address,
+         uint64_t                     value);
 
    /**
     * @brief Функция стирания сектора файловой памяти.
@@ -222,7 +224,7 @@ SDEVICE_PROPERTY_TYPE_DECLARATION(SimpleFs, TotalBadBlocksCount, size_t);
  * @param value Буфер для читаемого значения типа @ref _SimpleFsSDeviceTotalBadBlocksCountPropertyType.
  * @returns Результат (состояние) операции чтения.
  */
-SDEVICE_GET_PROPERTY_DECLARATION(SimpleFs, TotalBadBlocksCount, handle, value);
+SDEVICE_GET_SIMPLE_PROPERTY_DECLARATION(SimpleFs, TotalBadBlocksCount, handle, value);
 
 /**
  * @brief Функция форматирования файловой памяти.

@@ -25,9 +25,10 @@ static inline bool TryWriteStreamBlock(ThisHandle *handle, WriteStream *stream, 
 static bool TryWriteStreamGoodBlock(ThisHandle *handle, WriteStream *stream, Block block)
 {
    uint8_t badAreaBadBlocksCount = 0;
+
    while(stream->IsInBounds)
    {
-      if(badAreaBadBlocksCount == 0)
+      if(!badAreaBadBlocksCount)
       {
          if(TryWriteStreamBlock(handle, stream, block))
             return true;

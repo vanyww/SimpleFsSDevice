@@ -1,5 +1,7 @@
 #pragma once
 
+#include "SDeviceCore/errors.h"
+
 /**
  * @defgroup error_processing Обработка ошибок
  * @brief Идентификаторы, использующиеся при обработке ошибок и логировании состояний дескрипторов модуля.

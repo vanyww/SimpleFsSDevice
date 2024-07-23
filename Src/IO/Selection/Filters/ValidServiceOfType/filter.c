@@ -3,9 +3,9 @@
 
 SELECTION_FILTER_INTERNAL_ALIASES_DECLARATION(ValidServiceOfType);
 
-static SELECTION_FILTER_FUNCTION_DECLARATION(ValidServiceOfType, handle, _parameters, _context, block)
+static SELECTION_FILTER_FUNCTION_DECLARATION(ValidServiceOfType, handle, parameters, context, block)
 {
-   const ThisSelectorFilterParameters *parameters = (ThisSelectorFilterParameters *)_parameters;
+   const ThisSelectorFilterParameters *_parameters = (ThisSelectorFilterParameters *)parameters;
 
    if(HasBlockValidType(block))
    {
@@ -13,10 +13,11 @@ static SELECTION_FILTER_FUNCTION_DECLARATION(ValidServiceOfType, handle, _parame
          return (FilteringResult){ -1, false };
 
       ServiceBlock blockAsService = block.AsService;
+
       if(HasServiceBlockValidCrc(handle, blockAsService))
       {
-         intptr_t nextOffset = IsAreaTagBlock(block) ? -(block.AsAreaTag.AreaLength + 1) : -1;
-         return (FilteringResult){ nextOffset, IsBlockOfType(block, parameters->Type) };
+         intptr_t nextOffset = (IsAreaTagBlock(block)) ? -(block.AsAreaTag.AreaLength + 1) : -1;
+         return (FilteringResult){ nextOffset, IsBlockOfType(block, _parameters->Type) };
       }
    }
 

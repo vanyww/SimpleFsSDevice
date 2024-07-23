@@ -41,6 +41,7 @@ static bool TryReadFileAreaData(ThisHandle *handle, FileAreaHandle *area, void *
       if(leftToReadSize <= SIZEOF_MEMBER(FileDataBlock, Data))
       {
          memcpy(writeBuffer, blockAsFileData.Data, leftToReadSize);
+
          return ComputeFileDataCrc(handle, buffer, area->AreaInfo->FileSize) == area->AreaInfo->FileCrc;
       }
 

@@ -21,7 +21,7 @@ static BlockSelector CreateBlockSelector(ThisHandle *handle, const SelectionFilt
    {
       const SelectionFilter *filter = &filters[i];
 
-      if(filter->Interface->ContextInitFunction != NULL)
+      if(filter->Interface->ContextInitFunction)
          filter->Interface->ContextInitFunction(handle, filter->Parameters, filter->Context);
    }
 

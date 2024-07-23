@@ -15,6 +15,7 @@ static bool TryReadStreamFileIdsRange(ThisHandle *handle, ReadStream *stream, Fi
    Block readBlock;
    FileIdsRange idsRange = { .Lowest = 1, .Highest = 0 };
    const SelectionFilter filters[] = { COMPOSE_SELECTION_FILTER(ValidServiceOfType, BLOCK_TYPE_FILE_AREA_TAG) };
+
    BlockSelector selector = CreateBlockSelector(handle, filters, LENGTHOF(filters));
 
    while(TrySelectNextStreamBlock(handle, stream, &selector, &readBlock))
@@ -48,13 +49,14 @@ static size_t ReadStreamMaxFileSize(ThisHandle *handle, ReadStream *stream, uint
       COMPOSE_SELECTION_FILTER(ValidServiceOfType, BLOCK_TYPE_FILE_AREA_TAG),
       COMPOSE_SELECTION_FILTER(FileAreaTagWithFileId, fileIdx),
    };
+
    BlockSelector selector = CreateBlockSelector(handle, filters, LENGTHOF(filters));
 
    while(TrySelectNextStreamBlock(handle, stream, &selector, &readBlock))
    {
       size_t currentFileSize = ComputeFileAreaFileSize(readBlock.AsFileAreaTag);
 
-      if(currentFileSize == 0)
+      if(!currentFileSize)
          break;
 
       if(currentFileSize > maxFileSize)
@@ -72,13 +74,14 @@ static size_t ReadStreamFile(ThisHandle *handle, ReadStream *stream, uint16_t fi
       COMPOSE_SELECTION_FILTER(ValidServiceOfType, BLOCK_TYPE_FILE_AREA_TAG),
       COMPOSE_SELECTION_FILTER(FileAreaTagWithFileId, fileIdx),
    };
+
    BlockSelector selector = CreateBlockSelector(handle, filters, LENGTHOF(filters));
 
    while(TrySelectNextStreamBlock(handle, stream, &selector, &readBlock))
    {
       FileAreaInfo fileInfo = BuildFileAreaInfo(readBlock.AsFileAreaTag);
 
-      if(fileInfo.FileSize == 0 || fileInfo.FileSize > maxFileSize)
+      if(!fileInfo.FileSize || fileInfo.FileSize > maxFileSize)
          break;
 
       FileAreaHandle areaHandle = CreateFileAreaHandle(&fileInfo, stream);

@@ -30,5 +30,5 @@ static inline bool HasBlockValidType(Block block)
 
 static inline bool IsBlockOfType(Block block, BlockType type)
 {
-   return READ_BITS(block.Type, type) != 0;
+   return READ_BITS(block.Type, type);
 }
