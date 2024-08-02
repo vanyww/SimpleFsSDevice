@@ -23,8 +23,8 @@ SDEVICE_RUNTIME_DATA_DECLARATION(SimpleFs)
    WriteStream *ActiveWriteStream;
    WriteStream *InactiveWriteStream;
 
-   WriteStream  Sector$0WriteStream;
-   WriteStream  Sector$1WriteStream;
+   WriteStream  MainSectorWriteStream;
+   WriteStream  AuxiliarySectorWriteStream;
 };
 
 SDEVICE_HANDLE_DECLARATION(SimpleFs);

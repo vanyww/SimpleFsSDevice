@@ -34,28 +34,31 @@ static SectorState PreprocessInitialStreamState(ThisHandle *handle, Stream *stre
 
 static void ProcessInitialMemoryState(ThisHandle *handle)
 {
-   SectorState sector$0State = PreprocessInitialStreamState(handle, &handle->Runtime->Sector$0WriteStream);
-   SectorState sector$1State = PreprocessInitialStreamState(handle, &handle->Runtime->Sector$1WriteStream);
+   SectorState mainSectorState =
+         PreprocessInitialStreamState(handle, &handle->Runtime->MainSectorWriteStream);
 
-   switch(sector$0State)
+   SectorState auxiliarySectorState =
+         PreprocessInitialStreamState(handle, &handle->Runtime->AuxiliarySectorWriteStream);
+
+   switch(mainSectorState)
    {
       case SECTOR_STATE_ACTIVE:
-         switch(sector$1State)
+         switch(auxiliarySectorState)
          {
             case SECTOR_STATE_TRANSFER_ONGOING:
-               FormatStreamSector(handle, &handle->Runtime->Sector$1WriteStream);
+               FormatStreamSector(handle, &handle->Runtime->AuxiliarySectorWriteStream);
 
                /* fall through */
             case SECTOR_STATE_ERASED:
-               SetActiveWriteStream(handle, &handle->Runtime->Sector$0WriteStream);
-               SetInactiveWriteStream(handle, &handle->Runtime->Sector$1WriteStream);
+               SetActiveWriteStream(handle, &handle->Runtime->MainSectorWriteStream);
+               SetInactiveWriteStream(handle, &handle->Runtime->AuxiliarySectorWriteStream);
                return;
 
             case SECTOR_STATE_TRANSFER_END:
-               FormatStreamSector(handle, &handle->Runtime->Sector$0WriteStream);
-               WriteStreamSectorState(handle, &handle->Runtime->Sector$1WriteStream, SECTOR_STATE_ACTIVE);
-               SetActiveWriteStream(handle, &handle->Runtime->Sector$1WriteStream);
-               SetInactiveWriteStream(handle, &handle->Runtime->Sector$0WriteStream);
+               FormatStreamSector(handle, &handle->Runtime->MainSectorWriteStream);
+               WriteStreamSectorState(handle, &handle->Runtime->AuxiliarySectorWriteStream, SECTOR_STATE_ACTIVE);
+               SetActiveWriteStream(handle, &handle->Runtime->AuxiliarySectorWriteStream);
+               SetInactiveWriteStream(handle, &handle->Runtime->MainSectorWriteStream);
                return;
 
             default:
@@ -64,12 +67,12 @@ static void ProcessInitialMemoryState(ThisHandle *handle)
          break;
 
       case SECTOR_STATE_TRANSFER_ONGOING:
-         switch(sector$1State)
+         switch(auxiliarySectorState)
          {
             case SECTOR_STATE_ACTIVE:
-               FormatStreamSector(handle, &handle->Runtime->Sector$0WriteStream);
-               SetActiveWriteStream(handle, &handle->Runtime->Sector$1WriteStream);
-               SetInactiveWriteStream(handle, &handle->Runtime->Sector$0WriteStream);
+               FormatStreamSector(handle, &handle->Runtime->MainSectorWriteStream);
+               SetActiveWriteStream(handle, &handle->Runtime->AuxiliarySectorWriteStream);
+               SetInactiveWriteStream(handle, &handle->Runtime->MainSectorWriteStream);
                return;
 
             default:
@@ -78,16 +81,16 @@ static void ProcessInitialMemoryState(ThisHandle *handle)
          break;
 
       case SECTOR_STATE_TRANSFER_END:
-         switch(sector$1State)
+         switch(auxiliarySectorState)
          {
             case SECTOR_STATE_ACTIVE:
-               FormatStreamSector(handle, &handle->Runtime->Sector$1WriteStream);
+               FormatStreamSector(handle, &handle->Runtime->AuxiliarySectorWriteStream);
 
                /* fall through */
             case SECTOR_STATE_ERASED:
-               WriteStreamSectorState(handle, &handle->Runtime->Sector$0WriteStream, SECTOR_STATE_ACTIVE);
-               SetActiveWriteStream(handle, &handle->Runtime->Sector$0WriteStream);
-               SetInactiveWriteStream(handle, &handle->Runtime->Sector$1WriteStream);
+               WriteStreamSectorState(handle, &handle->Runtime->MainSectorWriteStream, SECTOR_STATE_ACTIVE);
+               SetActiveWriteStream(handle, &handle->Runtime->MainSectorWriteStream);
+               SetInactiveWriteStream(handle, &handle->Runtime->AuxiliarySectorWriteStream);
                return;
 
             default:
@@ -96,18 +99,18 @@ static void ProcessInitialMemoryState(ThisHandle *handle)
          break;
 
       case SECTOR_STATE_ERASED:
-         switch(sector$1State)
+         switch(auxiliarySectorState)
          {
             case SECTOR_STATE_TRANSFER_END:
 
                /* fall through */
             case SECTOR_STATE_ERASED:
-               WriteStreamSectorState(handle, &handle->Runtime->Sector$1WriteStream, SECTOR_STATE_ACTIVE);
+               WriteStreamSectorState(handle, &handle->Runtime->AuxiliarySectorWriteStream, SECTOR_STATE_ACTIVE);
 
                /* fall through */
             case SECTOR_STATE_ACTIVE:
-               SetActiveWriteStream(handle, &handle->Runtime->Sector$1WriteStream);
-               SetInactiveWriteStream(handle, &handle->Runtime->Sector$0WriteStream);
+               SetActiveWriteStream(handle, &handle->Runtime->AuxiliarySectorWriteStream);
+               SetInactiveWriteStream(handle, &handle->Runtime->MainSectorWriteStream);
                return;
 
             default:

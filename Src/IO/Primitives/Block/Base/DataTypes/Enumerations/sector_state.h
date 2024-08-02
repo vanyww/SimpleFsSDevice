@@ -6,12 +6,12 @@
 
 #define IS_VALID_SECTOR_STATE(state) (                                                                                 \
 {                                                                                                                      \
-   __auto_type $$state = (state);                                                                                      \
+   __auto_type _mState = (state);                                                                                      \
                                                                                                                        \
-   $$state == SECTOR_STATE_ACTIVE           ||                                                                         \
-   $$state == SECTOR_STATE_TRANSFER_ONGOING ||                                                                         \
-   $$state == SECTOR_STATE_TRANSFER_END     ||                                                                         \
-   $$state == SECTOR_STATE_ERASED;                                                                                     \
+   _mState == SECTOR_STATE_ACTIVE           ||                                                                         \
+   _mState == SECTOR_STATE_TRANSFER_ONGOING ||                                                                         \
+   _mState == SECTOR_STATE_TRANSFER_END     ||                                                                         \
+   _mState == SECTOR_STATE_ERASED;                                                                                     \
 })
 
 typedef enum __attribute__((packed))

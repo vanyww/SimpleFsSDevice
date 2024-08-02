@@ -20,11 +20,11 @@ static void FormatMemory(ThisHandle *handle)
 
 static void ForceReformatMemory(ThisHandle *handle)
 {
-   FormatStreamSector(handle, &handle->Runtime->Sector$0WriteStream);
-   FormatStreamSector(handle, &handle->Runtime->Sector$1WriteStream);
+   FormatStreamSector(handle, &handle->Runtime->MainSectorWriteStream);
+   FormatStreamSector(handle, &handle->Runtime->AuxiliarySectorWriteStream);
 
-   WriteStreamSectorState(handle, &handle->Runtime->Sector$0WriteStream, SECTOR_STATE_ACTIVE);
+   WriteStreamSectorState(handle, &handle->Runtime->MainSectorWriteStream, SECTOR_STATE_ACTIVE);
 
-   SetActiveWriteStream(handle, &handle->Runtime->Sector$0WriteStream);
-   SetInactiveWriteStream(handle, &handle->Runtime->Sector$1WriteStream);
+   SetActiveWriteStream(handle, &handle->Runtime->MainSectorWriteStream);
+   SetInactiveWriteStream(handle, &handle->Runtime->AuxiliarySectorWriteStream);
 }

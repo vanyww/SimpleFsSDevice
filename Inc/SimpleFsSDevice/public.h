@@ -173,14 +173,14 @@ SDEVICE_INIT_DATA_DECLARATION(SimpleFs)
 #endif
 
    /**
-    * @brief Нулевой сектор файловой памяти.
+    * @brief Главный (нулевой) сектор файловой памяти.
     */
-   SimpleFsSDeviceSector Sector$0;
+   SimpleFsSDeviceSector MainSector;
 
    /**
-    * @brief Первый сектор файловой памяти.
+    * @brief Вспомогательный (первый) сектор файловой памяти.
     */
-   SimpleFsSDeviceSector Sector$1;
+   SimpleFsSDeviceSector AuxiliarySector;
 
    /**
     * @brief Флаг типа файловой памяти.

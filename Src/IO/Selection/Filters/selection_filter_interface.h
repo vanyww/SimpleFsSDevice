@@ -20,7 +20,7 @@ typedef struct
    (* pointer_name)                                                                                                    \
    SELECTION_FILTER_FUNCTION_ARGUMENTS(,,,)
 #define SELECTION_FILTER_FUNCTION(filter_name)                                                                         \
-   $SimpleFsSDeviceInternal##filter_name##SelectionFilterFunction
+   SimpleFsSDeviceInternal##filter_name##SelectionFilterFunction
 #define SELECTION_FILTER_FUNCTION_DECLARATION(filter_name, handle_name, parameters_name, context_name, block_name)     \
    SELECTION_FILTER_FUNCTION_RETURN_VALUE                                                                              \
    SELECTION_FILTER_FUNCTION(filter_name)                                                                              \
@@ -36,7 +36,7 @@ typedef struct
    (* pointer_name)                                                                                                    \
    SELECTION_FILTER_CONTEXT_INIT_FUNCTION_ARGUMENTS(,,)
 #define SELECTION_FILTER_CONTEXT_INIT_FUNCTION(filter_name)                                                            \
-   $SimpleFsSDeviceInternal##filter_name##SelectionFilterContextInitFunction
+   SimpleFsSDeviceInternal##filter_name##SelectionFilterContextInitFunction
 #define SELECTION_FILTER_CONTEXT_INIT_FUNCTION_DECLARATION(filter_name, handle_name, parameters_name, context_name)    \
    SELECTION_FILTER_CONTEXT_INIT_FUNCTION_RETURN_VALUE                                                                 \
    SELECTION_FILTER_CONTEXT_INIT_FUNCTION(filter_name)                                                                 \
@@ -49,15 +49,15 @@ typedef struct
 } SelectionFilterInterface;
 
 #define SELECTION_FILTER_INTERFACE(filter_name)                                                                        \
-   $SimpleFsSDeviceInternal##filter_name##SelectionFilterInterface
+   SimpleFsSDeviceInternal##filter_name##SelectionFilterInterface
 
 #define SELECTION_FILTER_CONTEXT(filter_name)                                                                          \
-   $SimpleFsSDeviceInternal##filter_name##SelectionFilterContext
+   SimpleFsSDeviceInternal##filter_name##SelectionFilterContext
 #define SELECTION_FILTER_CONTEXT_FORWARD_DECLARATION(filter_name)                                                      \
    typedef struct SELECTION_FILTER_CONTEXT(filter_name) SELECTION_FILTER_CONTEXT(filter_name)
 
 #define SELECTION_FILTER_PARAMETERS(filter_name)                                                                       \
-   $SimpleFsSDeviceInternal##filter_name##SelectionFilterParameters
+   SimpleFsSDeviceInternal##filter_name##SelectionFilterParameters
 #define SELECTION_FILTER_PARAMETERS_FORWARD_DECLARATION(filter_name)                                                   \
    typedef struct SELECTION_FILTER_PARAMETERS(filter_name) SELECTION_FILTER_PARAMETERS(filter_name)
 
