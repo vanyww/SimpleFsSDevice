@@ -34,7 +34,7 @@ SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFs, init, owner, identifier, context)
    SDeviceAssert(_init->ComputeCrc16);
 #endif
 
-   SDeviceAssert(HasSectorValidSize(&_init->MainSector));
+   SDeviceAssert(HasSectorValidSize(&_init->PrimarySector));
    SDeviceAssert(HasSectorValidSize(&_init->AuxiliarySector));
 
    ThisHandle *instance = SDeviceAllocateHandle(sizeof(*instance->Init), sizeof(*instance->Runtime));
@@ -52,7 +52,7 @@ SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFs, init, owner, identifier, context)
 
    *instance->Runtime = (ThisRuntimeData)
    {
-      .MainSectorWriteStream      = { .Sector = &instance->Init->MainSector,      .IsInBounds = false },
+      .MainSectorWriteStream      = { .Sector = &instance->Init->PrimarySector,   .IsInBounds = false },
       .AuxiliarySectorWriteStream = { .Sector = &instance->Init->AuxiliarySector, .IsInBounds = false },
       .InactiveWriteStream        = NULL,
       .ActiveWriteStream          = NULL
