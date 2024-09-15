@@ -27,8 +27,8 @@
       .ReadUInt64 = ReadUInt64,                                                                                        \
       .WriteUInt64 = WriteUInt64,                                                                                      \
       .EraseSector = EraseSectorCallback,                                                                              \
-      .Sector$0 = SECTOR$0(name),                                                                                      \
-      .Sector$1 = SECTOR$1(name),                                                                                      \
+      .PrimarySector = SECTOR$0(name),                                                                                 \
+      .AuxiliarySector = SECTOR$1(name),                                                                               \
       .IsMemoryErasingToZero = true                                                                                    \
    };
 
