@@ -4,12 +4,9 @@
 
 static size_t ComputeEmptyStreamBadBlocksCount(ThisHandle *handle, WriteStream *stream)
 {
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(stream != NULL);
-
    /* "empty" stream sector must have one header block written, which can also cause single bad block tag to appear */
    size_t writtenBlocksCount = GetStreamToStartLength(stream) - 1;
-   size_t badBlocksCount = (writtenBlocksCount <= 1) ? 0 : writtenBlocksCount - 2;
+   size_t badBlocksCount     = (writtenBlocksCount <= 1) ? 0 : writtenBlocksCount - 2;
 
    while(stream->IsInBounds)
    {
@@ -24,8 +21,6 @@ static size_t ComputeEmptyStreamBadBlocksCount(ThisHandle *handle, WriteStream *
 
 static size_t ComputeTotalBadBlocksCount(ThisHandle *handle)
 {
-   SDeviceDebugAssert(handle != NULL);
-
    size_t totalBadBlocksCount = 0;
 
    totalBadBlocksCount += ComputeEmptyStreamBadBlocksCount(handle, GetInactiveWriteStream(handle));

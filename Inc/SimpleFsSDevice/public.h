@@ -16,53 +16,18 @@
  * @{
  */
 
-#include "SDeviceCore/core.h"
+#include "config.h"
+#include "dependensies.h"
+#include "log.h"
 
-#include <stdbool.h>
-
-#if (SDEVICE_CORE_VERSION_MAJOR != 7) || (SDEVICE_CORE_VERSION_MINOR < 0)
-#error SDevice core version is incorrect.
-#endif
-
-#ifdef DOXYGEN
-
-/**
- * @brief **[Опция]** Флаг использования внешних функций для расчета CRC8 и CRC16.
- * @details Определение флага добавляет соответствующие функции обратного вызова в параметры инициализации модуля:
- * - @ref _SimpleFsSDeviceInitData::UpdateCrc8
- * - @ref _SimpleFsSDeviceInitData::ComputeCrc8
- * - @ref _SimpleFsSDeviceInitData::UpdateCrc16
- * - @ref _SimpleFsSDeviceInitData::ComputeCrc16
- *
- * @note Может быть объявлен пользователем.
- */
-#define SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC
-
-
-/**
- * @brief **[Опция]** Идентифиактор дескриптора модуля расчета CRC8.
- * @details Значение этого макроса будет использовано в качестве идентификатора дескриптора модуля расчета CRC8.
- * Используется только в случае отсутствия объявления флага #SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC.
- * @note Значение по умолчанию - 0.
- * @note Может быть объявлен пользователем.
- */
-#define SIMPLE_FS_SDEVICE_TABLE_CRC8_INTERNAL_SDEVICE_IDENTIFIER 0
-
-/**
- * @brief **[Опция]** Идентифиактор дескриптора модуля расчета CRC16.
- * @details Значение этого макроса будет использовано в качестве идентификатора дескриптора модуля расчета CRC16.
- * Используется только в случае отсутствия объявления флага #SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC.
- * @note Значение по умолчанию - 0.
- * @note Может быть объявлен пользователем.
- */
-#define SIMPLE_FS_SDEVICE_TABLE_CRC16_INTERNAL_SDEVICE_IDENTIFIER 0
-
-#endif
+/* 627B20BC-4FF1-11EE-94DB-FA9C802F1F89 */
+#define SIMPLE_FS_SDEVICE_UUID_HIGH 0x627B20BC4FF111EE
+#define SIMPLE_FS_SDEVICE_UUID_LOW  0x94DBFA9C802F1F89
 
 /**
  * @brief Старшая компонента версии модуля файловой системы SimpleFsSDevice.
  */
-#define SIMPLE_FS_SDEVICE_VERSION_MAJOR 2
+#define SIMPLE_FS_SDEVICE_VERSION_MAJOR 3
 
 /**
  * @brief Средняя компонента версии модуля файловой системы SimpleFsSDevice.
@@ -72,17 +37,7 @@
 /**
  * @brief Младшая компонента версии модуля файловой системы SimpleFsSDevice.
  */
-#define SIMPLE_FS_SDEVICE_VERSION_PATCH 2
-
-/**
- * @brief Версия модуля файловой системы SimpleFsSDevice в виде составного литерала структуры SDeviceVersion.
- */
-#define SIMPLE_FS_SDEVICE_CORE_VERSION ((SDeviceVersion)                                                               \
-{                                                                                                                      \
-   .Major = SIMPLE_FS_SDEVICE_VERSION_MAJOR,                                                                           \
-   .Minor = SIMPLE_FS_SDEVICE_VERSION_MINOR,                                                                           \
-   .Patch = SIMPLE_FS_SDEVICE_VERSION_PATCH                                                                            \
-})
+#define SIMPLE_FS_SDEVICE_VERSION_PATCH 0
 
 /**
  * @brief Сектор файловой памяти.
@@ -90,8 +45,8 @@
  */
 typedef struct
 {
-   void *Context; /**< Пользовательский контекст. */
-   size_t Size; /**< Размер (в байтах) сектора. */
+   void  *Context; /**< Пользовательский контекст. */
+   size_t Size;    /**< Размер (в байтах) сектора. */
 } SimpleFsSDeviceSector;
 
 /**
@@ -101,25 +56,14 @@ typedef struct
  */
 
 /**
- * @brief Состояния дескрипторов модуля файловой системы SimpleFsSDevice.
- * @details Значения используются для логирования состояний дескрипторов модуля.
- */
-typedef enum
-{
-   SIMPLE_FS_SDEVICE_EXCEPTION_OUT_OF_MEMORY, /**< Недостаток файловой памяти. */
-   SIMPLE_FS_SDEVICE_EXCEPTION_BAD_AREA_OVERFLOW /**< Обнаружена слишком большая область "плохих" блоков. */
-} SimpleFsSDeviceException;
-
-/**
  * @brief Исключения дескрипторов модуля файловой системы SimpleFsSDevice.
  * @details Значения используются для выбрасывания исключений дескрипторов модуля.
  */
 typedef enum
 {
-   SIMPLE_FS_SDEVICE_STATUS_OK, /**< Нормальная работа. */
-   SIMPLE_FS_SDEVICE_STATUS_CORRUPTED_BLOCK_DETECTED, /**< Обнаружен поврежденный блок файловой памяти. */
-   SIMPLE_FS_SDEVICE_STATUS_BAD_AREA_DETECTED /**< Обнаружена область "плохих" блоков. */
-} SimpleFsSDeviceStatus;
+   SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY,    /**< Недостаток файловой памяти. */
+   SIMPLE_FS_SDEVICE_PANIC_BAD_AREA_OVERFLOW /**< Обнаружена слишком большая область "плохих" блоков. */
+} SimpleFsSDevicePanic;
 
 /** @} */
 
@@ -151,10 +95,11 @@ SDEVICE_INIT_DATA_DECLARATION(SimpleFs)
     * @param address Относительный адрес в секторе @p sector, по которому необходимо произвести чтение.
     * @param value Буфер для читаемого значения.
     */
-   void (* ReadUInt64)(SDEVICE_HANDLE(SimpleFs) *handle,
-                       const SimpleFsSDeviceSector *sector,
-                       uintptr_t address,
-                       uint64_t *value);
+   void (* ReadUInt64)(
+         SDEVICE_HANDLE(SimpleFs)    *handle,
+         const SimpleFsSDeviceSector *sector,
+         uintptr_t                    address,
+         uint64_t                    *value);
 
    /**
     * @brief Функция записи значения типа `uint64_t` в файловую память.
@@ -166,10 +111,11 @@ SDEVICE_INIT_DATA_DECLARATION(SimpleFs)
     * @param address Относительный адрес в секторе @p sector, по которому необходимо произвести запись.
     * @param value Записываемое значение.
     */
-   void (* WriteUInt64)(SDEVICE_HANDLE(SimpleFs) *handle,
-                        const SimpleFsSDeviceSector *sector,
-                        uintptr_t address,
-                        uint64_t value);
+   void (* WriteUInt64)(
+         SDEVICE_HANDLE(SimpleFs)    *handle,
+         const SimpleFsSDeviceSector *sector,
+         uintptr_t                    address,
+         uint64_t                     value);
 
    /**
     * @brief Функция стирания сектора файловой памяти.
@@ -227,14 +173,14 @@ SDEVICE_INIT_DATA_DECLARATION(SimpleFs)
 #endif
 
    /**
-    * @brief Нулевой сектор файловой памяти.
+    * @brief Главный (нулевой) сектор файловой памяти.
     */
-   SimpleFsSDeviceSector Sector$0;
+   SimpleFsSDeviceSector PrimarySector;
 
    /**
-    * @brief Первый сектор файловой памяти.
+    * @brief Вспомогательный (первый) сектор файловой памяти.
     */
-   SimpleFsSDeviceSector Sector$1;
+   SimpleFsSDeviceSector AuxiliarySector;
 
    /**
     * @brief Флаг типа файловой памяти.
@@ -242,8 +188,10 @@ SDEVICE_INIT_DATA_DECLARATION(SimpleFs)
     * - `true` - `0b0` (`0x00` для байта)
     * - `false` - `0b1` (`0xFF` для байта)
     */
-   bool IsMemoryErasingToZero;
+   bool                  IsMemoryErasingToZero;
 };
+
+SDEVICE_IDENTITY_BLOCK_DECLARATION(SimpleFs);
 
 /**
  * @brief Функция создания дескриптора модуля файловой системы SimpleFsSDevice.
@@ -276,7 +224,7 @@ SDEVICE_PROPERTY_TYPE_DECLARATION(SimpleFs, TotalBadBlocksCount, size_t);
  * @param value Буфер для читаемого значения типа @ref _SimpleFsSDeviceTotalBadBlocksCountPropertyType.
  * @returns Результат (состояние) операции чтения.
  */
-SDEVICE_GET_PROPERTY_DECLARATION(SimpleFs, TotalBadBlocksCount, handle, value);
+SDEVICE_GET_SIMPLE_PROPERTY_DECLARATION(SimpleFs, TotalBadBlocksCount, handle, value);
 
 /**
  * @brief Функция форматирования файловой памяти.
@@ -299,37 +247,37 @@ void SimpleFsSDeviceForceHistoryDeletion(SDEVICE_HANDLE(SimpleFs) *handle);
  * @note Фактическое стирание значения файла (и всей его истории) произойдет только при переносе на другой сектор.
  * Это можно форсировать функцией @ref SimpleFsSDeviceForceHistoryDeletion.
  * @param handle Дескриптор.
- * @param fileId Идентификатор файла.
+ * @param fileIdx Идентификатор файла.
  */
-void SimpleFsSDeviceDeleteFile(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileId);
+void SimpleFsSDeviceDeleteFile(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileIdx);
 
 /**
  * @brief Функция чтения максимального размера значения файла.
  * @details Под "максимальным" размером понимается наибольший размер значения среди всех записанных версий файла.
  * @param handle Дескриптор.
- * @param fileId Идентификатор файла.
- * @returns Максимальный размер значения файла с идентификатором @p fileId.
+ * @param fileIdx Идентификатор файла.
+ * @returns Максимальный размер значения файла с идентификатором @p fileIdx.
  */
-size_t SimpleFsSDeviceGetMaxFileSize(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileId);
+size_t SimpleFsSDeviceGetMaxFileSize(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileIdx);
 
 /**
  * @brief Функция чтения значения файла.
  * @details Читает значение первой найденой консистентной версии файла, имеющей размер меньший или равный @p size.
  * @param handle Дескриптор.
- * @param fileId Идентификатор файла.
+ * @param fileIdx Идентификатор файла.
  * @param data Буфер для чтения значения файла.
  * @param size Максимальный размер читаемого файла.
  * @returns Фактический размер прочитанного в @p data значения файла (меньше или равен @p size).
  */
-size_t SimpleFsSDeviceReadFile(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileId, void *data, size_t size);
+size_t SimpleFsSDeviceReadFile(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileIdx, void *data, size_t size);
 
 /**
  * @brief Функция записи значения файла.
  * @param handle Дескриптор.
- * @param fileId Идентификатор файла.
+ * @param fileIdx Идентификатор файла.
  * @param data Значение файла.
  * @param size Размер значения файла @p data.
  */
-void SimpleFsSDeviceWriteFile(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileId, const void *data, size_t size);
+void SimpleFsSDeviceWriteFile(SDEVICE_HANDLE(SimpleFs) *handle, uint16_t fileIdx, const void *data, size_t size);
 
 /** @} */

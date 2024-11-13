@@ -4,13 +4,13 @@
 
 typedef struct
 {
-   uint16_t FileId;
+   uint16_t FileIdx;
    uint16_t FileCrc;
-   size_t FileSize;
+   size_t   FileSize;
 } FileAreaInfo;
 
 typedef struct
 {
    FileAreaInfo *AreaInfo;
-   ReadStream FileStream;
+   ReadStream    FileStream;
 } FileAreaHandle;

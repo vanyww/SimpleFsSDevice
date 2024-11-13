@@ -6,10 +6,6 @@
 
 static inline bool TryPutStreamBlock(ThisHandle *handle, WriteStream *stream, Block block)
 {
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(stream != NULL);
-   SDeviceDebugAssert(stream->IsInBounds);
-
    WriteSectorUInt64(handle, stream->Sector, BLOCK_TO_MEMORY_ADDRESS(stream->Cursor), block.AsValue);
 
    Block readBlock;
@@ -20,10 +16,6 @@ static inline bool TryPutStreamBlock(ThisHandle *handle, WriteStream *stream, Bl
 
 static inline bool TryWriteStreamBlock(ThisHandle *handle, WriteStream *stream, Block block)
 {
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(stream != NULL);
-   SDeviceDebugAssert(stream->IsInBounds);
-
    bool status = TryPutStreamBlock(handle, stream, block);
    SeekStream(stream, SEEK_STREAM_ORIGIN_CURRENT, +1);
 
@@ -32,14 +24,11 @@ static inline bool TryWriteStreamBlock(ThisHandle *handle, WriteStream *stream, 
 
 static bool TryWriteStreamGoodBlock(ThisHandle *handle, WriteStream *stream, Block block)
 {
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(stream != NULL);
-   SDeviceDebugAssert(stream->IsInBounds);
+   uint8_t badAreaBadBlocksCount = 0;
 
-   uint16_t badAreaBadBlocksCount = 0;
    while(stream->IsInBounds)
    {
-      if(badAreaBadBlocksCount == 0)
+      if(!badAreaBadBlocksCount)
       {
          if(TryWriteStreamBlock(handle, stream, block))
             return true;
@@ -56,7 +45,7 @@ static bool TryWriteStreamGoodBlock(ThisHandle *handle, WriteStream *stream, Blo
       }
       else if(++badAreaBadBlocksCount == MAX_BAD_AREA_LENGTH)
       {
-         SDeviceThrow(handle, SIMPLE_FS_SDEVICE_EXCEPTION_BAD_AREA_OVERFLOW);
+         SDevicePanic(handle, SIMPLE_FS_SDEVICE_PANIC_BAD_AREA_OVERFLOW);
       }
    }
 

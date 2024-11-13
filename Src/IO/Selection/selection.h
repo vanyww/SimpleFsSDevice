@@ -11,38 +11,30 @@ typedef struct
 typedef struct
 {
    const SelectionFilter *Filters;
-   size_t FiltersCount;
-   BlockSelectorContext Context;
+   size_t                 FiltersCount;
+   BlockSelectorContext   Context;
 } BlockSelector;
 
 static BlockSelector CreateBlockSelector(ThisHandle *handle, const SelectionFilter *filters, size_t filtersCount)
 {
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(filters != NULL || filtersCount == 0);
-
    for(size_t i = 0; i < filtersCount; i++)
    {
       const SelectionFilter *filter = &filters[i];
 
-      if(filter->Interface->ContextInitFunction != NULL)
+      if(filter->Interface->ContextInitFunction)
          filter->Interface->ContextInitFunction(handle, filter->Parameters, filter->Context);
    }
 
    return (BlockSelector)
    {
-      .Filters = filters,
+      .Filters      = filters,
       .FiltersCount = filtersCount,
-      .Context = { .NextBlockOffset = 0 }
+      .Context      = { .NextBlockOffset = 0 }
    };
 }
 
 static bool TrySelectNextStreamBlock(ThisHandle *handle, Stream *stream, BlockSelector *selector, Block *block)
 {
-   SDeviceDebugAssert(block != NULL);
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(stream != NULL);
-   SDeviceDebugAssert(selector != NULL);
-
    SeekStream(stream, SEEK_STREAM_ORIGIN_CURRENT, selector->Context.NextBlockOffset);
 
    while(stream->IsInBounds)
@@ -56,10 +48,6 @@ static bool TrySelectNextStreamBlock(ThisHandle *handle, Stream *stream, BlockSe
       for(size_t i = 0; i < selector->FiltersCount; i++)
       {
          const SelectionFilter *filter = &selector->Filters[i];
-
-         SDeviceDebugAssert(filter->Interface != NULL);
-         SDeviceDebugAssert(filter->Interface->FilterFunction != NULL);
-
          SELECTION_FILTER_FUNCTION_POINTER(filterFunction) = filter->Interface->FilterFunction;
          FilteringResult filteringResult = filterFunction(handle, filter->Parameters, filter->Context, readBlock);
 
@@ -78,6 +66,7 @@ static bool TrySelectNextStreamBlock(ThisHandle *handle, Stream *stream, BlockSe
       {
          selector->Context.NextBlockOffset = nextBlockOffset;
          *block = readBlock;
+
          return true;
       }
    }

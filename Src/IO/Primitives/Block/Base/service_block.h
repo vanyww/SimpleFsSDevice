@@ -10,16 +10,10 @@ static inline bool IsServiceBlock(Block block)
 
 static inline uint8_t ComputeServiceBlockCrc(ThisHandle *handle, ServiceBlock block)
 {
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(IsServiceBlock(block));
-
    return ComputeCrc8(handle, block.BlockData, sizeof(block.BlockData));
 }
 
 static inline bool HasServiceBlockValidCrc(ThisHandle *handle, ServiceBlock block)
 {
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(IsServiceBlock(block));
-
    return block.BlockCrc == ComputeServiceBlockCrc(handle, block);
 }

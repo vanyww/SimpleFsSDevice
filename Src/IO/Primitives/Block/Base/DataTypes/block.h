@@ -11,53 +11,53 @@
 
 typedef struct __attribute__((packed))
 {
-   uint8_t BlockCrc;
-   uint8_t FileAreaLength;
-   uint8_t LastFileBlockDataSize;
-   uint16_t FileId;
-   uint16_t FileCrc;
+   uint8_t   BlockCrc;
+   uint8_t   FileAreaLength;
+   uint8_t   LastFileBlockDataSize;
+   uint16_t  FileIdx;
+   uint16_t  FileCrc;
    BlockType Type;
 } FileAreaTagBlock;
 
 typedef struct __attribute__((packed))
 {
-   uint8_t BlockCrc;
-   uint16_t BadAreaLength;
-   uint8_t Padding[sizeof(uint64_t) - (sizeof(uint8_t) + sizeof(uint16_t) + sizeof(BlockType))];
+   uint8_t   BlockCrc;
+   uint8_t   BadAreaLength;
+   uint8_t   Padding[sizeof(uint64_t) - (sizeof(uint8_t) + sizeof(uint8_t) + sizeof(BlockType))];
    BlockType Type;
 } BadAreaTagBlock;
 
 typedef struct __attribute__((packed))
 {
-   uint8_t BlockCrc;
-   SectorState SectorState;
+   uint8_t        BlockCrc;
+   SectorState    SectorState;
    SDeviceVersion FsVersion;
-   uint8_t Padding;
-   BlockType Type;
+   uint8_t        Padding;
+   BlockType      Type;
 } HeaderBlock;
 
 typedef struct __attribute__((packed))
 {
-   uint8_t Data[sizeof(uint64_t) - sizeof(BlockType)];
+   uint8_t   Data[sizeof(uint64_t) - sizeof(BlockType)];
    BlockType Type;
 } FileDataBlock;
 
 /* abstract blocks ****************************************************************************************************/
 
-typedef union __attribute__((transparent_union))
+typedef union
 {
    struct __attribute__((packed))
    {
       uint8_t BlockCrc;
-      uint16_t AreaLength;
-      uint8_t BlockData[sizeof(uint64_t) - (sizeof(uint8_t) + sizeof(uint16_t))];
+      uint8_t AreaLength;
+      uint8_t BlockData[sizeof(uint64_t) - (sizeof(uint8_t) + sizeof(uint8_t))];
    };
 
    FileAreaTagBlock AsFileAreaTag;
-   BadAreaTagBlock AsBadAreaTag;
-} AreaTagBlock;
+   BadAreaTagBlock  AsBadAreaTag;
+} __attribute__((transparent_union)) AreaTagBlock;
 
-typedef union __attribute__((transparent_union))
+typedef union
 {
    struct __attribute__((packed))
    {
@@ -66,30 +66,30 @@ typedef union __attribute__((transparent_union))
    };
 
    FileAreaTagBlock AsFileAreaTag;
-   BadAreaTagBlock AsBadAreaTag;
-   HeaderBlock AsHeader;
+   BadAreaTagBlock  AsBadAreaTag;
+   HeaderBlock      AsHeader;
 
-   AreaTagBlock AsAreaTag;
-} ServiceBlock;
+   AreaTagBlock     AsAreaTag;
+} __attribute__((transparent_union)) ServiceBlock;
 
-typedef union __attribute__((transparent_union))
+typedef union
 {
    struct __attribute__((packed))
    {
-      uint8_t BlockData[sizeof(uint64_t) - sizeof(BlockType)];
+      uint8_t   BlockData[sizeof(uint64_t) - sizeof(BlockType)];
       BlockType Type;
    };
 
    FileAreaTagBlock AsFileAreaTag;
-   BadAreaTagBlock AsBadAreaTag;
-   FileDataBlock AsFileData;
-   HeaderBlock AsHeader;
+   BadAreaTagBlock  AsBadAreaTag;
+   FileDataBlock    AsFileData;
+   HeaderBlock      AsHeader;
 
-   AreaTagBlock AsAreaTag;
-   ServiceBlock AsService;
+   AreaTagBlock     AsAreaTag;
+   ServiceBlock     AsService;
 
-   uint64_t AsValue;
-} Block;
+   uint64_t         AsValue;
+} __attribute__((transparent_union)) Block;
 
 /**********************************************************************************************************************/
 

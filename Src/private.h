@@ -2,13 +2,15 @@
 
 #include "SimpleFsSDevice/public.h"
 
-typedef SimpleFsSDeviceSector Sector;
+#define IS_VALID_THIS_HANDLE(handle) SDEVICE_IS_VALID_HANDLE(SimpleFs, handle)
+
+typedef SimpleFsSDeviceSector ThisSector;
 
 typedef struct
 {
-   const Sector *Sector;
-   uintptr_t Cursor;
-   bool IsInBounds;
+   const ThisSector *Sector;
+   uintptr_t         Cursor;
+   bool              IsInBounds;
 } Stream;
 
 typedef Stream WriteStream;
@@ -21,8 +23,8 @@ SDEVICE_RUNTIME_DATA_DECLARATION(SimpleFs)
    WriteStream *ActiveWriteStream;
    WriteStream *InactiveWriteStream;
 
-   WriteStream Sector$0WriteStream;
-   WriteStream Sector$1WriteStream;
+   WriteStream  MainSectorWriteStream;
+   WriteStream  AuxiliarySectorWriteStream;
 };
 
 SDEVICE_HANDLE_DECLARATION(SimpleFs);

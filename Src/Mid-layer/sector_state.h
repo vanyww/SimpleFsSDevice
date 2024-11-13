@@ -8,16 +8,13 @@
 
 static bool TryReadStreamSectorState(ThisHandle *handle, ReadStream *stream, SectorState *state)
 {
-   SDeviceDebugAssert(state != NULL);
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(stream != NULL);
-
    Block readBlock;
    const SelectionFilter filters[] =
    {
       COMPOSE_SELECTION_FILTER(ValidServiceOfType, BLOCK_TYPE_HEADER),
       COMPOSE_SELECTION_FILTER(OnlyValidHeader)
    };
+
    BlockSelector selector = CreateBlockSelector(handle, filters, LENGTHOF(filters));
 
    if(!TrySelectNextStreamBlock(handle, stream, &selector, &readBlock))
@@ -31,9 +28,6 @@ static bool TryReadStreamSectorState(ThisHandle *handle, ReadStream *stream, Sec
 
 static inline void WriteStreamSectorState(ThisHandle *handle, WriteStream *stream, SectorState state)
 {
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(stream != NULL);
-
    if(!TryWriteStreamGoodBlock(handle, stream, BuildHeaderBlock(handle, state)))
-      SDeviceThrow(handle, SIMPLE_FS_SDEVICE_EXCEPTION_OUT_OF_MEMORY);
+      SDevicePanic(handle, SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY);
 }

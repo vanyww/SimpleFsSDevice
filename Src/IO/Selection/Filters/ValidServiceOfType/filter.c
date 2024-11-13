@@ -3,14 +3,9 @@
 
 SELECTION_FILTER_INTERNAL_ALIASES_DECLARATION(ValidServiceOfType);
 
-static SELECTION_FILTER_FUNCTION_DECLARATION(ValidServiceOfType, handle, _parameters, _context, block)
+static SELECTION_FILTER_FUNCTION_DECLARATION(ValidServiceOfType, handle, parameters, context, block)
 {
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(_parameters != NULL);
-
-   const ThisSelectorFilterParameters *parameters = (ThisSelectorFilterParameters *)_parameters;
-
-   SDeviceDebugAssert(IS_VALID_SERVICE_BLOCK_TYPE(parameters->Type));
+   const ThisSelectorFilterParameters *_parameters = (ThisSelectorFilterParameters *)parameters;
 
    if(HasBlockValidType(block))
    {
@@ -18,10 +13,11 @@ static SELECTION_FILTER_FUNCTION_DECLARATION(ValidServiceOfType, handle, _parame
          return (FilteringResult){ -1, false };
 
       ServiceBlock blockAsService = block.AsService;
+
       if(HasServiceBlockValidCrc(handle, blockAsService))
       {
-         intptr_t nextOffset = IsAreaTagBlock(block) ? -block.AsAreaTag.AreaLength : -1;
-         return (FilteringResult){ nextOffset, IsBlockOfType(block, parameters->Type) };
+         intptr_t nextOffset = (IsAreaTagBlock(block)) ? -(block.AsAreaTag.AreaLength + 1) : -1;
+         return (FilteringResult){ nextOffset, IsBlockOfType(block, _parameters->Type) };
       }
    }
 
@@ -31,6 +27,6 @@ static SELECTION_FILTER_FUNCTION_DECLARATION(ValidServiceOfType, handle, _parame
 
 const SelectionFilterInterface SELECTION_FILTER_INTERFACE(ValidServiceOfType) =
 {
-   .FilterFunction = SELECTION_FILTER_FUNCTION(ValidServiceOfType),
+   .FilterFunction      = SELECTION_FILTER_FUNCTION(ValidServiceOfType),
    .ContextInitFunction = NULL
 };

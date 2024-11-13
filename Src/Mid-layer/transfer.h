@@ -7,23 +7,19 @@
 
 typedef struct
 {
-   uint16_t FileId;
+   uint16_t    FileIdx;
    const void *Data;
-   size_t Size;
+   size_t      Size;
 } TransferWriteFileInfo;
 
 typedef struct
 {
-   bool DoExclude;
-   uint16_t FileId;
+   bool     DoExclude;
+   uint16_t FileIdx;
 } CopyFileExclusion;
 
 static void CopyStreamFiles(ThisHandle *handle, ReadStream *from, WriteStream *to, CopyFileExclusion exclusion)
 {
-   SDeviceDebugAssert(handle != NULL);
-   SDeviceDebugAssert(from != NULL);
-   SDeviceDebugAssert(to != NULL);
-
    FileIdsRange idsRange;
    ReadStream idsRangeReadStream = CloneStream(from);
    if(!TryReadStreamFileIdsRange(handle, &idsRangeReadStream, &idsRange))
@@ -42,18 +38,18 @@ static void CopyStreamFiles(ThisHandle *handle, ReadStream *from, WriteStream *t
       {
          FileAreaInfo fileInfo = BuildFileAreaInfo(readBlock.AsFileAreaTag);
 
-         if(fileInfo.FileId < idOffset || fileInfo.FileId >= idOffset + BIT_SIZEOF(transferedIdsBits))
+         if(fileInfo.FileIdx < idOffset || fileInfo.FileIdx >= idOffset + BIT_SIZEOF(transferedIdsBits))
             continue;
 
-         if(exclusion.DoExclude && exclusion.FileId == fileInfo.FileId)
+         if(exclusion.DoExclude && exclusion.FileIdx == fileInfo.FileIdx)
             continue;
 
-         uint32_t fileIdBit = fileInfo.FileId - idOffset;
+         uint32_t fileIdBit = fileInfo.FileIdx - idOffset;
 
-         if(READ_NTH_BIT(transferedIdsBits, fileIdBit) != 0)
+         if(READ_NTH_BIT(transferedIdsBits, fileIdBit))
             continue;
 
-         if(fileInfo.FileSize == 0)
+         if(fileInfo.FileSize <= 0)
          {
             SET_NTH_BIT(transferedIdsBits, fileIdBit);
             continue;
@@ -64,12 +60,12 @@ static void CopyStreamFiles(ThisHandle *handle, ReadStream *from, WriteStream *t
 
          if(TryReadFileAreaData(handle, &areaHandle, buffer))
          {
-            if(!TryWriteStreamFile(handle, to, fileInfo.FileId, buffer, fileInfo.FileSize))
-               SDeviceThrow(handle, SIMPLE_FS_SDEVICE_EXCEPTION_OUT_OF_MEMORY);
+            if(!TryWriteStreamFile(handle, to, fileInfo.FileIdx, buffer, fileInfo.FileSize))
+               SDevicePanic(handle, SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY);
 
             SET_NTH_BIT(transferedIdsBits, fileIdBit);
 
-            if(CountSetBits(transferedIdsBits) == MIN(idsRange.Highest - idOffset + 1, BIT_SIZEOF(transferedIdsBits)))
+            if(COUNT_SET_BITS(transferedIdsBits) == MIN(idsRange.Highest - idOffset + 1, BIT_SIZEOF(transferedIdsBits)))
                break;
          }
       }
@@ -78,25 +74,23 @@ static void CopyStreamFiles(ThisHandle *handle, ReadStream *from, WriteStream *t
 
 static void TransferActiveStream(ThisHandle *handle, const TransferWriteFileInfo *fileInfo)
 {
-   SDeviceDebugAssert(handle != NULL);
-
-   ReadStream sourceStream = BuildActiveReadStream(handle);
+   ReadStream   sourceStream = BuildActiveReadStream(handle);
    WriteStream *targetStream = GetInactiveWriteStream(handle);
 
    WriteStreamSectorState(handle, targetStream, SECTOR_STATE_TRANSFER_ONGOING);
 
    CopyFileExclusion exclusion =
-         (fileInfo != NULL) ? (CopyFileExclusion){ true, fileInfo->FileId } : (CopyFileExclusion){ false };
+         (fileInfo) ? (CopyFileExclusion){ true, fileInfo->FileIdx } : (CopyFileExclusion){ false };
    CopyStreamFiles(handle, &sourceStream, targetStream, exclusion);
 
-   if(fileInfo != NULL && fileInfo->Size != 0)
+   if(fileInfo && fileInfo->Size > 0)
    {
-      if(!TryWriteStreamFile(handle, targetStream, fileInfo->FileId, fileInfo->Data, fileInfo->Size))
-         SDeviceThrow(handle, SIMPLE_FS_SDEVICE_EXCEPTION_OUT_OF_MEMORY);
+      if(!TryWriteStreamFile(handle, targetStream, fileInfo->FileIdx, fileInfo->Data, fileInfo->Size))
+         SDevicePanic(handle, SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY);
    }
 
    WriteStreamSectorState(handle, targetStream, SECTOR_STATE_TRANSFER_END);
-   FormatStreamSector(handle, &sourceStream);
+   FormatStreamSector(handle, GetActiveWriteStream(handle));
    WriteStreamSectorState(handle, targetStream, SECTOR_STATE_ACTIVE);
    SwitchWriteStreams(handle);
 }

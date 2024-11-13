@@ -12,7 +12,7 @@ struct SELECTION_FILTER_CONTEXT(FileAreaTagWithFileId)
 
 struct SELECTION_FILTER_PARAMETERS(FileAreaTagWithFileId)
 {
-   uint16_t FileId;
+   uint16_t FileIdx;
 };
 
 const extern SelectionFilterInterface SELECTION_FILTER_INTERFACE(FileAreaTagWithFileId);
