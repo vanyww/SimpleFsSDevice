@@ -27,7 +27,7 @@
 /**
  * @brief Старшая компонента версии модуля файловой системы SimpleFsSDevice.
  */
-#define SIMPLE_FS_SDEVICE_VERSION_MAJOR 2
+#define SIMPLE_FS_SDEVICE_VERSION_MAJOR 3
 
 /**
  * @brief Средняя компонента версии модуля файловой системы SimpleFsSDevice.
@@ -37,7 +37,7 @@
 /**
  * @brief Младшая компонента версии модуля файловой системы SimpleFsSDevice.
  */
-#define SIMPLE_FS_SDEVICE_VERSION_PATCH 2
+#define SIMPLE_FS_SDEVICE_VERSION_PATCH 0
 
 /**
  * @brief Сектор файловой памяти.
