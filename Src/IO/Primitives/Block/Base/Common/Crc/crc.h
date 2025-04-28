@@ -22,8 +22,7 @@ static inline void InitializeCrc8(void)
       .IsReverse           = true
    };
 
-   SDeviceHandleIdentifier identifier = SIMPLE_FS_SDEVICE_TABLE_CRC8_INTERNAL_SDEVICE_IDENTIFIER;
-   SimpleFsSDeviceInternalCrc8Handle = SDEVICE_CREATE_HANDLE(TableCrc8)(&crc8Init, NULL, identifier, NULL);
+   SimpleFsSDeviceInternalCrc8Handle = SDEVICE_CREATE_HANDLE(TableCrc8)(&crc8Init, NULL);
 #endif
 }
 
@@ -42,8 +41,7 @@ static inline void InitializeCrc16(void)
       .IsReverse           = true
    };
 
-   SDeviceHandleIdentifier identifier = SIMPLE_FS_SDEVICE_TABLE_CRC16_INTERNAL_SDEVICE_IDENTIFIER;
-   SimpleFsSDeviceInternalCrc16Handle = SDEVICE_CREATE_HANDLE(TableCrc16)(&crc16Init, NULL, identifier, NULL);
+   SimpleFsSDeviceInternalCrc16Handle = SDEVICE_CREATE_HANDLE(TableCrc16)(&crc16Init, NULL);
 #endif
 }
 

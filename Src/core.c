@@ -3,21 +3,7 @@
 
 #include "SDeviceCore/heap.h"
 
-SDEVICE_IDENTITY_BLOCK_DEFINITION(
-      SimpleFs,
-      ((const SDeviceUuid)
-      {
-         .High = SIMPLE_FS_SDEVICE_UUID_HIGH,
-         .Low  = SIMPLE_FS_SDEVICE_UUID_LOW
-      }),
-      ((const SDeviceVersion)
-      {
-         .Major = SIMPLE_FS_SDEVICE_VERSION_MAJOR,
-         .Minor = SIMPLE_FS_SDEVICE_VERSION_MINOR,
-         .Patch = SIMPLE_FS_SDEVICE_VERSION_PATCH
-      }));
-
-SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFs, init, owner, identifier, context)
+SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFs, init, context)
 {
    SDeviceAssert(init);
 
@@ -39,15 +25,7 @@ SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFs, init, owner, identifier, context)
 
    ThisHandle *instance = SDeviceAllocateHandle(sizeof(*instance->Init), sizeof(*instance->Runtime));
 
-   instance->Header = (SDeviceHandleHeader)
-   {
-      .Context       = context,
-      .OwnerHandle   = owner,
-      .IdentityBlock = &SDEVICE_IDENTITY_BLOCK(SimpleFs),
-      .LatestStatus  = SIMPLE_FS_SDEVICE_STATUS_OK,
-      .Identifier    = identifier
-   };
-
+   instance->Context = context;
    *instance->Init = *_init;
 
    *instance->Runtime = (ThisRuntimeData)
@@ -73,7 +51,7 @@ SDEVICE_DISPOSE_HANDLE_DECLARATION(SimpleFs, handlePointer)
    ThisHandle **_handlePointer = handlePointer;
    ThisHandle *handle = *_handlePointer;
 
-   SDeviceAssert(IS_VALID_THIS_HANDLE(handle));
+   SDeviceAssert(handle);
 
    SDeviceFreeHandle(handle);
 
@@ -82,7 +60,7 @@ SDEVICE_DISPOSE_HANDLE_DECLARATION(SimpleFs, handlePointer)
 
 SDEVICE_GET_SIMPLE_PROPERTY_DECLARATION(SimpleFs, TotalBadBlocksCount, handle, value)
 {
-   SDeviceAssert(IS_VALID_THIS_HANDLE(handle));
+   SDeviceAssert(handle);
 
    SDeviceAssert(value);
 
@@ -94,21 +72,21 @@ SDEVICE_GET_SIMPLE_PROPERTY_DECLARATION(SimpleFs, TotalBadBlocksCount, handle, v
 
 void SimpleFsSDeviceFormatMemory(ThisHandle *handle)
 {
-   SDeviceAssert(IS_VALID_THIS_HANDLE(handle));
+   SDeviceAssert(handle);
 
    FormatMemory(handle);
 }
 
 void SimpleFsSDeviceForceHistoryDeletion(ThisHandle *handle)
 {
-   SDeviceAssert(IS_VALID_THIS_HANDLE(handle));
+   SDeviceAssert(handle);
 
    TransferActiveStream(handle, NULL);
 }
 
 void SimpleFsSDeviceWriteFile(ThisHandle *handle, uint16_t fileIdx, const void *data, size_t size)
 {
-   SDeviceAssert(IS_VALID_THIS_HANDLE(handle));
+   SDeviceAssert(handle);
 
    SDeviceAssert(data);
 
@@ -123,7 +101,7 @@ void SimpleFsSDeviceWriteFile(ThisHandle *handle, uint16_t fileIdx, const void *
 
 void SimpleFsSDeviceDeleteFile(ThisHandle *handle, uint16_t fileIdx)
 {
-   SDeviceAssert(IS_VALID_THIS_HANDLE(handle));
+   SDeviceAssert(handle);
 
    if(!TryWriteStreamFile(handle, GetActiveWriteStream(handle), fileIdx, NULL, 0))
    {
@@ -134,7 +112,7 @@ void SimpleFsSDeviceDeleteFile(ThisHandle *handle, uint16_t fileIdx)
 
 size_t SimpleFsSDeviceGetMaxFileSize(ThisHandle *handle, uint16_t fileIdx)
 {
-   SDeviceAssert(IS_VALID_THIS_HANDLE(handle));
+   SDeviceAssert(handle);
 
    ReadStream stream = BuildActiveReadStream(handle);
    return ReadStreamMaxFileSize(handle, &stream, fileIdx);
@@ -142,7 +120,7 @@ size_t SimpleFsSDeviceGetMaxFileSize(ThisHandle *handle, uint16_t fileIdx)
 
 size_t SimpleFsSDeviceReadFile(ThisHandle *handle, uint16_t fileIdx, void *buffer, size_t maxFileSize)
 {
-   SDeviceAssert(IS_VALID_THIS_HANDLE(handle));
+   SDeviceAssert(handle);
 
    SDeviceAssert(buffer);
 

@@ -61,7 +61,7 @@ static void CopyStreamFiles(ThisHandle *handle, ReadStream *from, WriteStream *t
          if(TryReadFileAreaData(handle, &areaHandle, buffer))
          {
             if(!TryWriteStreamFile(handle, to, fileInfo.FileIdx, buffer, fileInfo.FileSize))
-               SDevicePanic(handle, SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY);
+               SDeviceThrowPanic(handle, SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY);
 
             SET_NTH_BIT(transferedIdsBits, fileIdBit);
 
@@ -86,7 +86,7 @@ static void TransferActiveStream(ThisHandle *handle, const TransferWriteFileInfo
    if(fileInfo && fileInfo->Size > 0)
    {
       if(!TryWriteStreamFile(handle, targetStream, fileInfo->FileIdx, fileInfo->Data, fileInfo->Size))
-         SDevicePanic(handle, SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY);
+         SDeviceThrowPanic(handle, SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY);
    }
 
    WriteStreamSectorState(handle, targetStream, SECTOR_STATE_TRANSFER_END);

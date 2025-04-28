@@ -17,8 +17,6 @@ static SELECTION_FILTER_FUNCTION_DECLARATION(ExceptBadAreas, handle, parameters,
          return (FilteringResult){ -(blockAsBadAreaTag.BadAreaLength + 1), false };
       }
 
-      SDeviceLogStatus(handle, SIMPLE_FS_SDEVICE_STATUS_CORRUPTED_BLOCK_DETECTED);
-
       _context->IsBadBlockSkipOngoing = true;
 
       return (FilteringResult){ -1, false };

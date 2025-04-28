@@ -8,8 +8,13 @@ static inline HeaderBlock BuildHeaderBlock(ThisHandle *handle, SectorState secto
    {
       .Type        = BLOCK_TYPE_HEADER,
       .SectorState = sectorState,
-      .FsVersion   = SDEVICE_IDENTITY_BLOCK(SimpleFs).Version,
-      .Padding     = GetEmptyUInt8MemoryValue(handle)
+      .Padding     = GetEmptyUInt8MemoryValue(handle),
+      .FsVersion   =
+      {
+         .Major = SIMPLE_FS_SDEVICE_VERSION_MAJOR,
+         .Minor = SIMPLE_FS_SDEVICE_VERSION_MINOR,
+         .Patch = SIMPLE_FS_SDEVICE_VERSION_PATCH
+      }
    };
 
    block.BlockCrc = ComputeServiceBlockCrc(handle, block);

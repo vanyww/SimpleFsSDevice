@@ -2,8 +2,6 @@
 
 #include "SimpleFsSDevice/public.h"
 
-#define IS_VALID_THIS_HANDLE(handle) SDEVICE_IS_VALID_HANDLE(SimpleFs, handle)
-
 typedef SimpleFsSDeviceSector ThisSector;
 
 typedef struct

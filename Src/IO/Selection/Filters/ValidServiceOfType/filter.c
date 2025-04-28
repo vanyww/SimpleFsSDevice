@@ -21,7 +21,6 @@ static SELECTION_FILTER_FUNCTION_DECLARATION(ValidServiceOfType, handle, paramet
       }
    }
 
-   SDeviceLogStatus(handle, SIMPLE_FS_SDEVICE_STATUS_CORRUPTED_BLOCK_DETECTED);
    return (FilteringResult){ -1, false };
 }
 

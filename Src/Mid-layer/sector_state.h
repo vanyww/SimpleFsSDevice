@@ -29,5 +29,5 @@ static bool TryReadStreamSectorState(ThisHandle *handle, ReadStream *stream, Sec
 static inline void WriteStreamSectorState(ThisHandle *handle, WriteStream *stream, SectorState state)
 {
    if(!TryWriteStreamGoodBlock(handle, stream, BuildHeaderBlock(handle, state)))
-      SDevicePanic(handle, SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY);
+      SDeviceThrowPanic(handle, SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY);
 }

@@ -10,8 +10,6 @@ static SELECTION_FILTER_FUNCTION_DECLARATION(OnlyValidHeader, handle, parameters
    if(HasHeaderValidSectorState(blockAsHeader) && HasHeaderCompatibleVersion(blockAsHeader))
       return (FilteringResult){ -1, true };
 
-   SDeviceLogStatus(handle, SIMPLE_FS_SDEVICE_STATUS_CORRUPTED_BLOCK_DETECTED);
-
    return (FilteringResult){ -1, false };
 }
 

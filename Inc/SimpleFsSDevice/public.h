@@ -18,11 +18,6 @@
 
 #include "config.h"
 #include "dependensies.h"
-#include "log.h"
-
-/* 627B20BC-4FF1-11EE-94DB-FA9C802F1F89 */
-#define SIMPLE_FS_SDEVICE_UUID_HIGH 0x627B20BC4FF111EE
-#define SIMPLE_FS_SDEVICE_UUID_LOW  0x94DBFA9C802F1F89
 
 /**
  * @brief Старшая компонента версии модуля файловой системы SimpleFsSDevice.
@@ -191,8 +186,6 @@ SDEVICE_INIT_DATA_DECLARATION(SimpleFs)
    bool                  IsMemoryErasingToZero;
 };
 
-SDEVICE_IDENTITY_BLOCK_DECLARATION(SimpleFs);
-
 /**
  * @brief Функция создания дескриптора модуля файловой системы SimpleFsSDevice.
  * @param init Указатель на параметры инициализации дескриптора.
@@ -201,7 +194,7 @@ SDEVICE_IDENTITY_BLOCK_DECLARATION(SimpleFs);
  * @param context Контекст дескриптора.
  * @returns Дескриптор модуля файловой системы SimpleFsSDevice.
  */
-SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFs, init, parent, identifier, context);
+SDEVICE_CREATE_HANDLE_DECLARATION(SimpleFs, init, context);
 
 /**
  * @brief Функция удаления дескриптора модуля файловой системы SimpleFsSDevice.
