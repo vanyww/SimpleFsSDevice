@@ -1,337 +1,339 @@
-#include "../../Mock/Errors/errors.h"
-#include "../../Mock/SimpleFs/Data/HeaderBlock/block.h"
-#include "../../Mock/SimpleFs/Application/application.h"
+#include "../../Mock/Data/HeaderBlock/block.h"
+#include "../../Mock/Bindings/sdevice_core.h"
+#include "../../Mock/SDevice/simple_fs.h"
+#include "../../Mock/Data/File/file.h"
 
 #include "../../../Src/private.h"
 
 #include "unity_fixture.h"
 
-TEST_GROUP(InitializationTests);
-
-TEST_SETUP(InitializationTests)
+static void TestAssertHandler(void)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-}
+   ResetAssertFailHandler();
 
-TEST_TEAR_DOWN(InitializationTests) { }
+   TEST_PASS_MESSAGE("OK");
+};
 
-TEST(InitializationTests, HandleInitialization)
+TEST_GROUP(Initialization);
+
+TEST_SETUP(Initialization) { }
+TEST_TEAR_DOWN(Initialization) { }
+
+TEST(Initialization, SimpleFs)
 {
-   CREATE_SIMPLE_FS_APPLICATION(48, this); // min size = 48 byte
+   /* min size = 48 byte */
+   CREATE_SIMPLE_FS_INIT(this, 48);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
+
+   TEST_ASSERT_NOT_NULL(handle);
 }
 
-TEST(InitializationTests, InsufficientMemoryInSector)
+TEST(Initialization, InsufficientMemoryInSector)
 {
-   AssertionMustBeFail(true);
-   SetAssertFailHandle(NULL);
+   /* min size = 48 byte */
+   CREATE_SIMPLE_FS_INIT(this, 1);
 
-   CREATE_SIMPLE_FS_APPLICATION(1, this); // min size = 48 byte
+   SetAssertFailHandler(TestAssertHandler);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-
-   TEST_FAIL_MESSAGE("Test fail, assert was not called");
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 }
 
-TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_ONGOING)
+TEST(Initialization, S0_STATE_ACTIVE_S1_STATE_TRANSFER_ONGOING)
 {
-   CREATE_SIMPLE_FS_APPLICATION(48, this);
+   CREATE_SIMPLE_FS_INIT(this, 48);
 
-   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
-   Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
-   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
-   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
+   Block primarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_ACTIVE);
+   Block auxiliarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING);
+   MockWriteUInt64(NULL, &SIMPLE_FS_PRIMARY_SECTOR(this), 8, primarySectorHeader.AsValue);
+   MockWriteUInt64(NULL, &SIMPLE_FS_AUXILIARY_SECTOR(this), 8, auxiliarySectorHeader.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    WriteStream *stream = handle->Runtime->ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
+
+   TEST_ASSERT(IsSimpleFsSectorsEquial(stream->Sector, &SIMPLE_FS_PRIMARY_SECTOR(this)));
 }
 
-TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ERASED)
+TEST(Initialization, S0_STATE_ACTIVE_S1_STATE_ERASED)
 {
-   CREATE_SIMPLE_FS_APPLICATION(48, this);
+   CREATE_SIMPLE_FS_INIT(this, 48);
 
-   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
-   Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
-   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
-   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
+   Block primarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_ACTIVE);
+   Block auxiliarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_ERASED);
+   MockWriteUInt64(NULL, &SIMPLE_FS_PRIMARY_SECTOR(this), 8, primarySectorHeader.AsValue);
+   MockWriteUInt64(NULL, &SIMPLE_FS_AUXILIARY_SECTOR(this), 8, auxiliarySectorHeader.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    WriteStream *stream = handle->Runtime->ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
+
+   TEST_ASSERT(IsSimpleFsSectorsEquial(stream->Sector, &SIMPLE_FS_PRIMARY_SECTOR(this)));
 }
 
-TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_END)
+TEST(Initialization, S0_STATE_ACTIVE_S1_STATE_TRANSFER_END)
 {
-   CREATE_SIMPLE_FS_APPLICATION(48, this);
+   CREATE_SIMPLE_FS_INIT(this, 48);
 
-   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
-   Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
-   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
-   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
+   Block primarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_ACTIVE);
+   Block auxiliarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_TRANSFER_END);
+   MockWriteUInt64(NULL, &SIMPLE_FS_PRIMARY_SECTOR(this), 8, primarySectorHeader.AsValue);
+   MockWriteUInt64(NULL, &SIMPLE_FS_AUXILIARY_SECTOR(this), 8, auxiliarySectorHeader.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    WriteStream *stream = handle->Runtime->ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
+
+   TEST_ASSERT(IsSimpleFsSectorsEquial(stream->Sector, &SIMPLE_FS_AUXILIARY_SECTOR(this)));
 }
 
-TEST(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ACTIVE)
+TEST(Initialization, S0_STATE_ACTIVE_S1_STATE_ACTIVE)
 {
-   CREATE_SIMPLE_FS_APPLICATION(48, this);
+   CREATE_SIMPLE_FS_INIT(this, 48);
 
-   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
-   Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
-   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
-   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
+   Block primarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_ACTIVE);
+   Block auxiliarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_ACTIVE);
+   MockWriteUInt64(NULL, &SIMPLE_FS_PRIMARY_SECTOR(this), 8, primarySectorHeader.AsValue);
+   MockWriteUInt64(NULL, &SIMPLE_FS_AUXILIARY_SECTOR(this), 8, auxiliarySectorHeader.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    WriteStream *stream = handle->Runtime->ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
+
+   TEST_ASSERT(IsSimpleFsSectorsEquial(stream->Sector, &SIMPLE_FS_PRIMARY_SECTOR(this)));
 }
 
-TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_ONGOING)
+TEST(Initialization, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_ONGOING)
 {
-   CREATE_SIMPLE_FS_APPLICATION(48, this);
+   CREATE_SIMPLE_FS_INIT(this, 48);
 
-  Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
-   Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
-   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
-   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
+   Block primarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING);
+   Block auxiliarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING);
+   MockWriteUInt64(NULL, &SIMPLE_FS_PRIMARY_SECTOR(this), 8, primarySectorHeader.AsValue);
+   MockWriteUInt64(NULL, &SIMPLE_FS_AUXILIARY_SECTOR(this), 8, auxiliarySectorHeader.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    WriteStream *stream = handle->Runtime->ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
+
+   TEST_ASSERT(IsSimpleFsSectorsEquial(stream->Sector, &SIMPLE_FS_PRIMARY_SECTOR(this)));
 }
 
-TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ERASED)
+TEST(Initialization, S0_STATE_TRANSFER_ONGOING_S1_STATE_ERASED)
 {
-   CREATE_SIMPLE_FS_APPLICATION(48, this);
+   CREATE_SIMPLE_FS_INIT(this, 48);
 
-   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
-   Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
-   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
-   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
+   Block primarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING);
+   Block auxiliarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_ERASED);
+   MockWriteUInt64(NULL, &SIMPLE_FS_PRIMARY_SECTOR(this), 8, primarySectorHeader.AsValue);
+   MockWriteUInt64(NULL, &SIMPLE_FS_AUXILIARY_SECTOR(this), 8, auxiliarySectorHeader.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    WriteStream *stream = handle->Runtime->ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
+
+   TEST_ASSERT(IsSimpleFsSectorsEquial(stream->Sector, &SIMPLE_FS_PRIMARY_SECTOR(this)));
 }
 
-TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_END)
+TEST(Initialization, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_END)
 {
-   CREATE_SIMPLE_FS_APPLICATION(48, this);
+   CREATE_SIMPLE_FS_INIT(this, 48);
 
-   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
-   Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
-   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
-   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
+   Block primarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING);
+   Block auxiliarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_TRANSFER_END);
+   MockWriteUInt64(NULL, &SIMPLE_FS_PRIMARY_SECTOR(this), 8, primarySectorHeader.AsValue);
+   MockWriteUInt64(NULL, &SIMPLE_FS_AUXILIARY_SECTOR(this), 8, auxiliarySectorHeader.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    WriteStream *stream = handle->Runtime->ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
+
+   TEST_ASSERT(IsSimpleFsSectorsEquial(stream->Sector, &SIMPLE_FS_PRIMARY_SECTOR(this)));
 }
 
-TEST(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ACTIVE)
+TEST(Initialization, S0_STATE_TRANSFER_ONGOING_S1_STATE_ACTIVE)
 {
-   CREATE_SIMPLE_FS_APPLICATION(48, this);
+   CREATE_SIMPLE_FS_INIT(this, 48);
 
-   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
-   Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
-   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
-   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
+   Block primarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING);
+   Block auxiliarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_ACTIVE);
+   MockWriteUInt64(NULL, &SIMPLE_FS_PRIMARY_SECTOR(this), 8, primarySectorHeader.AsValue);
+   MockWriteUInt64(NULL, &SIMPLE_FS_AUXILIARY_SECTOR(this), 8, auxiliarySectorHeader.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    WriteStream *stream = handle->Runtime->ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
+
+   TEST_ASSERT(IsSimpleFsSectorsEquial(stream->Sector, &SIMPLE_FS_AUXILIARY_SECTOR(this)));
 }
 
-TEST(InitializationTests, S0_STATE_TRANSFER_END_S1STATE_TRANSFER_ONGOING)
+TEST(Initialization, S0_STATE_TRANSFER_END_S1STATE_TRANSFER_ONGOING)
 {
-   CREATE_SIMPLE_FS_APPLICATION(48, this);
+   CREATE_SIMPLE_FS_INIT(this, 48);
 
-   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
-   Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
-   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
-   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
+   Block primarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_TRANSFER_END);
+   Block auxiliarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING);
+   MockWriteUInt64(NULL, &SIMPLE_FS_PRIMARY_SECTOR(this), 8, primarySectorHeader.AsValue);
+   MockWriteUInt64(NULL, &SIMPLE_FS_AUXILIARY_SECTOR(this), 8, auxiliarySectorHeader.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    WriteStream *stream = handle->Runtime->ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
+
+   TEST_ASSERT(IsSimpleFsSectorsEquial(stream->Sector, &SIMPLE_FS_PRIMARY_SECTOR(this)));
 }
 
-TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ERASED)
+TEST(Initialization, S0_STATE_TRANSFER_END_S1_STATE_ERASED)
 {
-   CREATE_SIMPLE_FS_APPLICATION(48, this);
+   CREATE_SIMPLE_FS_INIT(this, 48);
 
-   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
-   Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
-   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
-   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
+   Block primarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_TRANSFER_END);
+   Block auxiliarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_ERASED);
+   MockWriteUInt64(NULL, &SIMPLE_FS_PRIMARY_SECTOR(this), 8, primarySectorHeader.AsValue);
+   MockWriteUInt64(NULL, &SIMPLE_FS_AUXILIARY_SECTOR(this), 8, auxiliarySectorHeader.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    WriteStream *stream = handle->Runtime->ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
+
+   TEST_ASSERT(IsSimpleFsSectorsEquial(stream->Sector, &SIMPLE_FS_PRIMARY_SECTOR(this)));
 }
 
-TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_TRANSFER_END)
+TEST(Initialization, S0_STATE_TRANSFER_END_S1_STATE_TRANSFER_END)
 {
-   CREATE_SIMPLE_FS_APPLICATION(48, this);
+   CREATE_SIMPLE_FS_INIT(this, 48);
 
-   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
-   Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
-   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
-   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
+   Block primarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_TRANSFER_END);
+   Block auxiliarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_TRANSFER_END);
+   MockWriteUInt64(NULL, &SIMPLE_FS_PRIMARY_SECTOR(this), 8, primarySectorHeader.AsValue);
+   MockWriteUInt64(NULL, &SIMPLE_FS_AUXILIARY_SECTOR(this), 8, auxiliarySectorHeader.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    WriteStream *stream = handle->Runtime->ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
+
+   TEST_ASSERT(IsSimpleFsSectorsEquial(stream->Sector, &SIMPLE_FS_PRIMARY_SECTOR(this)));
 }
 
-TEST(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ACTIVE)
+TEST(Initialization, S0_STATE_TRANSFER_END_S1_STATE_ACTIVE)
 {
-   CREATE_SIMPLE_FS_APPLICATION(48, this);
+   CREATE_SIMPLE_FS_INIT(this, 48);
 
-   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
-   Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
-   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
-   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
+   Block primarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_TRANSFER_END);
+   Block auxiliarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_ACTIVE);
+   MockWriteUInt64(NULL, &SIMPLE_FS_PRIMARY_SECTOR(this), 8, primarySectorHeader.AsValue);
+   MockWriteUInt64(NULL, &SIMPLE_FS_AUXILIARY_SECTOR(this), 8, auxiliarySectorHeader.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    WriteStream *stream = handle->Runtime->ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
+
+   TEST_ASSERT(IsSimpleFsSectorsEquial(stream->Sector, &SIMPLE_FS_PRIMARY_SECTOR(this)));
 }
 
-TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_ONGOING)
+TEST(Initialization, S0_STATE_ERASED_S1_STATE_TRANSFER_ONGOING)
 {
-   CREATE_SIMPLE_FS_APPLICATION(48, this);
+   CREATE_SIMPLE_FS_INIT(this, 48);
 
-   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
-   Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING, true);
-   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
-   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
+   Block primarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_ERASED);
+   Block auxiliarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_TRANSFER_ONGOING);
+   MockWriteUInt64(NULL, &SIMPLE_FS_PRIMARY_SECTOR(this), 8, primarySectorHeader.AsValue);
+   MockWriteUInt64(NULL, &SIMPLE_FS_AUXILIARY_SECTOR(this), 8, auxiliarySectorHeader.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    WriteStream *stream = handle->Runtime->ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$0(this)));
+
+   TEST_ASSERT(IsSimpleFsSectorsEquial(stream->Sector, &SIMPLE_FS_PRIMARY_SECTOR(this)));
 }
 
-TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ERASED)
+TEST(Initialization, S0_STATE_ERASED_S1_STATE_ERASED)
 {
-   CREATE_SIMPLE_FS_APPLICATION(48, this);
+   CREATE_SIMPLE_FS_INIT(this, 48);
 
-   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
-   Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
-   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
-   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
+   Block primarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_ERASED);
+   Block auxiliarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_ERASED);
+   MockWriteUInt64(NULL, &SIMPLE_FS_PRIMARY_SECTOR(this), 8, primarySectorHeader.AsValue);
+   MockWriteUInt64(NULL, &SIMPLE_FS_AUXILIARY_SECTOR(this), 8, auxiliarySectorHeader.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    WriteStream *stream = handle->Runtime->ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
+
+   TEST_ASSERT(IsSimpleFsSectorsEquial(stream->Sector, &SIMPLE_FS_AUXILIARY_SECTOR(this)));
 }
 
-TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_END)
+TEST(Initialization, S0_STATE_ERASED_S1_STATE_TRANSFER_END)
 {
-   CREATE_SIMPLE_FS_APPLICATION(48, this);
+   CREATE_SIMPLE_FS_INIT(this, 48);
 
-   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
-   Block headerS1 = CreateHeaderBlock(SECTOR_STATE_TRANSFER_END, true);
-   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
-   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
+   Block primarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_ERASED);
+   Block auxiliarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_TRANSFER_END);
+   MockWriteUInt64(NULL, &SIMPLE_FS_PRIMARY_SECTOR(this), 8, primarySectorHeader.AsValue);
+   MockWriteUInt64(NULL, &SIMPLE_FS_AUXILIARY_SECTOR(this), 8, auxiliarySectorHeader.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    WriteStream *stream = handle->Runtime->ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
+
+   TEST_ASSERT(IsSimpleFsSectorsEquial(stream->Sector, &SIMPLE_FS_AUXILIARY_SECTOR(this)));
 }
 
-TEST(InitializationTests, S0_STATE_ERASED_S1_STATE_ACTIVE)
+TEST(Initialization, S0_STATE_ERASED_S1_STATE_ACTIVE)
 {
-   CREATE_SIMPLE_FS_APPLICATION(48, this);
+   CREATE_SIMPLE_FS_INIT(this, 48);
 
-   Block headerS0 = CreateHeaderBlock(SECTOR_STATE_ERASED, true);
-   Block headerS1 = CreateHeaderBlock(SECTOR_STATE_ACTIVE, true);
-   WriteUInt64(NULL, &SECTOR$0(this), 8, headerS0.AsValue);
-   WriteUInt64(NULL, &SECTOR$1(this), 8, headerS1.AsValue);
+   Block primarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_ERASED);
+   Block auxiliarySectorHeader = MockCreateHeaderBlock(SECTOR_STATE_ACTIVE);
+   MockWriteUInt64(NULL, &SIMPLE_FS_PRIMARY_SECTOR(this), 8, primarySectorHeader.AsValue);
+   MockWriteUInt64(NULL, &SIMPLE_FS_AUXILIARY_SECTOR(this), 8, auxiliarySectorHeader.AsValue);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    WriteStream *stream = handle->Runtime->ActiveWriteStream;
-   TEST_ASSERT(IsSectorEquial(stream->Sector, &SECTOR$1(this)));
+
+   TEST_ASSERT(IsSimpleFsSectorsEquial(stream->Sector, &SIMPLE_FS_AUXILIARY_SECTOR(this)));
 }
 
-TEST_GROUP_RUNNER(InitializationTests)
+TEST_GROUP_RUNNER(Initialization)
 {
-   RUN_TEST_CASE(InitializationTests, HandleInitialization);
-   RUN_TEST_CASE(InitializationTests, InsufficientMemoryInSector);
-   RUN_TEST_CASE(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_ONGOING);
-   RUN_TEST_CASE(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ERASED);
-   RUN_TEST_CASE(InitializationTests, S0_STATE_ACTIVE_S1_STATE_TRANSFER_END);
-   RUN_TEST_CASE(InitializationTests, S0_STATE_ACTIVE_S1_STATE_ACTIVE);
-   RUN_TEST_CASE(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_ONGOING);
-   RUN_TEST_CASE(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ERASED);
-   RUN_TEST_CASE(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_END);
-   RUN_TEST_CASE(InitializationTests, S0_STATE_TRANSFER_ONGOING_S1_STATE_ACTIVE);
-   RUN_TEST_CASE(InitializationTests, S0_STATE_TRANSFER_END_S1STATE_TRANSFER_ONGOING);
-   RUN_TEST_CASE(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ERASED);
-   RUN_TEST_CASE(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_TRANSFER_END);
-   RUN_TEST_CASE(InitializationTests, S0_STATE_TRANSFER_END_S1_STATE_ACTIVE);
-   RUN_TEST_CASE(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_ONGOING);
-   RUN_TEST_CASE(InitializationTests, S0_STATE_ERASED_S1_STATE_ERASED);
-   RUN_TEST_CASE(InitializationTests, S0_STATE_ERASED_S1_STATE_TRANSFER_END);
-   RUN_TEST_CASE(InitializationTests, S0_STATE_ERASED_S1_STATE_ACTIVE);
+   RUN_TEST_CASE(Initialization, SimpleFs);
+   RUN_TEST_CASE(Initialization, InsufficientMemoryInSector);
+   RUN_TEST_CASE(Initialization, S0_STATE_ACTIVE_S1_STATE_TRANSFER_ONGOING);
+   RUN_TEST_CASE(Initialization, S0_STATE_ACTIVE_S1_STATE_ERASED);
+   RUN_TEST_CASE(Initialization, S0_STATE_ACTIVE_S1_STATE_TRANSFER_END);
+   RUN_TEST_CASE(Initialization, S0_STATE_ACTIVE_S1_STATE_ACTIVE);
+   RUN_TEST_CASE(Initialization, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_ONGOING);
+   RUN_TEST_CASE(Initialization, S0_STATE_TRANSFER_ONGOING_S1_STATE_ERASED);
+   RUN_TEST_CASE(Initialization, S0_STATE_TRANSFER_ONGOING_S1_STATE_TRANSFER_END);
+   RUN_TEST_CASE(Initialization, S0_STATE_TRANSFER_ONGOING_S1_STATE_ACTIVE);
+   RUN_TEST_CASE(Initialization, S0_STATE_TRANSFER_END_S1STATE_TRANSFER_ONGOING);
+   RUN_TEST_CASE(Initialization, S0_STATE_TRANSFER_END_S1_STATE_ERASED);
+   RUN_TEST_CASE(Initialization, S0_STATE_TRANSFER_END_S1_STATE_TRANSFER_END);
+   RUN_TEST_CASE(Initialization, S0_STATE_TRANSFER_END_S1_STATE_ACTIVE);
+   RUN_TEST_CASE(Initialization, S0_STATE_ERASED_S1_STATE_TRANSFER_ONGOING);
+   RUN_TEST_CASE(Initialization, S0_STATE_ERASED_S1_STATE_ERASED);
+   RUN_TEST_CASE(Initialization, S0_STATE_ERASED_S1_STATE_TRANSFER_END);
+   RUN_TEST_CASE(Initialization, S0_STATE_ERASED_S1_STATE_ACTIVE);
 }
-
 
 /* Sector state table during initialization */
 /*

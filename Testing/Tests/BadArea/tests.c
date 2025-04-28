@@ -1,43 +1,64 @@
-#include "../../Mock/Errors/errors.h"
-#include "../../Mock/SimpleFs/Data/BadBlock/block.h"
-#include "../../Mock/SimpleFs/Application/application.h"
-#include "../../Mock/SimpleFs/Data/TestDataBuilder/data_builder.h"
+#include "../../Mock/Bindings/sdevice_core.h"
+#include "../../Mock/SDevice/simple_fs.h"
+#include "../../Mock/Data/File/file.h"
 
 #include "unity_fixture.h"
 
-TEST_GROUP(BadArea);
+#include "SDeviceCore/common.h"
 
-TEST_SETUP(BadArea)
+static const void *PanicHandle = NULL;
+static SDevicePanic Panic = UINT16_MAX;
+
+static void TestPanicHandler(const void *handle, SDevicePanic panic)
 {
-   AssertionMustBeFail(false);
-   PanicMustBeThrown(false);
-   ShowLog(false);
+   PanicHandle = handle;
+   Panic = panic;
+
+   TEST_MESSAGE("OK");
 }
 
+TEST_GROUP(BadArea);
+
+TEST_SETUP(BadArea) { }
 TEST_TEAR_DOWN(BadArea)
 {
-   ShowLog(true);
+   MockBadBlocks badBlocks =
+   {
+      .PrimarySectorBadBlocksIdxs        = NULL,
+      .AuxiliarySectorBadBlocksIdxs      = NULL,
+      .PrimarySectorBadBlocksIdxsCount   = 0,
+      .AuxiliarySectorBadBlocksIdxsCount = 0
+   };
+
+   SetMockBadBlocks(badBlocks);
 }
 
 TEST(BadArea, EveryFourthBlockIsBad)
 {
-   size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   size_t firstFileDataSize = MockGetFileSize(MOCK_FILE_TYPE_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
-   CopyTestFileImageData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   MockGetFileImageData(MOCK_FILE_TYPE_FULLY_FILLED_DATA_BLOCKS, firstFileData);
 
-   size_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   size_t secondFileDataSize = MockGetFileSize(MOCK_FILE_TYPE_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
-   CopyTestFileImageData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   MockGetFileImageData(MOCK_FILE_TYPE_INCOMPLETE_FILLED_LAST_DATA_BLOCK, secondFileData);
 
-   size_t badBlockNumbers[] = {0, 4, 8, 12, 16, 20, 24};
-   SetBadBlocksNumbers(badBlockNumbers, sizeof(badBlockNumbers), 0);
-   SetBadBlocksNumbers(badBlockNumbers, sizeof(badBlockNumbers), 1);
+   size_t badBlockIdxs[] = {0, 4, 8, 12, 16, 20, 24};
 
-   CREATE_SIMPLE_FS_APPLICATION(200, this);
+   MockBadBlocks badBlocks =
+   {
+      .PrimarySectorBadBlocksIdxs        = badBlockIdxs,
+      .AuxiliarySectorBadBlocksIdxs      = badBlockIdxs,
+      .PrimarySectorBadBlocksIdxsCount   = LENGTHOF(badBlockIdxs),
+      .AuxiliarySectorBadBlocksIdxsCount = LENGTHOF(badBlockIdxs)
+   };
+
+   SetMockBadBlocks(badBlocks);
+
+   CREATE_SIMPLE_FS_INIT(this, 200);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
    SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);
@@ -56,34 +77,47 @@ TEST(BadArea, EveryFourthBlockIsBad)
 
 TEST(BadArea, WriteFileWhenShortageMemoryDueBadBlocks)
 {
-   PanicMustBeThrown(true);
-
-   size_t firstFileDataSize = GetTestFileDataSize(FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   size_t firstFileDataSize = MockGetFileSize(MOCK_FILE_TYPE_FULLY_FILLED_DATA_BLOCKS);
    char firstFileData[firstFileDataSize];
-   CopyTestFileImageData(firstFileData, FILE_WITH_FULLY_FILLED_DATA_BLOCKS);
+   MockGetFileImageData(MOCK_FILE_TYPE_FULLY_FILLED_DATA_BLOCKS, firstFileData);
 
-   size_t secondFileDataSize = GetTestFileDataSize(FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   size_t secondFileDataSize = MockGetFileSize(MOCK_FILE_TYPE_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
    char secondFileData[secondFileDataSize];
-   CopyTestFileImageData(secondFileData, FILE_WITH_INCOMPLETE_FILLED_LAST_DATA_BLOCK);
+   MockGetFileImageData(MOCK_FILE_TYPE_INCOMPLETE_FILLED_LAST_DATA_BLOCK, secondFileData);
 
-   size_t badBlockNumbers[] = {2, 6, 10, 14, 16, 18, 20, 22, 24};
-   SetBadBlocksNumbers(badBlockNumbers, sizeof(badBlockNumbers), 0);
-   SetBadBlocksNumbers(badBlockNumbers, sizeof(badBlockNumbers), 1);
+   size_t badBlockIdxs[] = {2, 6, 10, 14, 16, 18, 20, 22, 24};
 
-   CREATE_SIMPLE_FS_APPLICATION(200, this);
+   MockBadBlocks badBlocks =
+   {
+      .PrimarySectorBadBlocksIdxs        = badBlockIdxs,
+      .AuxiliarySectorBadBlocksIdxs      = badBlockIdxs,
+      .PrimarySectorBadBlocksIdxsCount   = LENGTHOF(badBlockIdxs),
+      .AuxiliarySectorBadBlocksIdxsCount = LENGTHOF(badBlockIdxs)
+   };
+
+   SetMockBadBlocks(badBlocks);
+
+   CREATE_SIMPLE_FS_INIT(this, 200);
 
    SIMPLE_FS_DISPOSE_HANDLE_CLEANUP_ATTRIBUTE SDEVICE_HANDLE(SimpleFs) *handle =
-         SDEVICE_CREATE_HANDLE(SimpleFs)(&INIT(this), NULL, 0, NULL);
-   SetAssertFailHandle(handle);
+         SDEVICE_CREATE_HANDLE(SimpleFs)(&SIMPLE_FS_INIT(this), NULL);
 
    SimpleFsSDeviceWriteFile(handle, 0, firstFileData, firstFileDataSize);
+
    char firstReadFileData[firstFileDataSize];
    size_t sizeOfFirstFile = SimpleFsSDeviceReadFile(handle, 0, firstReadFileData, firstFileDataSize);
+
    TEST_ASSERT_EQUAL(firstFileDataSize, sizeOfFirstFile);
    TEST_ASSERT_EQUAL_CHAR_ARRAY(firstFileData, firstReadFileData, firstFileDataSize);
 
+   SetPanicHandler(TestPanicHandler);
+
    SimpleFsSDeviceWriteFile(handle, 1, secondFileData, secondFileDataSize);
-   TEST_FAIL_MESSAGE("Test fail, no exception was thrown");
+
+   ResetPanicHandler();
+
+   TEST_ASSERT_EQUAL(handle, PanicHandle);
+   TEST_ASSERT_EQUAL_INT16(SIMPLE_FS_SDEVICE_PANIC_OUT_OF_MEMORY, Panic);
 }
 
 TEST_GROUP_RUNNER(BadArea)
