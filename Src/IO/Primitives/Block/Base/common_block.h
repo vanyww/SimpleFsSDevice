@@ -13,9 +13,9 @@ static inline Block GetFilledBlock(ThisHandle *handle)
    return (Block){ .AsValue = GetFilledUInt64MemoryValue(handle) };
 }
 
-static inline bool AreBlocksEqual(Block block$0, Block block$1)
+static inline bool AreBlocksEqual(Block block_0, Block block_1)
 {
-   return block$0.AsValue == block$1.AsValue;
+   return block_0.AsValue == block_1.AsValue;
 }
 
 static inline bool IsBlockEmpty(ThisHandle *handle, Block block)
