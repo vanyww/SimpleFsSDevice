@@ -22,7 +22,7 @@
 /**
  * @brief Старшая компонента версии модуля файловой системы SimpleFsSDevice.
  */
-#define SIMPLE_FS_SDEVICE_VERSION_MAJOR 3
+#define SIMPLE_FS_SDEVICE_VERSION_MAJOR 4
 
 /**
  * @brief Средняя компонента версии модуля файловой системы SimpleFsSDevice.
