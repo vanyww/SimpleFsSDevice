@@ -2,7 +2,7 @@
 
 #include "SDeviceCore/config.h"
 
-#if !defined(SIMPLE_FS_SDEVICE_USE_EXTERNAL_CONFIG) || defined(DOXYGEN)
+#if !defined(SIMPLE_FS_SDEVICE_USE_EXTERNAL_CONFIG)
    #define SIMPLE_FS_SDEVICE_USE_EXTERNAL_CONFIG false
 #endif
 
@@ -10,6 +10,6 @@
    #include "simple_fs_sdevice_config.h"
 #endif
 
-#if !defined(SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC) || defined(DOXYGEN)
+#if !defined(SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC)
    #define SIMPLE_FS_SDEVICE_USE_EXTERNAL_CRC false
 #endif
