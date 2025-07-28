@@ -1,7 +1,4 @@
 .metadata
 .settings
-LibraryBuild
-.launch
-
-html
-/TestingBuild/
+Cortex-M0 Static Library
+Unity Application
